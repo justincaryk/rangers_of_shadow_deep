@@ -1,0 +1,65 @@
+{
+  "name": "next-postgraphile-postgres",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "16"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint:test": "eslint ./",
+    "lint:write": "eslint --fix ./",
+    "format:test": "prettier --ignore-unknown --check ./",
+    "format:write": "prettier --ignore-unknown --write ./",
+    "migrate:latest": "npx knex migrate:latest",
+    "seed:run": "npx knex seed:run",
+    "husky.init": "husky install && husky add .husky/pre-commit \"yarn lint-staged\" && husky add .husky/pre-push \"yarn lint-prepush\"",
+    "codegen": "graphql-codegen --config codegen.yml"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,json,ts,tsx,yml,yaml,html,css,md}": "yarn format:write"
+  },
+  "lint-prepush": {
+    "**/*": [
+      "yarn lint:write"
+    ]
+  },
+  "dependencies": {
+    "@next/font": "13.1.0",
+    "@tanstack/react-query": "^4.20.4",
+    "@types/node": "18.11.18",
+    "@types/react": "18.0.26",
+    "@types/react-dom": "18.0.10",
+    "eslint": "8.30.0",
+    "eslint-config-next": "13.1.1",
+    "formik": "^2.2.9",
+    "graphql-request": "^5.1.0",
+    "next": "13.1.0",
+    "pg": "^8.8.0",
+    "postgraphile": "^4.12.12",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-error-boundary": "^3.1.4",
+    "typescript": "4.9.4",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.16.2",
+    "@graphql-codegen/client-preset": "1.2.4",
+    "@graphql-codegen/typescript": "2.8.6",
+    "@graphql-codegen/typescript-react-query": "^4.0.6",
+    "autoprefixer": "^10.4.13",
+    "dotenv": "^16.0.3",
+    "encoding": "^0.1.13",
+    "husky": "^8.0.2",
+    "knex": "^2.3.0",
+    "knex-migrate": "^1.7.4",
+    "lint-prepush": "^2.2.1",
+    "lint-staged": "^13.1.0",
+    "postcss": "^8.4.20",
+    "prettier": "^2.8.1",
+    "tailwindcss": "^3.2.4"
+  }
+}
