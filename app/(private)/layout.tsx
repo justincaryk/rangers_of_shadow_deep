@@ -8,7 +8,7 @@ export default function AuthLayout({
   return (
     <section>
       <PrivateNavigation />
-      <div className='flex justify-center'>{children}</div>
+      {children}
     </section>
   )
 }
