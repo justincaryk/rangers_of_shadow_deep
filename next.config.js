@@ -6,4 +6,17 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+async function redirects() {
+  return [
+    {
+      source: '/',
+      destination: '/ranger',
+      permanent: true,
+    },
+  ]
+}
+
+module.exports = {
+  redirects,
+  ...nextConfig
+}

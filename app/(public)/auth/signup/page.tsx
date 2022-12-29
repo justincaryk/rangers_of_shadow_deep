@@ -1,7 +1,7 @@
 'use client'
 
-import SignupForm from '../../../components/auth/signup-form'
-import PageHeader from '../../../components/page-header'
+import SignupForm from '../../../../components/auth/signup-form'
+import PageHeader from '../../../../components/page-header'
 
 export default function Signup() {
   return (

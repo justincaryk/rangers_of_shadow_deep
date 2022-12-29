@@ -46,7 +46,7 @@ export default function SignupForm() {
               </label>
               <Field
                 name='username'
-                placeholder='bob_ross | bob@rosstheboss.com'
+                placeholder='bob_ross'
                 className='w-full border rounded text-xl p-2 text-center'
               />
 

@@ -19,7 +19,7 @@ export default function PublicNavigation() {
         {publicLinks.map(x => (
           <div key={x.text} className='ml-4'>
             <Link href={x.link}>
-              <button className='text-off-white font-roboto uppercase hover:text-hover-white hover:no-underline cursor-pointer outline-none'>
+              <button className='flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700'>
                 {x.text}
               </button>
             </Link>
@@ -32,7 +32,6 @@ export default function PublicNavigation() {
             width={50}
             height={50}
           />
-          {/* <img className='w-24' src='DD-Logo-1024x487.png' alt='broken logo' /> */}
         </div>
       </div>
     </div>
