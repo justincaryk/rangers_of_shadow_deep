@@ -18,5 +18,5 @@ async function redirects() {
 
 module.exports = {
   redirects,
-  ...nextConfig
+  ...nextConfig,
 }

@@ -1,5 +1,5 @@
 exports.up = knex =>
-    knex.schema.raw(`
+  knex.schema.raw(`
         DO
         $do$
         BEGIN
@@ -130,6 +130,6 @@ exports.up = knex =>
     `)
 
 exports.down = knex => {
-    knex.schema.dropTable('public.minion')
-    knex.schema.dropTable('public.wizard')
+  knex.schema.dropTable('public.minion')
+  knex.schema.dropTable('public.wizard')
 }

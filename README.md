@@ -18,8 +18,8 @@ The `graphql` directory provides schema typings. Any queries or mutations not ge
 3. [Follow steps in Knex section](#knex).
 4. [Follow steps in Schema & Types section](#schema--types-generation).
 5. [Follow steps in Hooks (optional)](#hooks-optional).
-5. Run `yarn dev`.
-6. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Run `yarn dev`.
+7. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ## Graphiql and Graphql Endpoints
 
@@ -39,7 +39,7 @@ To setup:
 
 ## Schema & Types Generation
 
-This starter repo autogenerates types from the schema. In order to access typed queries/mutations, simply look in `[root]/graphql`. The majority of queries should be provided by postgraphile; however, if you need to add custom queries, you can add them in here for automatic type generation. 
+This starter repo autogenerates types from the schema. In order to access typed queries/mutations, simply look in `[root]/graphql`. The majority of queries should be provided by postgraphile; however, if you need to add custom queries, you can add them in here for automatic type generation.
 
 **NOTE: TYPES NEED TO BE MANUALLY GENERATED ON && UPDATED BY FOLLOWING THE STEPS BELOW**
 

@@ -2,9 +2,7 @@
 
 import { Fragment } from 'react'
 import { Popover, Transition } from '@headlessui/react'
-import {
-  Bars3Icon,
-} from '@heroicons/react/24/outline'
+import { Bars3Icon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -53,7 +51,6 @@ export default function PrivateNavigation() {
                 {x.text}
               </Link>
             ))}
-
           </Popover.Group>
         </div>
       </div>
