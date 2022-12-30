@@ -2,9 +2,29 @@ import { InputHTMLAttributes } from 'react'
 
 interface Props extends InputHTMLAttributes<any> {
   label?: string
+  className?: string
 }
 
-export default function Input({ label, ...props }: Props) {
+const baseClassesList = [
+  'block',
+  'w-full',
+  'px-3',
+  'py-1.5',
+  'text-base',
+  'font-normal',
+  'text-gray-700',
+  'bg-white bg-clip-padding',
+  'border border-solid',
+  'rounded',
+  'transition',
+  'ease-in-out',
+  'm-0',
+  'focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
+]
+
+export default function Input({ label, className, ...props }: Props) {
+  const fullClasses = `${baseClassesList.join(' ')} ${className}`
+
   return (
     <div>
       {label && (
@@ -15,27 +35,7 @@ export default function Input({ label, ...props }: Props) {
           {label}
         </label>
       )}
-      <input
-        type='text'
-        className='
-        
-        block
-        w-full
-        px-3
-        py-1.5
-        text-base
-        font-normal
-        text-gray-700
-        bg-white bg-clip-padding
-        border border-solid border-gray-300
-        rounded
-        transition
-        ease-in-out
-        m-0
-        focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
-      '
-        {...props}
-      />
+      <input type='text' className={fullClasses} {...props} />
     </div>
   )
 }

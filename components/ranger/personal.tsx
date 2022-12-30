@@ -13,7 +13,7 @@ export default function Personal({ bp }: Props) {
         icon={<IdentificationIcon className='text-emerald-400' />}
       />
       <div className='px-4 py-5 sm:p-6'>
-        <Input placeholder='Ranger Name' label='Ranger Name' />
+        <Input placeholder='Ranger Name' className='w-1/4 block' />
       </div>
       <div className='font-bold'>Total BP Remaining: {bp}</div>
     </div>

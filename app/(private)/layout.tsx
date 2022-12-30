@@ -6,9 +6,9 @@ export default function AuthLayout({
   children: React.ReactNode
 }) {
   return (
-    <section>
+    <section className='relative h-screen w-full mb-46'>
       <PrivateNavigation />
-      {children}
+      <div className='bg-hero-1 h-full bg-no-repeat bg-contain bg-right'>{children}</div>
     </section>
   )
 }

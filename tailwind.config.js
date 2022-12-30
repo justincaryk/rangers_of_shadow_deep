@@ -19,7 +19,7 @@ module.exports = {
         1: '1px',
       },
       backgroundColor: {
-        stone: '#353536',
+        stone: 'rgb(23,24,21)',
         cream: '#F1F0ED !important',
         'sky-blue': '#1C9AEF',
       },
@@ -31,12 +31,17 @@ module.exports = {
           dark: '#242527',
         },
         'off-white': 'rgb(240, 239, 239)',
+        'dirty-orange': 'rgba(191, 88, 13, 0.82)',
         'hover-white': 'rgb(155, 152, 152)',
         'sky-blue': '#1C9AEF',
       },
       boxShadow: {
         'md-sky-blue':
           '0 4px 6px -1px rgba(28, 154, 239, 0.1), 0 2px 4px -1px rgba(28, 154, 239, 0.06)',
+      },
+      backgroundImage: {
+        'hero-1': "url('/images/ranger-bg-1.png')",
+        'hero-2': "url('/images/ranger-bg-2.png')",
       },
     },
   },

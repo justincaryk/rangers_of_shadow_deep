@@ -19,7 +19,7 @@ export default function Ranger() {
   }
 
   return (
-    <div className='space-y-6 bg-white divide-y divide-dashed'>
+    <div className='space-y-6 divide-y divide-dashed'>
       <Personal bp={bp} />
       <Stats updateBp={updateBp} />
       <HeroicActionsAndSpells updateBp={updateBp} />

@@ -14,3 +14,5 @@ export const BASE_STATS = {
   [STATS_ENUM.will]: { val: 4, canMod: true },
   [STATS_ENUM.health]: { val: 18, canMod: true },
 }
+
+export const NAV_TEXT_STYLE = 'text-dirty-orange font-roboto uppercase hover:text-hover-white hover:no-underline cursor-pointer outline-none'

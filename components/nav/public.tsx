@@ -14,8 +14,17 @@ export default function PublicNavigation() {
   ]
 
   return (
-    <div className='h-38 w-full bg-stone p-6 z-10 relative'>
-      <div className='flex items-center justify-end'>
+    <div className='h-38 w-full bg-stone px-4 z-10 relative'>
+      <div className='flex items-center justify-between py-6 md:justify-start md:space-x-10'>
+        <div className='flex justify-start lg:w-0 lg:flex-1'>
+          <span className='sr-only'>Rangers of Shadow Deep Companion App</span>
+          <Image
+            width={200}
+            height={100}
+            src='/images/logo-lg.png'
+            alt=''
+          />
+        </div>
         {publicLinks.map(x => (
           <div key={x.text} className='ml-4'>
             <Link href={x.link}>
@@ -25,14 +34,6 @@ export default function PublicNavigation() {
             </Link>
           </div>
         ))}
-        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
-          <Image
-            src='/images/1200px-SVG_logo.svg.png'
-            alt='auth navbar logo'
-            width={50}
-            height={50}
-          />
-        </div>
       </div>
     </div>
   )
