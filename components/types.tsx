@@ -6,11 +6,3 @@ export enum STATS_ENUM {
   will = 'will',
   health = 'health',
 }
-
-export interface RangerComponentProps {
-  updateBp: (modifier: number) => void
-}
-
-export interface HeroicActionAndSpellsProps extends RangerComponentProps {
-  bpAvail: number
-}

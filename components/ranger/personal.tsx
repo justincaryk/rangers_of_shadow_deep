@@ -1,11 +1,15 @@
+'use client'
+
 import { IdentificationIcon } from '@heroicons/react/24/outline'
+import { useAtom } from 'jotai'
 import Input from '../parts/input'
 import MinorHeader from '../parts/minor-header'
+import { useBuildPoints } from './atoms/ranger-atom'
 
-interface Props {
-  bp: number
-}
-export default function Personal({ bp }: Props) {
+
+export default function Personal() {
+  const [ buildPoints ] = useAtom(useBuildPoints)
+
   return (
     <div>
       <MinorHeader
@@ -15,7 +19,7 @@ export default function Personal({ bp }: Props) {
       <div className='px-4 py-5 sm:p-6'>
         <Input placeholder='Ranger Name' className='w-1/4 block' />
       </div>
-      <div className='font-bold'>Total BP Remaining: {bp}</div>
+      <div className='font-bold'>Total BP Remaining: {buildPoints}</div>
     </div>
   )
 }

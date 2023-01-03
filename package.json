@@ -39,6 +39,7 @@
     "eslint-config-next": "13.1.1",
     "formik": "^2.2.9",
     "graphql-request": "^5.1.0",
+    "jotai": "^1.12.1",
     "next": "13.1.0",
     "pg": "^8.8.0",
     "postgraphile": "^4.12.12",

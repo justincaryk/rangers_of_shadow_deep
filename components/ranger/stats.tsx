@@ -2,17 +2,20 @@
 
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
+import { useAtom } from 'jotai'
 import { useState } from 'react'
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { RangerComponentProps, STATS_ENUM } from '../types'
-import { BASE_STATS, DECREASE, INCREASE, MAX_BP_FOR_SKILLS } from '../utils'
+import { STATS_ENUM } from '../types'
+import { useBuildPoints } from './atoms/ranger-atom'
+import { BASE_STATS,DECREASE, INCREASE, MAX_BP_FOR_SKILLS } from './rules/rules' 
 
-export default function Stats({ updateBp }: RangerComponentProps) {
+export default function Stats() {
   // how many build points available for skills
   const [ bpAvailForSkills, setBpAvailForSkills ] = useState(MAX_BP_FOR_SKILLS)
+  const [ _, updateBuildPoints ] = useAtom(useBuildPoints)
   const [ stats, setStats ] = useState(BASE_STATS)
   const [ show, toggleShow ] = useState(false)
 
@@ -42,7 +45,8 @@ export default function Stats({ updateBp }: RangerComponentProps) {
     }
 
     setBpAvailForSkills(bpAvailForSkills - modifier)
-    updateBp(modifier)
+    // update state
+    updateBuildPoints(modifier)
 
     setStats({
       ...stats,

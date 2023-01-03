@@ -1,14 +1,16 @@
 'use client'
 
 import { FireIcon } from '@heroicons/react/24/outline'
+import { useAtom } from 'jotai'
 import { useState } from 'react'
 import { skills } from '../data'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { RangerComponentProps } from '../types'
+import { useBuildPoints } from './atoms/ranger-atom'
 
-export default function Skills({ updateBp }: RangerComponentProps) {
+export default function Skills() {
   const [ show, toggleShow ] = useState(false)
+  const [ _, updateBuildPoints ] = useAtom(useBuildPoints)
 
   return (
     <div>
