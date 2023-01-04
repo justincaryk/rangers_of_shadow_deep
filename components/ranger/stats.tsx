@@ -3,75 +3,77 @@
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
 import { useAtom } from 'jotai'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { RangerStats, RANGER_FIELD, STATS_ENUM } from '../types'
-import { objectKeys, useGetTrueAvailBp } from '../utils'
+import { RANGER_FIELD, STATS_ENUM } from '../types'
+import { useGetTrueAvailBp } from '../utils'
 import { useBpForStats } from './atoms/build-points'
 import { useRanger } from './atoms/ranger'
 import { BASE_STATS, DECREASE, INCREASE } from './rules/rules'
 
 export default function Stats() {
+  const [ show, toggleShow ] = useState(false)
+
   // how many build points available for stats
   const [ bpForStats, updateBuildPoints ] = useAtom(useBpForStats)
   const trueAvailBp = useGetTrueAvailBp(bpForStats)
 
   const [ ranger, updateRanger ] = useAtom(useRanger)
 
-  const [ stats, setStats ] = useState(BASE_STATS)
-  const [ show, toggleShow ] = useState(false)
+  const checkCanIncrease = (stat: STATS_ENUM) => {
+    // make sure we have build points available
+    if (trueAvailBp === 0) {
+      return false
+    }
+
+    // no armor upgrades
+    if (stat === STATS_ENUM.armor) {
+      return false
+    }
+
+    // only 1 upgrade allowed per stat at creation
+    if (ranger[RANGER_FIELD.STATS][stat] === BASE_STATS[stat]) {
+      return true
+    }
+
+    return false
+  }
+
+  const checkCanDecrease = (stat: STATS_ENUM) => {
+    if (ranger[RANGER_FIELD.STATS][stat] > BASE_STATS[stat]) {
+      return true
+    }
+
+    return false
+  }
 
   const updateStat = (stat: STATS_ENUM, modifier: number) => {
-    let updatedStat = {
-      val: stats[stat].val + modifier,
-      canMod: modifier === INCREASE ? false : true,
-    }
-
-    // if decrease - check current stat not lower than base
-    if (modifier === DECREASE) {
-      if (stats[stat].val === BASE_STATS[stat].val) {
-        return null
-      }
-    }
-
-    // if increase
     if (modifier === INCREASE) {
-      // if no build points avail => exit
-      if (trueAvailBp === 0) {
+      if (!checkCanIncrease(stat)) {
         return null
       }
-      // can increase this stat?
-      if (!stats[stat].canMod) {
+    } else {
+      if (!checkCanDecrease(stat)) {
         return null
       }
     }
-
-    const rangerStats = objectKeys(BASE_STATS).reduce(
-      (prev, curr): RangerStats => {
-        return {
-          ...prev,
-          [curr]: stats[curr].val,
-        }
-      },
-      {} as RangerStats
-    )
+    const currentStats = ranger[RANGER_FIELD.STATS]
+    const currentSkillValue = currentStats[stat]
 
     // update ranger state
     updateRanger({
       ...ranger,
-      [RANGER_FIELD.STATS]: rangerStats,
+      [RANGER_FIELD.STATS]: {
+        ...currentStats,
+        [stat]: currentSkillValue + modifier,
+      },
     })
 
     // update build points
     updateBuildPoints(modifier)
-
-    setStats({
-      ...stats,
-      [stat]: updatedStat,
-    })
   }
 
   return (
@@ -90,12 +92,12 @@ export default function Stats() {
         <div className='px-4 py-4 sm:p-6'>
           <div className='flex flex-col space-y-2 w-1/4'>
             {Object.values(STATS_ENUM).map(stat => {
-              const canIncrement = stats[stat].canMod && trueAvailBp !== 0
-              const canDecrement = stats[stat].val !== BASE_STATS[stat].val
+              const canIncrement = checkCanIncrease(stat)
+              const canDecrement = checkCanDecrease(stat)
               return (
                 <div key={stat} className='grid grid-cols-3 gap-x-4'>
                   <div className='uppercase font-bold text-small'>{stat}:</div>
-                  {stats[stat].val}
+                  {ranger[RANGER_FIELD.STATS][stat]}
                   <div className='flex gap-2'>
                     <div
                       className={classnames({

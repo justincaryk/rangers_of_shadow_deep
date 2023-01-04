@@ -10,10 +10,10 @@ export const MAX_BP_FOR_SKILLS = 5
 export const SKILL_POINTS_PER_BP = 8
 
 export const BASE_STATS = {
-  [STATS_ENUM.move]: { val: 6, canMod: true },
-  [STATS_ENUM.fight]: { val: 2, canMod: true },
-  [STATS_ENUM.shoot]: { val: 1, canMod: true },
-  [STATS_ENUM.armor]: { val: 10, canMod: true },
-  [STATS_ENUM.will]: { val: 4, canMod: true },
-  [STATS_ENUM.health]: { val: 18, canMod: true },
+  [STATS_ENUM.move]: 6,
+  [STATS_ENUM.fight]: 2,
+  [STATS_ENUM.shoot]: 1,
+  [STATS_ENUM.armor]: 10,
+  [STATS_ENUM.will]: 4,
+  [STATS_ENUM.health]: 18,
 }
