@@ -2,7 +2,7 @@ import React from 'react'
 
 interface Props {
   content: string
-  icon?: React.ReactNode
+  icon?: React.ReactNode | JSX.Element
 }
 export default function MinorHeader({ content, icon }: Props) {
   return (

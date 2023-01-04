@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { Ranger, STATS_ENUM } from '../../types'
+import { Ranger, RANGER_FIELD, STATS_ENUM } from '../../types'
 import { objectKeys } from '../../utils'
 import { BASE_STATS } from '../rules/rules'
 
@@ -14,19 +14,17 @@ const baseRangerStats = Object.assign(
 )
 
 const BASE_RANGER: Ranger = {
-  personal: {},
-  stats: baseRangerStats,
-  skills: {},
-  heroicActions: [],
-  spells: [],
-  equipment: [],
+  [RANGER_FIELD.PERSONAL]: {},
+  [RANGER_FIELD.STAT]: baseRangerStats,
+  [RANGER_FIELD.SKILLS]: {},
+  [RANGER_FIELD.HEROIC_ACTIONS]: [],
+  [RANGER_FIELD.SPELLS]: [],
+  [RANGER_FIELD.EQUIPMENT]: [],
 }
 
-export const ranger = atom(BASE_RANGER)
-
 export const useRanger = atom(
-  get => get(ranger),
+  BASE_RANGER,
   (get, set, data: Ranger) => {
-    set(ranger, data)
+    set(useRanger, data)
   }
 )

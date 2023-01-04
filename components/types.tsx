@@ -16,11 +16,20 @@ export type RangerStats = {
   [STATS_ENUM.health]: number
 }
 
+export enum RANGER_FIELD {
+  PERSONAL = 'personal',
+  STAT = 'stats',
+  SKILLS = 'skills',
+  HEROIC_ACTIONS = 'heroicActions',
+  SPELLS = 'spells',
+  EQUIPMENT = 'equipment',
+}
+
 export type Ranger = {
-  personal: {}
-  stats: RangerStats
-  skills: {}
-  heroicActions: string[]
-  spells: string[]
-  equipment: string[]
+  [RANGER_FIELD.PERSONAL]: {}
+  [RANGER_FIELD.STAT]: RangerStats
+  [RANGER_FIELD.SKILLS]: {}
+  [RANGER_FIELD.HEROIC_ACTIONS]: string[]
+  [RANGER_FIELD.SPELLS]: string[]
+  [RANGER_FIELD.EQUIPMENT]: string[]
 }
