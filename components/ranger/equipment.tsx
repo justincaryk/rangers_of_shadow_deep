@@ -17,6 +17,7 @@ export default function Equipment() {
         <MinorHeader
           content='equipment'
           icon={<WrenchScrewdriverIcon className='' />}
+          minorBuildPoints={null}
         />
       </div>
       {show && (

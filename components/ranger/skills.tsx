@@ -6,11 +6,25 @@ import { useState } from 'react'
 import { skills } from '../data'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { useBpForSKills } from './atoms/build-points'
+import { useGetTrueAvailBp } from '../utils'
+import { useBpForSkills } from './atoms/build-points'
+import { DECREASE, INCREASE, SKILL_POINTS_PER_BP } from './rules/rules'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
-  const [ _, updateBuildPoints ] = useAtom(useBpForSKills)
+  const [ bpForSkills, updateSkillsBuildPoints ] = useAtom(useBpForSkills)
+  const trueAvailBp = useGetTrueAvailBp(bpForSkills)
+
+  // each skill can be increased 8x for each build point spent
+  const [ allottedSkillPoints, setAllottedSkillPoints ] = useState(0)
+
+  const updateAllottedSkillPoints = (modifier: number) => {
+    if (trueAvailBp === 0) {
+      return null
+    }
+    setAllottedSkillPoints(allottedSkillPoints + (modifier * SKILL_POINTS_PER_BP))
+    updateSkillsBuildPoints(modifier)
+  }
 
   return (
     <div>
@@ -20,9 +34,15 @@ export default function Skills() {
         </div>
         <MinorHeader
           content='skills'
-          icon={<FireIcon className='text-orange-400' />}
+          icon={<FireIcon className='text-orange-400'/>}
+          minorBuildPoints={trueAvailBp} 
         />
+        <div>
+          Avail skill points.... {allottedSkillPoints}
+        </div>
       </div>
+      <div onClick={() => updateAllottedSkillPoints(INCREASE)}>Increase allotment </div>
+      <div onClick={() => updateAllottedSkillPoints(DECREASE)}>Decrease allotment </div>
       {show && (
         <div className='px-4 py-5 sm:p-6'>
           {skills.map(skill => (

@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 import {
   BASE_BUILD_POINTS,
   MAX_BP_FOR_HEROIC_ACTIONS_AND_SPELLS,
+  MAX_BP_FOR_SKILLS,
   MAX_BP_FOR_STATS,
 } from '../rules/rules'
 
@@ -34,10 +35,13 @@ export const useBpForStats = atom(
   }
 )
 
-export const useBpForSKills = atom(10, (get, set, modifier: number) => {
-  // update the total
-  useUpdateBuildPoints.write(get, set, modifier)
+export const useBpForSkills = atom(
+  MAX_BP_FOR_SKILLS,
+  (get, set, modifier: number) => {
+    // update the total
+    useUpdateBuildPoints.write(get, set, modifier)
 
-  // update the baby
-  set(useBpForSKills, get(useBpForSKills) - modifier)
-})
+    // update the baby
+    set(useBpForSkills, get(useBpForSkills) - modifier)
+  }
+)

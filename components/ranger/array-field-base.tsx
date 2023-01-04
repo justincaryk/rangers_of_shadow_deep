@@ -9,6 +9,7 @@ import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
 import SmallButton from '../parts/small-button'
 import { RANGER_FIELD } from '../types'
+import { useGetTrueAvailBp } from '../utils'
 import { useBpForHeroicSpells, useBuildPoints } from './atoms/build-points'
 import { useRanger } from './atoms/ranger'
 import { DECREASE, INCREASE } from './rules/rules'
@@ -28,42 +29,43 @@ interface Props {
 
 export default function ArrayFieldBase({ type, data }: Props) {
   const [ show, toggleShow ] = useState(false)
-  const [ totalBuildPoints ] = useAtom(useBuildPoints)
-  const [ minorBuildPoints, updateHeroicSpellBuildPoints ] =
+  const [ minorBuildPoints, updateMinorBuildPoints ] =
     useAtom(useBpForHeroicSpells)
+  const trueAvailBp = useGetTrueAvailBp(minorBuildPoints)
+
   const [ ranger, updateRanger ] = useAtom(useRanger)
-  const currentField = useMemo(() => ranger[type], [ ranger, type ])
+  const currentField = useMemo(() => {
+    return ranger[type]
+  }, [ ranger, type ])
 
   const handleItemClicked = (item: HeroicAction | Spell) => {
-    
     if (!Array.isArray(currentField)) {
       return null
     }
 
     // if it exits => remove it
-    if (currentField.indexOf?.(item.name) > -1) {
+    if (currentField.indexOf(item.name) > -1) {
       updateRanger({
         ...ranger,
         [type]: currentField.filter(x => x != item.name),
       })
       // update build points
-      updateHeroicSpellBuildPoints(DECREASE)
+      updateMinorBuildPoints(DECREASE)
+      return null
     }
 
     // if no build points avail => exit
-    if (totalBuildPoints === 0 || minorBuildPoints === 0) {
+    if (trueAvailBp === 0) {
       return null
     }
 
     // add it
-    else {
-      updateRanger({
-        ...ranger,
-        [type]: [ ...currentField, item.name ],
-      })
-      // update build points
-      updateHeroicSpellBuildPoints(INCREASE)
-    }
+    updateRanger({
+      ...ranger,
+      [type]: [ ...currentField, item.name ],
+    })
+    // update build points
+    updateMinorBuildPoints(INCREASE)
   }
 
   const headerContent = useMemo(() => {
@@ -82,14 +84,11 @@ export default function ArrayFieldBase({ type, data }: Props) {
         <div className='w-6 float-right'>
           <ShowHide isShow={show} onClick={() => toggleShow(!show)} />
         </div>
-        <MinorHeader content={headerContent} icon={SectionIcon(type)} />
-        <div className='flex gap-2 mt-2 px-2'>
-          Available build points:
-          <span className='font-bold'>{minorBuildPoints}</span>
-          <span className='italic text-slate-400'>
-            (Shared between Heroic Actions and Spells)
-          </span>
-        </div>
+        <MinorHeader
+          content={headerContent}
+          icon={SectionIcon(type)}
+          minorBuildPoints={trueAvailBp}
+        />
       </div>
       {show && (
         <div className='space-y-4'>
@@ -102,12 +101,14 @@ export default function ArrayFieldBase({ type, data }: Props) {
                   <SmallButton
                     onClick={() => handleItemClicked(item)}
                     classNames={
-                      Array.isArray(currentField) && currentField.indexOf(item.name) > -1
+                      Array.isArray(currentField) &&
+                      currentField.indexOf(item.name) > -1
                         ? 'bg-gray-400'
                         : ''
                     }
                   >
-                    {Array.isArray(currentField) && currentField.indexOf(item.name) > -1
+                    {Array.isArray(currentField) &&
+                    currentField.indexOf(item.name) > -1
                       ? 'UNLEARN'
                       : 'LEARN'}
                   </SmallButton>
@@ -135,12 +136,12 @@ export default function ArrayFieldBase({ type, data }: Props) {
                     <SmallButton
                       onClick={() => handleItemClicked(item)}
                       classNames={
-                        ranger.heroicActions.indexOf(item.name) > -1
+                        currentField.indexOf(item.name) > -1
                           ? 'bg-gray-400'
                           : ''
                       }
                     >
-                      {ranger.heroicActions.indexOf(item.name) > -1
+                      {currentField.indexOf(item.name) > -1
                         ? 'UNLEARN'
                         : 'LEARN'}
                     </SmallButton>

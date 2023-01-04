@@ -3,20 +3,22 @@
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
 import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { RangerStats, STATS_ENUM } from '../types'
-import { objectKeys } from '../utils'
+import { RangerStats, RANGER_FIELD, STATS_ENUM } from '../types'
+import { objectKeys, useGetTrueAvailBp } from '../utils'
 import { useBpForStats } from './atoms/build-points'
 import { useRanger } from './atoms/ranger'
 import { BASE_STATS, DECREASE, INCREASE } from './rules/rules'
 
 export default function Stats() {
-  // how many build points available for skills
-  const [ bpAvailForStats, updateBuildPoints ] = useAtom(useBpForStats)
+  // how many build points available for stats
+  const [ bpForStats, updateBuildPoints ] = useAtom(useBpForStats)
+  const trueAvailBp = useGetTrueAvailBp(bpForStats)
+
   const [ ranger, updateRanger ] = useAtom(useRanger)
 
   const [ stats, setStats ] = useState(BASE_STATS)
@@ -37,8 +39,8 @@ export default function Stats() {
 
     // if increase
     if (modifier === INCREASE) {
-      // has bp avail for skills?
-      if (bpAvailForStats === 0) {
+      // if no build points avail => exit
+      if (trueAvailBp === 0) {
         return null
       }
       // can increase this stat?
@@ -47,17 +49,20 @@ export default function Stats() {
       }
     }
 
-    const rangerStats = objectKeys(BASE_STATS).reduce((prev, curr): RangerStats => {
-      return {
-        ...prev,
-        [curr]: stats[curr].val
-      }
-    }, {} as RangerStats)
+    const rangerStats = objectKeys(BASE_STATS).reduce(
+      (prev, curr): RangerStats => {
+        return {
+          ...prev,
+          [curr]: stats[curr].val,
+        }
+      },
+      {} as RangerStats
+    )
 
     // update ranger state
     updateRanger({
       ...ranger,
-      stats: rangerStats,
+      [RANGER_FIELD.STATS]: rangerStats,
     })
 
     // update build points
@@ -75,17 +80,17 @@ export default function Stats() {
         <div className='w-6 float-right'>
           <ShowHide isShow={show} onClick={() => toggleShow(!show)} />
         </div>
-        <MinorHeader content='stats' icon={<AdjustmentsHorizontalIcon />} />
-        <div className='flex gap-2 mt-2 px-2'>
-          Available build points:
-          <span className='font-bold'>{bpAvailForStats}</span>
-        </div>
+        <MinorHeader
+          content='stats'
+          icon={<AdjustmentsHorizontalIcon />}
+          minorBuildPoints={trueAvailBp}
+        />
       </div>
       {show && (
         <div className='px-4 py-4 sm:p-6'>
           <div className='flex flex-col space-y-2 w-1/4'>
             {Object.values(STATS_ENUM).map(stat => {
-              const canIncrement = stats[stat].canMod && bpAvailForStats !== 0
+              const canIncrement = stats[stat].canMod && trueAvailBp !== 0
               const canDecrement = stats[stat].val !== BASE_STATS[stat].val
               return (
                 <div key={stat} className='grid grid-cols-3 gap-x-4'>
