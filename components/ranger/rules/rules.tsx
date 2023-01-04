@@ -4,7 +4,7 @@ export const INCREASE = 1
 export const DECREASE = -1
 
 export const BASE_BUILD_POINTS = 10
-export const MAX_BP_FOR_SKILLS = 3
+export const MAX_BP_FOR_STATS = 3
 export const MAX_BP_FOR_HEROIC_ACTIONS_AND_SPELLS = 5
 
 export const BASE_STATS = {

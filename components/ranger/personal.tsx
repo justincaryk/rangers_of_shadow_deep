@@ -4,7 +4,7 @@ import { IdentificationIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import Input from '../parts/input'
 import MinorHeader from '../parts/minor-header'
-import { useBuildPoints } from './atoms/ranger-atom'
+import { useBuildPoints } from './atoms/build-points'
 
 
 export default function Personal() {

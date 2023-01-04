@@ -1,22 +1,47 @@
 'use client'
 
-import { BoltIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { BoltIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import { useState } from 'react'
-import { heroicActions } from '../data'
-import Decrement from '../parts/decrement'
-import Increment from '../parts/increment'
+import { HeroicAction, heroicActions } from '../data'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { useBpForHeroicSpells, useBuildPoints } from './atoms/ranger-atom'
+import { useBpForHeroicSpells, useBuildPoints } from './atoms/build-points'
+import { useRanger } from './atoms/ranger'
 import { DECREASE, INCREASE } from './rules/rules'
 
 export default function HeroicActions() {
   const [ show, toggleShow ] = useState(false)
-  const [ _, updateBuildPoints ] = useAtom(useBuildPoints)
-  const [ availBuildPoints, updateHeroicSpellBuildPoints ] =
+  const [ totalBuildPoints ] = useAtom(useBuildPoints)
+  const [ minorBuildPoints, updateHeroicSpellBuildPoints ] =
     useAtom(useBpForHeroicSpells)
+  const [ ranger, updateRanger ] = useAtom(useRanger)
 
+  const handleHeroicActionClicked = (action: HeroicAction) => {
+    // if no build points
+    if (totalBuildPoints === 0 || minorBuildPoints === 0) {
+      return null
+    }
+
+    // remove it
+    if (ranger.heroicActions.indexOf(action.name) > -1) {
+      updateRanger({
+        ...ranger,
+        heroicActions: ranger.heroicActions.filter(ha => ha != action.name),
+      })
+      // update build points
+      updateHeroicSpellBuildPoints(DECREASE)
+    }
+    // add it
+    else {
+      updateRanger({
+        ...ranger,
+        heroicActions: [ ...ranger.heroicActions, action.name ],
+      })
+      // update build points
+      updateHeroicSpellBuildPoints(INCREASE)
+    }
+  }
   return (
     <div>
       <div className='mt-2'>
@@ -29,7 +54,7 @@ export default function HeroicActions() {
         />
         <div className='flex gap-2 mt-2 px-2'>
           Available build points:
-          <span className='font-bold'>{availBuildPoints}</span>
+          <span className='font-bold'>{minorBuildPoints}</span>
           <span className='italic text-slate-400'>
             (Shared between Heroic Actions and Spells)
           </span>
@@ -39,27 +64,15 @@ export default function HeroicActions() {
         <div className='px-4 py-5 sm:p-6'>
           {heroicActions.map(ha => (
             <div key={ha.name}>
-              <div className='font-semibold capitalize'>{ha.name}</div>
+              <div className='flex content-between'>
+                <div className='font-semibold capitalize'>{ha.name}</div>
+                <button onClick={() => handleHeroicActionClicked(ha)}>
+                  {ranger.heroicActions.indexOf(ha.name) > -1
+                    ? 'Remove'
+                    : 'Add'}
+                </button>
+              </div>
               <div>{ha.desc}</div>
-              <div className='w-6'>
-                <Increment
-                  onClick={() => {
-                    updateHeroicSpellBuildPoints(INCREASE)
-                    updateBuildPoints(INCREASE)
-                  }}
-                  disabled={false}
-                />
-              </div>
-
-              <div className='w-6'>
-                <Decrement
-                  onClick={() => {
-                    updateHeroicSpellBuildPoints(DECREASE)
-                    updateBuildPoints(DECREASE)
-                  }}
-                  disabled={false}
-                />
-              </div>
             </div>
           ))}
         </div>

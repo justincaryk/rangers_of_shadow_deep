@@ -8,14 +8,17 @@ import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { STATS_ENUM } from '../types'
-import { useBuildPoints } from './atoms/ranger-atom'
-import { BASE_STATS,DECREASE, INCREASE, MAX_BP_FOR_SKILLS } from './rules/rules' 
+import { RangerStats, STATS_ENUM } from '../types'
+import { objectKeys } from '../utils'
+import { useBpForStats } from './atoms/build-points'
+import { useRanger } from './atoms/ranger'
+import { BASE_STATS, DECREASE, INCREASE } from './rules/rules'
 
 export default function Stats() {
   // how many build points available for skills
-  const [ bpAvailForSkills, setBpAvailForSkills ] = useState(MAX_BP_FOR_SKILLS)
-  const [ _, updateBuildPoints ] = useAtom(useBuildPoints)
+  const [ bpAvailForStats, updateBuildPoints ] = useAtom(useBpForStats)
+  const [ ranger, updateRanger ] = useAtom(useRanger)
+
   const [ stats, setStats ] = useState(BASE_STATS)
   const [ show, toggleShow ] = useState(false)
 
@@ -35,7 +38,7 @@ export default function Stats() {
     // if increase
     if (modifier === INCREASE) {
       // has bp avail for skills?
-      if (bpAvailForSkills === 0) {
+      if (bpAvailForStats === 0) {
         return null
       }
       // can increase this stat?
@@ -44,8 +47,20 @@ export default function Stats() {
       }
     }
 
-    setBpAvailForSkills(bpAvailForSkills - modifier)
-    // update state
+    const rangerStats = objectKeys(BASE_STATS).reduce((prev, curr): RangerStats => {
+      return {
+        ...prev,
+        [curr]: stats[curr].val
+      }
+    }, {} as RangerStats)
+
+    // update ranger state
+    updateRanger({
+      ...ranger,
+      stats: rangerStats,
+    })
+
+    // update build points
     updateBuildPoints(modifier)
 
     setStats({
@@ -63,14 +78,14 @@ export default function Stats() {
         <MinorHeader content='stats' icon={<AdjustmentsHorizontalIcon />} />
         <div className='flex gap-2 mt-2 px-2'>
           Available build points:
-          <span className='font-bold'>{bpAvailForSkills}</span>
+          <span className='font-bold'>{bpAvailForStats}</span>
         </div>
       </div>
       {show && (
         <div className='px-4 py-4 sm:p-6'>
           <div className='flex flex-col space-y-2 w-1/4'>
             {Object.values(STATS_ENUM).map(stat => {
-              const canIncrement = stats[stat].canMod && bpAvailForSkills !== 0
+              const canIncrement = stats[stat].canMod && bpAvailForStats !== 0
               const canDecrement = stats[stat].val !== BASE_STATS[stat].val
               return (
                 <div key={stat} className='grid grid-cols-3 gap-x-4'>

@@ -8,12 +8,12 @@ import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { useBpForHeroicSpells, useBuildPoints } from './atoms/ranger-atom'
+import { useBpForHeroicSpells, useBuildPoints } from './atoms/build-points'
 import { DECREASE, INCREASE } from './rules/rules'
 
 export default function Spells() {
   const [ show, toggleShow ] = useState(false)
-  const [ _, updateBuildPoints ] = useAtom(useBuildPoints)
+  // const [ _, updateBuildPoints ] = useAtom(useBuildPoints)
   const [ availBuildPoints, updateHeroicSpellBuildPoints ] =
     useAtom(useBpForHeroicSpells)
   return (
@@ -44,7 +44,6 @@ export default function Spells() {
                 <Increment
                   onClick={() => {
                     updateHeroicSpellBuildPoints(INCREASE)
-                    updateBuildPoints(INCREASE)
                   }}
                   disabled={false}
                 />
@@ -53,7 +52,6 @@ export default function Spells() {
                 <Decrement
                   onClick={() => {
                     updateHeroicSpellBuildPoints(DECREASE)
-                    updateBuildPoints(DECREASE)
                   }}
                   disabled={false}
                 />

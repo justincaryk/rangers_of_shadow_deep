@@ -6,11 +6,11 @@ import { useState } from 'react'
 import { skills } from '../data'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { useBuildPoints } from './atoms/ranger-atom'
+import { useBpForSKills } from './atoms/build-points'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
-  const [ _, updateBuildPoints ] = useAtom(useBuildPoints)
+  const [ _, updateBuildPoints ] = useAtom(useBpForSKills)
 
   return (
     <div>
