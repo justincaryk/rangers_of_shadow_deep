@@ -4,7 +4,7 @@ import classnames from 'classnames'
 interface Props {
   collapsible?: boolean
   isExpanded?: boolean
-  header: React.ReactNode | string
+  header: React.ReactNode | string | null
   main: React.ReactNode | string | null
 }
 
@@ -16,7 +16,14 @@ export default function Card({
 }: Props) {
   return (
     <div className='block rounded-lg shadow-lg border'>
-      <div className='py-3 px-6 border-b border-collapse '>{header}</div>
+      <div
+        className={classnames({
+          'py-3 px-6 border-b border-collapse': true,
+          hidden: !header,
+        })}
+      >
+        {header}
+      </div>
       <div
         className={classnames({
           'p-6': true,

@@ -10,9 +10,9 @@ export default function Decrement({ onClick, disabled }: Props) {
     <div
       onClick={onClick}
       className={classnames({
-        'border rounded': true,
-        'text-gray-400 border-gray-400': disabled,
-        'text-red-400 border-red-400': !disabled,
+        'border rounded text-white': true,
+        'bg-slate-300': disabled,
+        'bg-dirty-orange': !disabled,
       })}
     >
       <MinusIcon />

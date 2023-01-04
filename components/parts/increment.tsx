@@ -1,4 +1,4 @@
-import { PlusIcon } from '@heroicons/react/24/outline'
+import { PlusIcon } from '@heroicons/react/24/solid'
 import classNames from 'classnames'
 
 interface Props {
@@ -10,9 +10,9 @@ export default function Increment({ onClick, disabled }: Props) {
     <div
       onClick={onClick}
       className={classNames({
-        'border rounded': true,
-        'border-gray-400 text-gray-400': disabled,
-        'border-blue-400 text-blue-400': !disabled,
+        'border rounded text-white': true,
+        'bg-slate-300': disabled,
+        'bg-blue-400': !disabled,
       })}
     >
       <PlusIcon />

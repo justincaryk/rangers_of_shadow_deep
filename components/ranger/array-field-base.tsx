@@ -100,7 +100,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                   <div className='font-semibold capitalize'>{item.name}</div>
                   <SmallButton
                     onClick={() => handleItemClicked(item)}
-                    classNames={
+                    className={
                       Array.isArray(currentField) &&
                       currentField.indexOf(item.name) > -1
                         ? 'bg-gray-400'
@@ -135,7 +135,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                     <div className='font-semibold capitalize'>{item.name}</div>
                     <SmallButton
                       onClick={() => handleItemClicked(item)}
-                      classNames={
+                      className={
                         currentField.indexOf(item.name) > -1
                           ? 'bg-gray-400'
                           : ''
