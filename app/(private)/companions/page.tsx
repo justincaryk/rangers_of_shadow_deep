@@ -3,15 +3,15 @@
 import { useMemo, useState } from 'react'
 
 import Card from '../../../components/parts/card'
+import Dropdown from '../../../components/parts/dropdown'
+import CompanionsList from '../../../components/companions/companions-list'
 
+import { BASE_RECRUITMENT_POINTS } from '../../../components/companions/rules/rules'
+import { PLAYER_COUNT } from '../../../components/types'
 import {
   getAdjustedRecruitmentPoints,
   objectKeys,
 } from '../../../components/utils'
-import { BASE_RECRUITMENT_POINTS } from '../../../components/companions/rules/rules'
-import { PLAYER_COUNT } from '../../../components/types'
-
-import CompanionsList from '../../../components/companions/companions-list'
 
 export default function Companions() {
   const [ players, setPlayers ] = useState<PLAYER_COUNT>(PLAYER_COUNT.ONE)
@@ -35,29 +35,25 @@ export default function Companions() {
     setPlayers(PLAYER_COUNT[x])
   }
   return (
-    <div>
+    <div className='space-y-4'>
       <Card
-        className='hover:bg-yellow-600/60'
         header={null}
         main={
-          <div>
-            <header className='font-bold uppercase'>
+          <div className='space-y-4'>
+            <div className='font-bold uppercase'>
               Recruitment Points: {points}
-            </header>
-            <div>
-              <select
+            </div>
+            <div className='flex flex-row items-center gap-x-4 w-full'>
+              <div className='font-bold uppercase whitespace-nowrap'>Number of Players:</div>
+              <Dropdown
+              className='w-32'
+                options={options}
                 onChange={e =>
                   handlePlayerChange(
                     e.currentTarget.value as keyof typeof PLAYER_COUNT
                   )
                 }
-              >
-                {options.map(x => (
-                  <option key={x.value} value={x.value}>
-                    {x.text}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
           </div>
         }

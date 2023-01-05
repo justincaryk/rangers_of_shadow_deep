@@ -19,7 +19,7 @@ export default function Card({
   return (
     <div
       className={classnames({
-        'block rounded-lg bg-slate-500/10 shadow-lg border': true,
+        'block rounded-lg bg-slate-500/30 shadow-lg': true,
         [className ?? '']: className
       })}
     >

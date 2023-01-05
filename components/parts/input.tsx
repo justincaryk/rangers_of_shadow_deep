@@ -5,7 +5,7 @@ interface Props extends InputHTMLAttributes<any> {
   className?: string
 }
 
-const baseClassesList = [
+export const baseClassesList = [
   'block',
   'w-full',
   'px-3',
