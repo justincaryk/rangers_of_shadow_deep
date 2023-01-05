@@ -7,10 +7,11 @@ export default function AuthLayout({
 }) {
   return (
     <section className='relative h-screen'>
-      <PublicNavigation />
-      <div className='bg-hero-2 bg-no-repeat bg-contain h-full'>
-        <div className='flex justify-end px-20'>{children}</div>
+      <div className='fixed top-0 w-full'>
+        <PublicNavigation />
       </div>
+      <div className='bg-hero-2 h-full w-full bg-no-repeat bg-contain bg-left fixed right-0 top-24 -z-10' />
+      <div className='px-24 mt-28 h-full w-1/2 fixed right-0'>{children}</div>
     </section>
   )
 }

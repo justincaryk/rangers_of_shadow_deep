@@ -15,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body>
+      <body className='bg-amber-600/20'>
         <Suspense fallback={<Loading />}>
           <Providers>{children}</Providers>
         </Suspense>

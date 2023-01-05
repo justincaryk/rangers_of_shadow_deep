@@ -1,10 +1,16 @@
 'use client'
 
-import { getAdjustedRecruitmentPoints } from '../../../components/utils'
 import { useMemo, useState } from 'react'
+
+import Card from '../../../components/parts/card'
+
+import {
+  getAdjustedRecruitmentPoints,
+  objectKeys,
+} from '../../../components/utils'
 import { BASE_RECRUITMENT_POINTS } from '../../../components/companions/rules/rules'
 import { PLAYER_COUNT } from '../../../components/types'
-import { objectKeys } from '../../../components/utils'
+
 import CompanionsList from '../../../components/companions/companions-list'
 
 export default function Companions() {
@@ -30,22 +36,33 @@ export default function Companions() {
   }
   return (
     <div>
-      <div>{points}</div>
-      <div>
-        <select
-          onChange={e =>
-            handlePlayerChange(
-              e.currentTarget.value as keyof typeof PLAYER_COUNT
-            )
-          }
-        >
-          {options.map(x => (
-            <option key={x.value} value={x.value}>
-              {x.text}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Card
+        className='hover:bg-yellow-600/60'
+        header={null}
+        main={
+          <div>
+            <header className='font-bold uppercase'>
+              Recruitment Points: {points}
+            </header>
+            <div>
+              <select
+                onChange={e =>
+                  handlePlayerChange(
+                    e.currentTarget.value as keyof typeof PLAYER_COUNT
+                  )
+                }
+              >
+                {options.map(x => (
+                  <option key={x.value} value={x.value}>
+                    {x.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        }
+      />
+
       <CompanionsList />
     </div>
   )

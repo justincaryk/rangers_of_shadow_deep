@@ -20,7 +20,7 @@ const privateLinks = [
 export default function PrivateNavigation() {
   return (
     <div className='w-full bg-stone px-6 py-2 relative'>
-      <Popover className='relative '>
+      <Popover className='relative'>
         <div className=''>
           <div className='flex items-center justify-between md:justify-start md:space-x-10'>
             <div className='flex justify-start lg:w-0 lg:flex-1'>
@@ -43,11 +43,7 @@ export default function PrivateNavigation() {
             </div>
             <Popover.Group as='nav' className='hidden space-x-10 md:flex'>
               {privateLinks.map(x => (
-                <Link
-                  href={x.link}
-                  key={x.text}
-                  className={NAV_TEXT_STYLE}
-                >
+                <Link href={x.link} key={x.text} className={NAV_TEXT_STYLE}>
                   {x.text}
                 </Link>
               ))}

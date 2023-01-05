@@ -6,6 +6,7 @@ interface Props {
   isExpanded?: boolean
   header: React.ReactNode | string | null
   main: React.ReactNode | string | null
+  className?: string
 }
 
 export default function Card({
@@ -13,9 +14,15 @@ export default function Card({
   isExpanded,
   header,
   main,
+  className,
 }: Props) {
   return (
-    <div className='block rounded-lg shadow-lg border'>
+    <div
+      className={classnames({
+        'block rounded-lg bg-slate-500/10 shadow-lg border': true,
+        [className ?? '']: className
+      })}
+    >
       <div
         className={classnames({
           'py-3 px-6 border-b border-collapse': true,
