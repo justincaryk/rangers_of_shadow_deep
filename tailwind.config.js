@@ -42,6 +42,9 @@ module.exports = {
       backgroundImage: {
         'hero-1': "url('/images/ranger-bg-1.png')",
         'hero-2': "url('/images/ranger-bg-2.png')",
+        'hero-3': "url('/images/companions-bg-1.png')",
+        'red-left': "url('/images/red-border-left.png')",
+        'red-right': "url('/images/red-border-right.png')",
       },
     },
   },

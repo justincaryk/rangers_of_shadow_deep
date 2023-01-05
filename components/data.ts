@@ -1,3 +1,5 @@
+import { STATS_ENUM } from './types'
+
 export type HeroicAction = {
   name: string
   cost: number
@@ -113,7 +115,7 @@ export const heroicActions: HeroicAction[] = [
   {
     name: 'steady aim',
     cost: 1,
-    desc: 'The hero may add +5 Shoot for one Shooting Roll. This must be declared before the roll is made.',
+    desc: 'The hero may add +5 shoot: for one shoot:ing Roll. This must be declared before the roll is made.',
   },
 ]
 
@@ -170,7 +172,7 @@ export const spells: Spell[] = [
     cost: 1,
   },
   {
-    name: 'armour',
+    name: 'armor',
     desc: 'The target of this spell receives +2 Armour for the rest of the scenario. A figure can only receive the benefits of one Armour spell at one time.',
     cost: 1,
   },
@@ -276,7 +278,7 @@ export const spells: Spell[] = [
   },
   {
     name: 'weakness',
-    desc: 'The target of this spell must make an immediate Will Roll (TN18). If it fails, it suffers -1 Fight, -1 Shoot, and -1 Armour for the rest of the scenario.',
+    desc: 'The target of this spell must make an immediate Will Roll (TN18). If it fails, it suffers -1 Fight, -1 shoot:, and -1 Armour for the rest of the scenario.',
     cost: 1,
   },
 ]
@@ -299,7 +301,7 @@ export const skills: Skill[] = [
     desc: 'Knowledge of myth, legend, and ancient history, including all that is known about the Shadow Deep.',
   },
   {
-    name: 'armoury',
+    name: 'armory',
     cost: 1,
     desc: 'The study of weaponry, including how to make and repair weapons, how to improvise weapons in the field, and how to identify magic weapons. If a ranger has an Armoury Skill of +4 or more, he is always treated as armed with a dagger, even if unarmed.',
   },
@@ -362,5 +364,406 @@ export const skills: Skill[] = [
     name: 'perception',
     cost: 1,
     desc: "The general awareness of one's surroundings, including noticing small, but important details.",
+  },
+]
+
+export type Companion = {
+  name: string
+  cost: number
+  desc: string
+  subtype: string
+  stats: {
+    [STATS_ENUM.armor]: number
+    [STATS_ENUM.fight]: number
+    [STATS_ENUM.health]: number
+    [STATS_ENUM.move]: number
+    [STATS_ENUM.shoot]: number
+    [STATS_ENUM.will]: number
+    [STATS_ENUM.notes]?: string
+  }
+}
+
+export const companions: Companion[] = [
+  {
+    stats: {
+      move: 6,
+      fight: 2,
+      shoot: 0,
+      armor: 10,
+      will: 2,
+      health: 10,
+      notes: 'Hand Weapon, Ancient Lore +5, Read Runes +5',
+    },
+    name: 'arcanist',
+    desc: 'Arcanists are students of ancient lore and languages. Although they are not the best fighters, their knowledge of myths and legends and their ability to translate ancient writings can often prove vital on missions in the Shadow Deep.',
+    subtype: 'arcanist',
+    cost: 15,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 2,
+      shoot: 2,
+      armor: 11,
+      will: 1,
+      health: 10,
+      notes: 'Bow OR Crossbow, Dagger, Light Armour, Quiver',
+    },
+    name: 'archer',
+    desc: 'Hand-to-hand combat is always a risky proposition – better to shoot down evil creatures before they get anywhere near you. A ranger can choose an archer armed with either a bow or a crossbow.',
+    subtype: 'archer',
+    cost: 20,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 4,
+      shoot: 0,
+      armor: 11,
+      will: 3,
+      health: 14,
+      notes: 'Hand Weapon, Shield, Strength +5',
+    },
+    name: 'barbarian',
+    desc: 'Born and bred beyond the bounds of civilized regions, Barbarians are fearsome warriors who rely on natural strength and toughness instead of armour to win their battles.',
+    subtype: 'barbarian',
+    cost: 35,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 0,
+      shoot: 0,
+      armor: 10,
+      will: 3,
+      health: 12,
+      notes: 'Staff OR Hand Weapon, 2 Spells, 3rd Spell (+10RP)',
+    },
+    name: 'conjuror',
+    desc: 'While most wizards lock themselves away in libraries, conjurors like to put their magic abilities to practical use. Before each scenario, the player may select two spells for the conjuror (or three spells for an extra cost of +10RP). The conjuror casts spells using the same rules as rangers. A ranger can choose a conjuror armed with either a staff or a hand weapon.',
+    subtype: 'conjuror',
+    cost: 20,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 3,
+      shoot: 0,
+      armor: 11,
+      will: 2,
+      health: 12,
+      notes: 'Two-Handed Weapon, Light Armour',
+    },
+    name: 'guardsman',
+    desc: 'One of the soldiers of the kingdom, trained to fight with larger two-handed weapons, such as halberds, battle axes, and two-handed swords.',
+    subtype: 'guardsman',
+    cost: 20,
+  },
+  {
+    stats: {
+      move: 8,
+      fight: 0,
+      shoot: 0,
+      armor: 10,
+      will: -2,
+      health: 6,
+      notes: 'Animal, Cannot Carry Treasure or Items, Limited Skill Rolls',
+    },
+    name: 'hound',
+    desc: "By far the most common animal companion is the hound. These dogs are truly man's best friend. Faithful to the last, they will gladly lay their lives down for their masters. The only Skill Rolls that hounds can make are Acrobatics, Climb, Perception, Stealth, Swim and Track. There are three different varieties: regular hounds, warhounds, and bloodhounds. The bloodhound has Tracking +5, and whenever a ranger makes a Tracking Roll with his hound within 2” he receives a +2 bonus to the roll (this includes rolls made before the start of a scenario).",
+    subtype: 'animal',
+    cost: 5,
+  },
+  {
+    stats: {
+      move: 8,
+      fight: 1,
+      shoot: 0,
+      armor: 10,
+      will: -2,
+      health: 8,
+      notes: 'Animal, Cannot Carry Treasure or Items, Limited Skill Rolls',
+    },
+    name: 'warhound',
+    desc: "By far the most common animal companion is the hound. These dogs are truly man's best friend. Faithful to the last, they will gladly lay their lives down for their masters. The only Skill Rolls that hounds can make are Acrobatics, Climb, Perception, Stealth, Swim and Track. There are three different varieties: regular hounds, warhounds, and bloodhounds. The bloodhound has Tracking +5, and whenever a ranger makes a Tracking Roll with his hound within 2” he receives a +2 bonus to the roll (this includes rolls made before the start of a scenario).",
+    subtype: 'animal',
+    cost: 10,
+  },
+  {
+    stats: {
+      move: 8,
+      fight: 0,
+      shoot: 0,
+      armor: 10,
+      will: -2,
+      health: 6,
+      notes:
+        'Animal, Cannot Carry Treasure or Items, Limited Skill Rolls, Tracking +5, Ranger Tracking Bonus',
+    },
+    name: 'bloodhound',
+    desc: "By far the most common animal companion is the hound. These dogs are truly man's best friend. Faithful to the last, they will gladly lay their lives down for their masters. The only Skill Rolls that hounds can make are Acrobatics, Climb, Perception, Stealth, Swim and Track. There are three different varieties: regular hounds, warhounds, and bloodhounds. The bloodhound has Tracking +5, and whenever a ranger makes a Tracking Roll with his hound within 2” he receives a +2 bonus to the roll (this includes rolls made before the start of a scenario).",
+    subtype: 'animal',
+    cost: 10,
+  },
+  {
+    stats: {
+      move: 5,
+      fight: 4,
+      shoot: 0,
+      armor: 13,
+      will: 2,
+      health: 12,
+      notes: 'Hand Weapon, Shield, Heavy Armour, Strength +4',
+    },
+    name: 'knight',
+    desc: 'The elite fighting men of the kingdom, knights are heavily armoured and highly skilled in melee combat.',
+    subtype: 'knight',
+    cost: 35,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 3,
+      shoot: 0,
+      armor: 12,
+      will: 2,
+      health: 12,
+      notes: 'Hand Weapon, Shield, Light Armour',
+    },
+    name: 'man-at-arms',
+    desc: 'The basic soldier of the kingdom, the man-at-arms is trained and equipped for fighting the enemy at close quarters.',
+    subtype: 'man-at-arms',
+    cost: 20,
+  },
+  {
+    stats: {
+      move: 9,
+      fight: 0,
+      shoot: 0,
+      armor: 14,
+      will: 3,
+      health: 1,
+      notes:
+        'Animal, Cannot Carry Treasure or Items, Limited Skill Rolls, Perception +4',
+    },
+    name: 'raptor',
+    desc: 'Some rangers bring trained hawks, falcons, or other birds of prey with them on their missions. Although these animals are small and fragile, their ability to fly allows them to ignore all movement penalties for terrain. Also, they are sharp-eyed creatures often able to see something a human might miss. All raptors have the same Stats, and the player is free to choose the actual type of bird that travels with his ranger. The only Skill Rolls a raptor may make are Acrobatics, Perception, and Stealth. Raptors automatically pass any Climb or Swim Rolls they might be required to make.',
+    subtype: 'animal',
+    cost: 10,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 2,
+      shoot: 0,
+      armor: 10,
+      will: 0,
+      health: 10,
+      notes: 'Hand Weapon',
+    },
+    name: 'recruit',
+    desc: 'Recruits are the newest members of the Rangers. They are generally young, unskilled, and sometimes as much trouble as they are worth. Sometimes, however, they are all that is available.',
+    subtype: 'recruit',
+    cost: 10,
+  },
+  {
+    stats: {
+      move: 7,
+      fight: 1,
+      shoot: 1,
+      armor: 10,
+      will: 1,
+      health: 10,
+      notes:
+        'Dagger, Throwing Knife, Climb +2, Perception +2, Pick Lock +5, Traps +5, Stealth +5',
+    },
+    name: 'rogue',
+    desc: 'Rogues aren’t the best fighters, but they are highly skilled individuals, who can be invaluable if you need a lock picked or a trap disarmed.',
+    subtype: 'rogue',
+    cost: 20,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 4,
+      shoot: 0,
+      armor: 10,
+      will: 3,
+      health: 14,
+      notes: 'Two-Handed Weapon, Strength +5',
+    },
+    name: 'savage',
+    desc: 'Like barbarians, savages are ferocious fighters who like to wade into the thick of a battle with brutal two-handed weapons.',
+    subtype: 'savage',
+    cost: 35,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 4,
+      shoot: 0,
+      armor: 11,
+      will: 2,
+      health: 12,
+      notes: 'Hand Weapon, Dagger, Light Armour',
+    },
+    name: 'swordsman',
+    desc: 'Swordsmen are highly trained in the art of wielding a blade and have learned to defend themselves without recourse to heavy armour or shields. Generally, swordsmen come from the ranks of the nobility, where they received instruction from the best teachers, but have rarely had to use their skills in battle. With the appearance of the Shadow Deep, however, the kingdom needs all its fighting men to come to its defence.',
+    subtype: 'swordsman',
+    cost: 25,
+  },
+  {
+    stats: {
+      move: 5,
+      fight: 4,
+      shoot: 0,
+      armor: 12,
+      will: 2,
+      health: 12,
+      notes: 'Two-Handed Weapon, Heavy Armour, Strength +4',
+    },
+    name: 'templar',
+    desc: 'A subclass of knights that have trained in fighting with two-handed weapons. They are usually called upon to fight larger creatures such as trolls and ogres.',
+    subtype: 'templar',
+    cost: 35,
+  },
+  {
+    stats: {
+      move: 7,
+      fight: 2,
+      shoot: 2,
+      armor: 11,
+      will: 2,
+      health: 12,
+      notes: 'Staff, Bow, Quiver, Light Armour, Tracking +5',
+    },
+    name: 'tracker',
+    desc: 'Recruited from the countryside in times of need, these specialist huntsmen are not warriors by trade, but they are skilled with a bow and useful for staying on the trail of the agents of evil.',
+    subtype: 'tracker',
+    cost: 30,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 4,
+      shoot: 0,
+      armor: 12,
+      will: 0,
+      health: 14,
+      notes: 'Animal, Strong (+2 Damage), Strength +5',
+    },
+    name: 'bear',
+    desc: 'The Forest of Nar contains a large population of small, black bears, but bears of any other type are virtually unknown in Alladore. There are a few trained bears in Alladore.',
+    subtype: 'animal',
+    cost: 25,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 2,
+      shoot: 0,
+      armor: 12,
+      will: 2,
+      health: 8,
+      notes: 'Animal, Tusks (+2F when charging), Strength +3',
+    },
+    name: 'boar',
+    desc: 'These bad-tempered creatures can also be found in the Forest of Nar. They are often hunted, but never trained or domesticated. Boars are especially dangerous when they charge. If they move into combat with a figure and attack it as part of the same activation, they get +2 Fight for that attack only.',
+    subtype: 'animal',
+    cost: 15,
+  },
+  {
+    stats: {
+      move: 4,
+      fight: -1,
+      shoot: 0,
+      armor: 14,
+      will: 3,
+      health: 1,
+      notes:
+        'Animal, Can Be Carried, Reduced Support, Maximum Damage (3), Choice of Stealth +6 or Amphibious',
+    },
+    name: 'ferret (or otter)',
+    desc: "Alladore possess a huge number of small mammals such as ferrets, weasels, otters, beavers, etc. most of which can be trained. While these little creatures aren't that much help in a fight, they are sneaky and can often find other ways to be useful.",
+    subtype: 'animal',
+    cost: 3,
+  },
+  {
+    stats: {
+      move: 8,
+      fight: 3,
+      shoot: 0,
+      armor: 10,
+      will: 2,
+      health: 10,
+      notes: 'Animal, Acrobatics +3, Climb +5, Stealth +3, Track +3',
+    },
+    name: 'lion',
+    desc: "Alladore has some mountain lions that live in the Northern and Eastern parts of the country. They are occasionally captured for zoos or circuses, but can never be truly ‘trained'.",
+    subtype: 'animal',
+    cost: 20,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 0,
+      shoot: 0,
+      armor: 8,
+      will: 4,
+      health: 4,
+      notes:
+        'Animal, Expert Climber, Maximum Damage (5), Acrobatics +6, Climb +10',
+    },
+    name: 'monkey',
+    desc: 'There are no monkey species native to Alladore, but they are occasionally brought in by foreign traders and sold as pets or performers. Monkeys are expert climbers – they suffer no movement penalty when climbing.',
+    subtype: 'animal',
+    cost: 5,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: -2,
+      shoot: 0,
+      armor: 15,
+      will: 4,
+      health: 1,
+      notes:
+        'Animal, Flying, Beautiful Song, Can Be Carried, Flying, Reduced Support, Maximum Damage (1)',
+    },
+    name: 'songbird',
+    desc: 'These small, often colourful, birds are almost worthless as fighters, but their sweet songs can be a light in the darkness and bring hope where it is most needed. Any hero that is within 2” of a songbird receives +1 on all Will Rolls.',
+    subtype: 'animal',
+    cost: 2,
+  },
+  {
+    stats: {
+      move: 4,
+      fight: 0,
+      shoot: 0,
+      armor: 14,
+      will: 2,
+      health: 1,
+      notes:
+        'Animal, Can Be Carried, Reduced Support, Maximum Damage (5), Choose 2: Amphibious, Nimble, Poison',
+    },
+    name: 'snake',
+    desc: 'There are numerous varieties of snakes in Alladore, and while they can never be trained as such, skilled handlers know how to encourage them to get the results they want.',
+    subtype: 'animal',
+    cost: 3,
+  },
+  {
+    stats: {
+      move: 6,
+      fight: 4,
+      shoot: 0,
+      armor: 10,
+      will: 1,
+      health: 14,
+      notes: 'Animal, Strong (+2 Damage), Acrobatics +2, Stealth +3, Swim +5',
+    },
+    name: 'tiger',
+    desc: 'These gigantic cats are unknown in Alladore, even in legend.',
+    subtype: 'animal',
+    cost: 25,
   },
 ]

@@ -19,10 +19,10 @@ const privateLinks = [
 ]
 export default function PrivateNavigation() {
   return (
-    <div className='h-38 w-full bg-stone relative'>
+    <div className='w-full bg-stone px-6 py-2 relative'>
       <Popover className='relative '>
-        <div className='mx-auto max-w-7xl px-4 sm:px-6'>
-          <div className='flex items-center justify-between py-6 md:justify-start md:space-x-10'>
+        <div className=''>
+          <div className='flex items-center justify-between md:justify-start md:space-x-10'>
             <div className='flex justify-start lg:w-0 lg:flex-1'>
               <span className='sr-only'>
                 Rangers of Shadow Deep Companion App

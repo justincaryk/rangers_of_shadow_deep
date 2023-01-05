@@ -1,4 +1,3 @@
-
 export enum RANGER_FIELD {
   PERSONAL = 'personal',
   STATS = 'stats',
@@ -15,6 +14,7 @@ export enum STATS_ENUM {
   armor = 'armor',
   will = 'will',
   health = 'health',
+  notes = 'notes',
 }
 
 export type Ranger = {
@@ -31,4 +31,11 @@ export type Ranger = {
   [RANGER_FIELD.HEROIC_ACTIONS]: string[]
   [RANGER_FIELD.SPELLS]: string[]
   [RANGER_FIELD.EQUIPMENT]: string[]
+}
+
+export enum PLAYER_COUNT {
+  ONE = 'one',
+  TWO = 'two',
+  THREE = 'three',
+  FOUR = 'four',
 }

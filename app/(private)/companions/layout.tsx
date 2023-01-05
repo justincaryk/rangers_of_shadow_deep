@@ -6,7 +6,8 @@ export default function RangerLayout({
   children: React.ReactNode
 }) {
   return (
-    <>
+    <div>
+      <div className='bg-hero-3 h-full w-full bg-no-repeat bg-contain bg-top fixed right-0 top-24 -z-10' />
       <header>
         <div className='mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8'>
           <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
@@ -17,13 +18,8 @@ export default function RangerLayout({
       <main>
         <div className='mx-auto max-w-7xl py-6 sm:px-6 lg:px-8'>
           {children}
-          {/* Replace with your content */}
-          {/* <div className='px-4 py-6 sm:px-0'>
-            <div className='h-96 rounded-lg border-4 border-dashed border-gray-200' />
-          </div> */}
-          {/* /End replace */}
         </div>
       </main>
-    </>
+    </div>
   )
 }
