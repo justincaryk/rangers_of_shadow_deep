@@ -24,6 +24,10 @@ export default function Stats() {
   const [ ranger, updateRanger ] = useAtom(useRanger)
 
   const checkCanIncrease = (stat: STATS_ENUM) => {
+    if (stat === STATS_ENUM.notes) {
+      return false
+    }
+
     // make sure we have build points available
     if (trueAvailBp === 0) {
       return false
@@ -43,6 +47,10 @@ export default function Stats() {
   }
 
   const checkCanDecrease = (stat: STATS_ENUM) => {
+    if (stat === STATS_ENUM.notes) {
+      return false
+    }
+    
     if (ranger[RANGER_FIELD.STATS][stat] > BASE_STATS[stat]) {
       return true
     }
@@ -91,7 +99,9 @@ export default function Stats() {
       {show && (
         <div className='px-4 py-4 sm:p-6'>
           <div className='flex flex-col space-y-2 w-1/4'>
-            {Object.values(STATS_ENUM).map(stat => {
+            {Object.values(STATS_ENUM)
+              .filter(stat => stat != STATS_ENUM.notes)
+              .map(stat => {
               const canIncrement = checkCanIncrease(stat)
               const canDecrement = checkCanDecrease(stat)
               return (

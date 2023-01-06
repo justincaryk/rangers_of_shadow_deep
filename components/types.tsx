@@ -1,3 +1,5 @@
+import { ST } from 'next/dist/shared/lib/utils'
+
 export enum RANGER_FIELD {
   PERSONAL = 'personal',
   STATS = 'stats',
@@ -26,6 +28,7 @@ export type Ranger = {
     [STATS_ENUM.armor]: number
     [STATS_ENUM.will]: number
     [STATS_ENUM.health]: number
+    [STATS_ENUM.notes]: never
   }
   [RANGER_FIELD.SKILLS]: {}
   [RANGER_FIELD.HEROIC_ACTIONS]: string[]

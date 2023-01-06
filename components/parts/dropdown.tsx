@@ -1,41 +1,34 @@
 import { SelectHTMLAttributes, OptionHTMLAttributes } from 'react'
-import { baseClassesList } from './input'
+import classnames from 'classnames'
 
 type Option = OptionHTMLAttributes<any> & {
   text: string | number
 }
 
 interface Props extends SelectHTMLAttributes<any> {
-  label?: string
   className?: string
   options: Option[]
 }
 
-export default function Dropdown({
-  label,
-  className,
-  options,
-  ...props
-}: Props) {
-  const fullClasses = `${baseClassesList.join(' ')} ${className}`
+export default function Dropdown({ className, options, ...rest }: Props) {
+  const baseClasses = {
+    'form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none':
+      true,
+  }
 
   return (
-    <>
-      {label && (
-        <label
-          htmlFor={props.name}
-          className='form-label inline-block mb-2 text-gray-700'
-        >
-          {label}
-        </label>
-      )}
-      <select className={fullClasses} {...props}>
-        {options.map(opt => (
-          <option key={opt.text} {...opt}>
-            {opt.text}
-          </option>
-        ))}
-      </select>
-    </>
+    <select
+      className={classnames({
+        ...baseClasses,
+        [className ?? '']: className ?? false,
+      })}
+      {...rest}
+    >
+      {options.map(opt => (
+        <option key={opt.text} {...opt}>
+          {opt.text}
+        </option>
+      ))}
+    </select>
   )
 }

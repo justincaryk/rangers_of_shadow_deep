@@ -1,41 +1,24 @@
 import { InputHTMLAttributes } from 'react'
+import classnames from 'classnames'
 
 interface Props extends InputHTMLAttributes<any> {
-  label?: string
   className?: string
 }
 
-export const baseClassesList = [
-  'block',
-  'w-full',
-  'px-3',
-  'py-1.5',
-  'text-base',
-  'font-normal',
-  'text-gray-700',
-  'bg-white bg-clip-padding',
-  'border border-solid',
-  'rounded',
-  'transition',
-  'ease-in-out',
-  'm-0',
-  'focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none',
-]
-
-export default function Input({ label, className, ...props }: Props) {
-  const fullClasses = `${baseClassesList.join(' ')} ${className}`
+export default function Input({ className, ...props }: Props) {
+  const baseClasses = {
+    'form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none':
+      true,
+  }
 
   return (
-    <div>
-      {label && (
-        <label
-          htmlFor={props.name}
-          className='form-label inline-block mb-2 text-gray-700'
-        >
-          {label}
-        </label>
-      )}
-      <input type='text' className={fullClasses} {...props} />
-    </div>
+    <input
+      type='text'
+      className={classnames({
+        ...baseClasses,
+        [className ?? '']: className ?? '',
+      })}
+      {...props}
+    />
   )
 }

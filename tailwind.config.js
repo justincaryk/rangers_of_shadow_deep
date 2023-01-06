@@ -5,8 +5,11 @@ module.exports = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './graphql/**/*.{js,ts,jsx,tsx}',
+    './node_modules/tw-elements/dist/js/**/*.js',
   ],
-  darkMode: false, // or 'media' or 'class'
+  plugins: [
+    require('tw-elements/dist/plugin')
+  ],
   theme: {
     extend: {
       maxWidth: {
@@ -48,5 +51,4 @@ module.exports = {
       },
     },
   },
-  plugins: [],
 }
