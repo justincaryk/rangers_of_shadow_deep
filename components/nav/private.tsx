@@ -6,14 +6,15 @@ import { Bars3Icon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Image from 'next/image'
 import { NAV_TEXT_STYLE } from '../utils'
+import { PRIVATE_LINK_ROUTES } from './routes'
 
-const privateLinks = [
+export const PRIVATE_LINKS = [
   {
-    link: '/ranger',
+    link: PRIVATE_LINK_ROUTES.RANGER,
     text: 'Ranger',
   },
   {
-    link: '/companions',
+    link: PRIVATE_LINK_ROUTES.COMPANIONS,
     text: 'Companions',
   },
 ]
@@ -42,7 +43,7 @@ export default function PrivateNavigation() {
               </Popover.Button>
             </div>
             <Popover.Group as='nav' className='hidden space-x-10 md:flex'>
-              {privateLinks.map(x => (
+              {PRIVATE_LINKS.map(x => (
                 <Link href={x.link} key={x.text} className={NAV_TEXT_STYLE}>
                   {x.text}
                 </Link>

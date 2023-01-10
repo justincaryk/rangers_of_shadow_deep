@@ -1,12 +1,9 @@
+'use client'
+
 import { Popover, Transition } from '@headlessui/react'
 import {
   Bars3Icon,
-  BookmarkSquareIcon,
-  CalendarIcon,
   ChevronDownIcon,
-  LifebuoyIcon,
-  PhoneIcon,
-  PlayIcon,
 } from '@heroicons/react/20/solid'
 import {
   ArrowPathIcon,

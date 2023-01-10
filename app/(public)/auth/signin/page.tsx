@@ -1,7 +1,5 @@
-'use client'
-
 import PageHeader from '../../../../components/page-header'
-import SigninForm from '../../../../components/auth/sigin-form'
+import SigninForm from '../../../../components/auth/signin-form'
 
 export default function Signin() {
   return (

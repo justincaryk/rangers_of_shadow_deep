@@ -1,4 +1,6 @@
+import { Suspense } from 'react'
 import PrivateNavigation from '../../components/nav/private'
+import Loading from '../loading'
 
 export default function AuthLayout({
   children,
@@ -12,7 +14,9 @@ export default function AuthLayout({
       <div className='fixed top-0 w-full'>
         <PrivateNavigation />
       </div>
-      <div className='px-24 mt-28 h-full w-full'>{children}</div>
+      <Suspense fallback={<Loading />}>
+        <div className='px-24 mt-28 h-full w-full'>{children}</div>
+      </Suspense>
     </section>
   )
 }

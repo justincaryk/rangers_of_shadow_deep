@@ -1,3 +1,5 @@
+'use client'
+
 import { useAtom } from 'jotai'
 import { useBuildPoints } from './ranger/atoms/build-points'
 import { PLAYER_COUNT } from './types'
@@ -32,4 +34,19 @@ export function getAdjustedRecruitmentPoints (players: PLAYER_COUNT, brp: number
 
 export function getMaxNumberOfCompanions (players: number) {
 
+}
+
+export const parseJwt = (token: string) => {
+  var base64Url = token.split('.')[1]
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  var jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      })
+      .join('')
+  )
+
+  return JSON.parse(jsonPayload)
 }

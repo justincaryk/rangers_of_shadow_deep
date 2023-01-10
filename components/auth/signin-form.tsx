@@ -1,8 +1,17 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
+
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
-import { AuthFormFields } from './types'
+import { AuthFormFields, AUTH_TOKEN } from './types'
+
+import { useSignin } from './use-signin-query'
+import { parseJwt } from '../utils'
+import { useAtom } from 'jotai'
+import { useCurrentUser, useSetCurrentUser } from './atoms/current-user'
+import { PRIVATE_LINK_ROUTES } from '../nav/routes'
 
 const SigninSchema = Yup.object().shape({
   username: Yup.string().required('Required'),
@@ -10,11 +19,50 @@ const SigninSchema = Yup.object().shape({
 })
 
 export default function SigninForm() {
-  const handleSubmit = (values: AuthFormFields) => {
-    console.log(values)
+  const router = useRouter()
+
+  const [ signinError, setSigninError ] = useState(false)
+  const { mutate: signin, data, status } = useSignin()
+
+  const [ _, setCurrentUser ] = useAtom(useSetCurrentUser)
+  const [ currentUser ] = useAtom(useCurrentUser)
+
+  // sign in success
+  useEffect(() => {
+    if (status === 'success') {
+      if (data.signin?.jwtToken && !currentUser?.userId) {
+        localStorage.setItem(AUTH_TOKEN, data.signin.jwtToken)
+        const parsed = parseJwt(data.signin.jwtToken)
+
+        setCurrentUser({
+          userId: parsed.user_id,
+          username: parsed.username,
+        })
+
+        router.push(PRIVATE_LINK_ROUTES.DASHBOARD)
+      }
+    }
+  }, [ router, status, data, currentUser, setCurrentUser ])
+
+  // failed
+  useEffect(() => {
+    if (status === 'success' && !data.signin?.jwtToken) {
+      setSigninError(true)
+      return
+    }
+  }, [ status, data, setSigninError ])
+
+  const handleSubmit = async (values: AuthFormFields) => {
+    await signin(values)
   }
+
   return (
     <div>
+      {signinError ? (
+        <div className='text-red-400 font-bold'>
+          Incorrect username or password
+        </div>
+      ) : null}
       <Formik
         initialValues={{
           username: '',
@@ -35,8 +83,7 @@ export default function SigninForm() {
               </label>
               <Field
                 name='username'
-                value=''
-                placeholder='bob_ross'
+                placeholder='Aragorn'
                 className='w-full border rounded text-xl p-2 text-center'
               />
             </div>
@@ -52,7 +99,6 @@ export default function SigninForm() {
               <Field
                 name='password'
                 type='password'
-                value=''
                 placeholder='Password'
                 className='w-full border rounded text-xl p-2 text-center'
               />

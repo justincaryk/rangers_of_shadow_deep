@@ -15,7 +15,7 @@ import { useCompanions } from '../../../components/companions/atoms/companions'
 
 import { PLAYER_COUNT } from '../../../components/types'
 import {
-  getAdjustedRecruitmentPoints,
+  // getAdjustedRecruitmentPoints,
   objectKeys,
 } from '../../../components/utils'
 

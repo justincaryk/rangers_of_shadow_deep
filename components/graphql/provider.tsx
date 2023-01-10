@@ -1,6 +1,6 @@
 'use client'
 
-import { PropsWithChildren, useMemo, useState } from 'react'
+import { PropsWithChildren, useState } from 'react'
 import { GraphQLClient } from 'graphql-request'
 import GraphQLClientContext from './context'
 

@@ -79,8 +79,9 @@ exports.up = knex =>
             IF NOT found THEN
                 INSERT INTO minion (user_name, PASSWORD)
                     values($1, crypt($2, gen_salt('bf')));
+                RETURN TRUE;
             END IF;
-            RETURN TRUE;
+            RETURN FALSE;
         END
         $$
         LANGUAGE plpgsql

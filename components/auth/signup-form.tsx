@@ -1,10 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { AuthFormFields } from './types'
 import { useSignup } from './use-signup-query'
+import { useRouter } from 'next/navigation'
+import { PUBLIC_LINK_ROUTES } from '../nav/routes'
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -15,7 +17,24 @@ const SignupSchema = Yup.object().shape({
 })
 
 export default function SignupForm() {
-  const { mutate: signup } = useSignup()
+  const [ signupError, setSignupError ] = useState<string | null>(null)
+  const { mutate: signup, status, data } = useSignup()
+
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === 'success') {
+      if (!data.signup?.boolean) {
+        setSignupError(
+          'There was an error signing you up. Try a different username.'
+        )
+        return;
+      }
+
+      router.push(PUBLIC_LINK_ROUTES.SIGN_IN)
+      return;
+    }
+  }, [ data, setSignupError, status, router ])
 
   const handleSubmit = async (data: AuthFormFields) => {
     await signup(data)
@@ -23,16 +42,15 @@ export default function SignupForm() {
 
   return (
     <div>
+      {signupError ? <div className='text-red-400 font-bold'>{signupError}</div> : null }
       <Formik
         initialValues={{
           username: '',
           password: '',
         }}
         validationSchema={SignupSchema}
-        onSubmit={values => {
-          console.log('values: ', values)
-          handleSubmit(values)
-        }}
+        onSubmit={handleSubmit}
+        setErrors={status === 'error'}
       >
         {({ errors, touched }) => (
           <Form className='space-y-4 relative pt-6'>

@@ -10,7 +10,7 @@ async function redirects() {
   return [
     {
       source: '/',
-      destination: '/ranger',
+      destination: '/auth/signin',
       permanent: true,
     },
   ]

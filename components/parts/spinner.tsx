@@ -1,6 +1,7 @@
 import classnames from 'classnames'
 
 export const Spinner = () => {
+  
   const baseStyles = {
     'spinner-grow inline-block w-4 h-4 bg-current rounded-full opacity-0': true,
   }

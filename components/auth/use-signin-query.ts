@@ -1,10 +1,10 @@
 import { GraphQLClient } from 'graphql-request'
-import { useSignupMutation } from '../../graphql/generated/graphql'
+import { useSigninMutation } from '../../graphql/generated/graphql'
 import useGraphQL from '../graphql/useGraphQL'
 
-export function useSignup() {
+export function useSignin() {
   const { graphQLClient } = useGraphQL() as unknown as {
     graphQLClient: GraphQLClient
   }
-  return useSignupMutation(graphQLClient)
+  return useSigninMutation(graphQLClient)
 }

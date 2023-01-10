@@ -1,17 +1,20 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { PUBLIC_LINK_ROUTES } from './routes'
 
+export const PUBLIC_LINKS = [
+  {
+    link: PUBLIC_LINK_ROUTES.SIGN_UP,
+    text: 'Signup',
+  },
+  {
+    link: PUBLIC_LINK_ROUTES.SIGN_IN,
+    text: 'Signin',
+  },
+]
 export default function PublicNavigation() {
-  const publicLinks = [
-    {
-      link: '/auth/signup',
-      text: 'Signup',
-    },
-    {
-      link: '/auth/signin',
-      text: 'Signin',
-    },
-  ]
+  
+  
 
   return (
     <div className='w-full bg-stone px-4 relative'>
@@ -26,7 +29,7 @@ export default function PublicNavigation() {
             alt=''
           />
         </div>
-        {publicLinks.map(x => (
+        {PUBLIC_LINKS.map(x => (
           <div key={x.text}>
             <Link href={x.link}>
               <button className='flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700'>

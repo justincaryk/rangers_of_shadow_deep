@@ -39,3 +39,5 @@ yarn.lock
 package.json.lock
 
 .vscode
+
+graphql/generated
