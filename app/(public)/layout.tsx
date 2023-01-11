@@ -1,4 +1,7 @@
+'use client'
+
 import { Suspense } from 'react'
+import { Toaster } from 'react-hot-toast'
 import PublicNavigation from '../../components/nav/public'
 import Loading from '../loading'
 
@@ -9,6 +12,7 @@ export default function AuthLayout({
 }) {
   return (
     <section className='relative h-screen'>
+      <Toaster />
       <div className='fixed top-0 w-full'>
         <PublicNavigation />
       </div>

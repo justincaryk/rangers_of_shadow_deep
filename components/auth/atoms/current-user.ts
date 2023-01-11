@@ -2,9 +2,10 @@
 
 import { atom } from 'jotai'
 
-interface CurrentUser {
+export interface CurrentUser {
   userId: string
   username: string
+  jwt: string
 }
 
 export const useCurrentUser = atom<CurrentUser | null>(null)

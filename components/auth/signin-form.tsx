@@ -37,6 +37,7 @@ export default function SigninForm() {
         setCurrentUser({
           userId: parsed.user_id,
           username: parsed.username,
+          jwt: data.signin?.jwtToken,
         })
 
         router.push(PRIVATE_LINK_ROUTES.DASHBOARD)

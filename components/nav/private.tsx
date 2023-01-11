@@ -6,7 +6,10 @@ import { Bars3Icon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Image from 'next/image'
 import { NAV_TEXT_STYLE } from '../utils'
-import { PRIVATE_LINK_ROUTES } from './routes'
+import { PRIVATE_LINK_ROUTES, PUBLIC_LINK_ROUTES } from './routes'
+import { useCurrentUser } from '../auth/atoms/current-user'
+import { useAtom } from 'jotai'
+import { AUTH_TOKEN } from '../auth/types'
 
 export const PRIVATE_LINKS = [
   {
@@ -19,6 +22,11 @@ export const PRIVATE_LINKS = [
   },
 ]
 export default function PrivateNavigation() {
+  const signout = () => {
+    localStorage.setItem(AUTH_TOKEN, '')
+    window.location.href = (PUBLIC_LINK_ROUTES.SIGN_IN)
+  }
+
   return (
     <div className='w-full bg-stone px-6 py-2 relative'>
       <Popover className='relative'>
@@ -48,6 +56,7 @@ export default function PrivateNavigation() {
                   {x.text}
                 </Link>
               ))}
+              <Link href='#' className={NAV_TEXT_STYLE} onClick={signout}>Signout</Link>
             </Popover.Group>
           </div>
         </div>

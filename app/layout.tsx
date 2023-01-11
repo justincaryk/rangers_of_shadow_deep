@@ -1,12 +1,8 @@
-'use client'
-
 import './globals.css'
 
-import { Toaster } from 'react-hot-toast'
-// import ErrorFallback from './error'
-// import { ErrorBoundary } from 'react-error-boundary'
-
+import { Suspense } from 'react'
 import Providers from './providers'
+import LoadingSkeleton from '../components/loading-skeleton'
 
 export default function RootLayout({
   children,
@@ -16,8 +12,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className='bg-amber-600/20'>
-        <Toaster />
-        <Providers>{children}</Providers>
+        <Suspense fallback={<LoadingSkeleton />}>
+          <Providers>{children}</Providers>
+        </Suspense>
       </body>
     </html>
   )
