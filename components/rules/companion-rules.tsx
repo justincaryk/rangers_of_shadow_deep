@@ -7,8 +7,3 @@ export const RP_BONUS_PER_BUILD_POINT = 10
 export const RP_BONUS_PER_LEADERSHIP_SP = 1
 // on add -> boost a skill by 3, but not one they already have
 export const INITIAL_RECRUIT_SKILL_BUMP = 3
-
-export const MAX_STARTING_ITEM_SLOTS = 5
-export const MAX_ITEM_SLOTS = 6
-export const MAX_ARMOR_SLOT = 1
-export const SHIELD_RESTRICT_TYPE = '2-hand'

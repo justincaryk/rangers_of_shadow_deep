@@ -12,7 +12,7 @@ import { RANGER_FIELD, BASE_STATS_ENUM } from '../types'
 import { useGetTrueAvailBp } from '../utils'
 import { useBpForStats } from '../ranger/atoms/build-points'
 import { useRanger } from '../ranger/atoms/ranger'
-import { BASE_STATS, DECREASE, INCREASE } from '../ranger/rules/rules'
+import { BASE_STATS, DECREASE, INCREASE } from '../rules/ranger-rules'
 
 export default function Stats() {
   const [ show, toggleShow ] = useState(false)
@@ -85,7 +85,8 @@ export default function Stats() {
         <MinorHeader
           content='stats'
           icon={<AdjustmentsHorizontalIcon />}
-          minorBuildPoints={trueAvailBp}
+          subtext='Available build points:'
+          subvalue={trueAvailBp}
         />
       </div>
       {show && (

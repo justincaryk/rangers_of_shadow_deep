@@ -14,7 +14,6 @@ export default function Personal() {
       <MinorHeader
         content='personal'
         icon={<IdentificationIcon className='text-emerald-400' />}
-        minorBuildPoints={null}
       />
       <div className='px-4 py-5 sm:p-6'>
         <Input placeholder='Ranger Name' className='w-1/4 block' />

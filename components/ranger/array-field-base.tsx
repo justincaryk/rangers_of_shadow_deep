@@ -10,9 +10,9 @@ import ShowHide from '../parts/show-hide'
 import SmallButton from '../parts/small-button'
 import { RANGER_FIELD } from '../types'
 import { useGetTrueAvailBp } from '../utils'
-import { useBpForHeroicSpells, useBuildPoints } from './atoms/build-points'
+import { useBpForHeroicSpells } from './atoms/build-points'
 import { useRanger } from './atoms/ranger'
-import { DECREASE, INCREASE } from './rules/rules'
+import { DECREASE, INCREASE } from '../rules/ranger-rules'
 
 const SectionIcon = (type: RANGER_FIELD) => {
   if (type === RANGER_FIELD.HEROIC_ACTIONS)
@@ -22,8 +22,8 @@ const SectionIcon = (type: RANGER_FIELD) => {
   return null
 }
 
-interface Props{
-  type: RANGER_FIELD
+interface Props {
+  type: RANGER_FIELD.HEROIC_ACTIONS | RANGER_FIELD.SPELLS
   data: HeroicAction[] | Spell[]
 }
 
@@ -87,7 +87,8 @@ export default function ArrayFieldBase({ type, data }: Props) {
         <MinorHeader
           content={headerContent}
           icon={SectionIcon(type)}
-          minorBuildPoints={trueAvailBp}
+          subtext={'Available build points:'}
+          subvalue={trueAvailBp}
         />
       </div>
       {show && (
@@ -101,16 +102,10 @@ export default function ArrayFieldBase({ type, data }: Props) {
                   <SmallButton
                     onClick={() => handleItemClicked(item)}
                     className={
-                      Array.isArray(currentField) &&
-                      currentField.indexOf(item.name) > -1
-                        ? 'bg-gray-400'
-                        : ''
+                      currentField.indexOf(item.name) > -1 ? 'bg-gray-400' : ''
                     }
                   >
-                    {Array.isArray(currentField) &&
-                    currentField.indexOf(item.name) > -1
-                      ? 'UNLEARN'
-                      : 'LEARN'}
+                    {currentField.indexOf(item.name) > -1 ? 'UNLEARN' : 'LEARN'}
                   </SmallButton>
                 </div>
               }
@@ -120,7 +115,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
         </div>
       )}
       {/* always show preview of selected heroic actions  */}
-      {!show && Array.isArray(currentField) && currentField.length > 0 && (
+      {!show && currentField.length > 0 && (
         <div className='space-y-4'>
           {currentField.map(name => {
             const item = data.find(item => item.name === name)

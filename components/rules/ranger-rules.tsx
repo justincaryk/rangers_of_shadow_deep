@@ -1,4 +1,4 @@
-import { BASE_STATS_ENUM } from '../../types'
+import { BASE_STATS_ENUM } from '../types'
 
 export const INCREASE = 1
 export const DECREASE = -1
@@ -17,3 +17,7 @@ export const BASE_STATS = {
   [BASE_STATS_ENUM.will]: 4,
   [BASE_STATS_ENUM.health]: 18,
 }
+
+export const MAX_STARTING_ITEM_SLOTS = 5
+export const MAX_ITEM_SLOTS = 6
+export const MAX_ARMOR_SLOT = 1

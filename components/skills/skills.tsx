@@ -26,7 +26,7 @@ import {
   INCREASE,
   MAX_BP_FOR_SKILLS,
   SKILL_POINTS_PER_BP,
-} from '../ranger/rules/rules'
+} from '../rules/ranger-rules'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
@@ -117,7 +117,8 @@ export default function Skills() {
         <MinorHeader
           content='skills'
           icon={<FireIcon className='text-orange-400' />}
-          minorBuildPoints={trueAvailBp}
+          subtext={'Available build points:'}
+          subvalue={trueAvailBp}
         />
       </div>
       <Card

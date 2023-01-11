@@ -41,8 +41,8 @@ export type Ranger = {
   [RANGER_FIELD.SKILLS]: {
       [key: Skill['name']]: number
   }
-  [RANGER_FIELD.HEROIC_ACTIONS]: HeroicAction[]
-  [RANGER_FIELD.SPELLS]: Spell[]
+  [RANGER_FIELD.HEROIC_ACTIONS]: HeroicAction['name'][]
+  [RANGER_FIELD.SPELLS]: Spell['name'][]
   [RANGER_FIELD.EQUIPMENT]: {
     weapons: string[]
     armor: string[]

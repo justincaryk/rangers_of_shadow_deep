@@ -5,7 +5,7 @@ import {
   MAX_BP_FOR_HEROIC_ACTIONS_AND_SPELLS,
   MAX_BP_FOR_SKILLS,
   MAX_BP_FOR_STATS,
-} from '../rules/rules'
+} from '../../rules/ranger-rules'
 
 export const useBuildPoints = atom(BASE_BUILD_POINTS)
 

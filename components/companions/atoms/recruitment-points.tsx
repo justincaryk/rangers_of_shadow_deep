@@ -8,7 +8,7 @@ import {
   RP_BONUS_PER_BUILD_POINT,
   RP_BONUS_PER_LEADERSHIP_SP,
   INITIAL_RECRUIT_SKILL_BUMP,
-} from '../rules/rules'
+} from '../../rules/companion-rules'
 
 export const useRecruitmentPoints = atomWithReset(BASE_RECRUITMENT_POINTS)
 
