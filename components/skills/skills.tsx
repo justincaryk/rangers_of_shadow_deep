@@ -18,15 +18,15 @@ import SmallButton from '../parts/small-button'
 import { RANGER_FIELD } from '../types'
 import { useGetTrueAvailBp } from '../utils'
 
-import { useBpForSkills } from './atoms/build-points'
-import { useRanger } from './atoms/ranger'
+import { useBpForSkills } from '../ranger/atoms/build-points'
+import { useRanger } from '../ranger/atoms/ranger'
 
 import {
   DECREASE,
   INCREASE,
   MAX_BP_FOR_SKILLS,
   SKILL_POINTS_PER_BP,
-} from './rules/rules'
+} from '../ranger/rules/rules'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)

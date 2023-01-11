@@ -7,7 +7,8 @@ import ShowHide from '../parts/show-hide'
 
 export default function Equipment() {
   const [ show, toggleShow ] = useState(true)
-
+  // TODO: add / remove custom equipment
+  // TODO: make starting equipment list to always include 1 free dagger or 1 free throwing knife
   return (
     <div>
       <div className='mt-2'>

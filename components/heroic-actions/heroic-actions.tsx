@@ -1,6 +1,6 @@
 import { heroicActions } from '../data'
 import { RANGER_FIELD } from '../types'
-import ArrayFieldBase from './array-field-base'
+import ArrayFieldBase from '../ranger/array-field-base'
 
 export default function HeroicActions() {
   return (

@@ -22,7 +22,7 @@ const SectionIcon = (type: RANGER_FIELD) => {
   return null
 }
 
-interface Props {
+interface Props{
   type: RANGER_FIELD
   data: HeroicAction[] | Spell[]
 }

@@ -1,11 +1,11 @@
 import classnames from 'classnames'
 
 import Personal from '../../../components/ranger/personal'
-import Stats from '../../../components/ranger/stats'
-import HeroicActions from '../../../components/ranger/heroic-actions'
-import Spells from '../../../components/ranger/spells'
-import Equipment from '../../../components/ranger/equipment'
-import Skills from '../../../components/ranger/skills'
+import Stats from '../../../components/stats/stats'
+import HeroicActions from '../../../components/heroic-actions/heroic-actions'
+import Spells from '../../../components/spells/spells'
+import Equipment from '../../../components/equipment/equipment'
+import Skills from '../../../components/skills/skills'
 
 
 export default function Ranger() {

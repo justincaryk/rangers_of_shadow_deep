@@ -8,11 +8,11 @@ import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { RANGER_FIELD, STATS_ENUM } from '../types'
+import { RANGER_FIELD, BASE_STATS_ENUM } from '../types'
 import { useGetTrueAvailBp } from '../utils'
-import { useBpForStats } from './atoms/build-points'
-import { useRanger } from './atoms/ranger'
-import { BASE_STATS, DECREASE, INCREASE } from './rules/rules'
+import { useBpForStats } from '../ranger/atoms/build-points'
+import { useRanger } from '../ranger/atoms/ranger'
+import { BASE_STATS, DECREASE, INCREASE } from '../ranger/rules/rules'
 
 export default function Stats() {
   const [ show, toggleShow ] = useState(false)
@@ -23,18 +23,14 @@ export default function Stats() {
 
   const [ ranger, updateRanger ] = useAtom(useRanger)
 
-  const checkCanIncrease = (stat: STATS_ENUM) => {
-    if (stat === STATS_ENUM.notes) {
-      return false
-    }
-
+  const checkCanIncrease = (stat: BASE_STATS_ENUM) => {
     // make sure we have build points available
     if (trueAvailBp === 0) {
       return false
     }
 
     // no armor upgrades
-    if (stat === STATS_ENUM.armor) {
+    if (stat === BASE_STATS_ENUM.armor) {
       return false
     }
 
@@ -46,11 +42,7 @@ export default function Stats() {
     return false
   }
 
-  const checkCanDecrease = (stat: STATS_ENUM) => {
-    if (stat === STATS_ENUM.notes) {
-      return false
-    }
-    
+  const checkCanDecrease = (stat: BASE_STATS_ENUM) => {
     if (ranger[RANGER_FIELD.STATS][stat] > BASE_STATS[stat]) {
       return true
     }
@@ -58,7 +50,7 @@ export default function Stats() {
     return false
   }
 
-  const updateStat = (stat: STATS_ENUM, modifier: number) => {
+  const updateStat = (stat: BASE_STATS_ENUM, modifier: number) => {
     if (modifier === INCREASE) {
       if (!checkCanIncrease(stat)) {
         return null
@@ -99,8 +91,7 @@ export default function Stats() {
       {show && (
         <div className='px-4 py-4 sm:p-6'>
           <div className='flex flex-col space-y-2 w-1/4'>
-            {Object.values(STATS_ENUM)
-              .filter(stat => stat != STATS_ENUM.notes)
+            {Object.values(BASE_STATS_ENUM)
               .map(stat => {
               const canIncrement = checkCanIncrease(stat)
               const canDecrement = checkCanDecrease(stat)
