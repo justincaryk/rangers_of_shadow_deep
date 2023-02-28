@@ -50,7 +50,7 @@ exports.up = knex =>
             id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
             PASSWORD text,
             user_name varchar(50) NOT NULL,
-            ROLE user_role DEFAULT 'minion',
+            user_role user_role DEFAULT 'minion',
             CONSTRAINT core_user_name_key UNIQUE (user_name)
         );
                 
@@ -107,8 +107,7 @@ exports.up = knex =>
             ROLE text, --db role of the user
             exp integer, --expiry date as the unix epoch
             user_id uuid, --db identifier of the user
-            username text, --username used to sign in, user's email in our case
-            user_role pg_roles
+            username text --username used to sign in, user's email in our case
         );
         
         CREATE OR REPLACE FUNCTION public.signin (username text, PASSWORD text)
