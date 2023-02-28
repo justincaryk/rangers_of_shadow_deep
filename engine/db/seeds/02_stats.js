@@ -1,3 +1,5 @@
+const { Stats } = require('../../constants')
+
 exports.seed = function (knex) {
   // Deletes ALL existing entries
   return knex('ranger.stats')
@@ -6,27 +8,27 @@ exports.seed = function (knex) {
       // Inserts seed entries
       return knex('ranger.stats').insert([
         {
-          name: 'move',
+          name: Stats.move,
           type: 'base',
         },
         {
-          name: 'fight',
+          name: Stats.fight,
           type: 'base',
         },
         {
-          name: 'shoot',
+          name: Stats.shoot,
           type: 'base',
         },
         {
-          name: 'armor',
+          name: Stats.armor,
           type: 'base',
         },
         {
-          name: 'will',
+          name: Stats.will,
           type: 'base',
         },
         {
-          name: 'health',
+          name: Stats.health,
           type: 'base',
         },
         {
