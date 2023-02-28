@@ -6,7 +6,7 @@ export enum PUBLIC_LINK_ROUTES {
 }
 
 export enum PRIVATE_LINK_ROUTES {
-    DASHBOARD = '/dashboard',
-    RANGER = '/ranger',
-    COMPANIONS = '/companions',
+  DASHBOARD = '/dashboard',
+  RANGER = '/ranger',
+  COMPANIONS = '/companions',
 }

@@ -21,20 +21,21 @@ export function useGetTrueAvailBp(minorBp: number) {
   }
 }
 
-export function getAdjustedRecruitmentPoints (players: PLAYER_COUNT, brp: number) {
+export function getAdjustedRecruitmentPoints(
+  players: PLAYER_COUNT,
+  brp: number
+) {
   const adjustments = {
-    [PLAYER_COUNT.ONE]: (brp: number)  => brp,
-    [PLAYER_COUNT.TWO]: (brp: number) => ((brp * .5) - 10),
-    [PLAYER_COUNT.THREE]: (brp: number) => brp * .3,
-    [PLAYER_COUNT.FOUR]: (brp: number) => brp * .1,
+    [PLAYER_COUNT.ONE]: (brp: number) => brp,
+    [PLAYER_COUNT.TWO]: (brp: number) => brp * 0.5 - 10,
+    [PLAYER_COUNT.THREE]: (brp: number) => brp * 0.3,
+    [PLAYER_COUNT.FOUR]: (brp: number) => brp * 0.1,
   }
 
   return adjustments[players]?.(brp)
 }
 
-export function getMaxNumberOfCompanions (players: number) {
-
-}
+export function getMaxNumberOfCompanions(players: number) {}
 
 export const parseJwt = (token: string) => {
   var base64Url = token.split('.')[1]

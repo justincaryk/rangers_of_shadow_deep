@@ -10,7 +10,6 @@ export default function MinorHeader({
   subtext,
   subvalue,
 }: Props) {
-  
   return (
     <>
       <div className='flex items-center gap-x-1'>

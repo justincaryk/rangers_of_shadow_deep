@@ -13,9 +13,6 @@ export const PUBLIC_LINKS = [
   },
 ]
 export default function PublicNavigation() {
-  
-  
-
   return (
     <div className='w-full bg-stone px-4 relative'>
       <div className='flex items-center justify-between md:justify-start md:space-x-10'>

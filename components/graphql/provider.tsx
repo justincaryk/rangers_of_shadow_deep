@@ -8,7 +8,7 @@ import { useCurrentUser } from '../auth/atoms/current-user'
 
 function GraphQLProvider({ children }: PropsWithChildren) {
   const [ currentUser ] = useAtom(useCurrentUser)
-  
+
   const headers = useMemo(() => {
     let headers = new Headers()
 

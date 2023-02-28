@@ -28,11 +28,11 @@ export default function SignupForm() {
         setSignupError(
           'There was an error signing you up. Try a different username.'
         )
-        return;
+        return
       }
 
       router.push(PUBLIC_LINK_ROUTES.SIGN_IN)
-      return;
+      return
     }
   }, [ data, setSignupError, status, router ])
 
@@ -42,7 +42,9 @@ export default function SignupForm() {
 
   return (
     <div>
-      {signupError ? <div className='text-red-400 font-bold'>{signupError}</div> : null }
+      {signupError ? (
+        <div className='text-red-400 font-bold'>{signupError}</div>
+      ) : null}
       <Formik
         initialValues={{
           username: '',

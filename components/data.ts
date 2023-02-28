@@ -695,7 +695,7 @@ export const companions: Companion[] = [
       notes: 'Animal, Acrobatics +3, Climb +5, Stealth +3, Track +3',
     },
     name: 'lion',
-    desc: "Alladore has some mountain lions that live in the Northern and Eastern parts of the country. They are occasionally captured for zoos or circuses, but can never be truly ‘trained'.",
+    desc: 'Alladore has some mountain lions that live in the Northern and Eastern parts of the country. They are occasionally captured for zoos or circuses, but can never be truly "trained".',
     subtype: 'animal',
     cost: 20,
   },
@@ -825,7 +825,7 @@ export const mundaneEquipment: MundaneItems = [
   {
     name: 'crossbow',
     description:
-      'A common weapon wielded by the forces of the Shadow Deep, crossbows take one action to load and one action to fire. If a figure wishes, he may replace his movement action with a ‘reload’ action. Crossbows have a +2 damage modifier and a maximum range of 24”. It is assumed that all crossbows start the game loaded and ready to fire. A figure must also carry a quiver, or some type of magic ammunition, to use a crossbow.',
+      'A common weapon wielded by the forces of the Shadow Deep, crossbows take one action to load and one action to fire. If a figure wishes, he may replace his movement action with a "reload’ action. Crossbows have a +2 damage modifier and a maximum range of 24”. It is assumed that all crossbows start the game loaded and ready to fire. A figure must also carry a quiver, or some type of magic ammunition, to use a crossbow.',
     class: EQUIPMENT_CLASS.WEAPON,
     rarity: RARITY_ENUM.MUNDANE,
     slotCost: 1,
@@ -986,7 +986,7 @@ export const magicEquipment: MagicItems = [
   {
     name: 'spell book',
     description:
-      'If a figure is carrying a spellbook, and it reaches the end of a scenario with uncast spells, it may select one of these uncast spells to be ‘saved’ in the spellbook. This spell may then be cast in a future scenario following the normal rules for spellcasting. Once the spell is cast, it is removed from the spellbook. A spellbook can never hold more than one spell at any given time.',
+      'If a figure is carrying a spellbook, and it reaches the end of a scenario with uncast spells, it may select one of these uncast spells to be "saved’ in the spellbook. This spell may then be cast in a future scenario following the normal rules for spellcasting. Once the spell is cast, it is removed from the spellbook. A spellbook can never hold more than one spell at any given time.',
     class: EQUIPMENT_CLASS.WONDROUS,
     rarity: RARITY_ENUM.MAGIC,
     slotCost: 1,
@@ -1007,7 +1007,7 @@ export const magicEquipment: MagicItems = [
   {
     name: 'wizards staff',
     description:
-      'This item follows all of the rules for the ‘staff’ weapon, with the following additions. If a figure makes a Will Roll while carrying this staff, it may trade its own Health to increase its roll on a one-for-one basis. For example, if a ranger makes a Will Roll (TN12) and rolls an 8, he may reduce his current Health by 4 in order to increase the Will Roll to a 12. He passed the roll, but it hurt. Additionally, whenever a figure carrying a wizard’s staff is activated, it may spend one point of Health to make the staff count as a magic weapon until its next activation.',
+      'This item follows all of the rules for the "staff" weapon, with the following additions. If a figure makes a Will Roll while carrying this staff, it may trade its own Health to increase its roll on a one-for-one basis. For example, if a ranger makes a Will Roll (TN12) and rolls an 8, he may reduce his current Health by 4 in order to increase the Will Roll to a 12. He passed the roll, but it hurt. Additionally, whenever a figure carrying a wizard\'s staff is activated, it may spend one point of Health to make the staff count as a magic weapon until its next activation.',
     class: EQUIPMENT_CLASS.WONDROUS,
     rarity: RARITY_ENUM.MAGIC,
     slotCost: 1,

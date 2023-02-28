@@ -24,6 +24,8 @@ export default function SmallButton({ onClick, className, children }: Props) {
         ...baseStyles,
         [className || '']: className,
       })}
-    >{children}</button>
+    >
+      {children}
+    </button>
   )
 }

@@ -7,9 +7,7 @@ module.exports = {
     './graphql/**/*.{js,ts,jsx,tsx}',
     './node_modules/tw-elements/dist/js/**/*.js',
   ],
-  plugins: [
-    require('tw-elements/dist/plugin')
-  ],
+  plugins: [ require('tw-elements/dist/plugin') ],
   theme: {
     extend: {
       maxWidth: {

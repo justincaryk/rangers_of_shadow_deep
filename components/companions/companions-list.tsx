@@ -2,7 +2,7 @@
 
 import { Companion, companions } from '../data'
 import Card from '../parts/card'
-import { BASE_STATS_ENUM, EXTENDED_STATS_ENUM  } from '../types'
+import { BASE_STATS_ENUM, EXTENDED_STATS_ENUM } from '../types'
 import { objectKeys } from '../utils'
 import classnames from 'classnames'
 import SmallButton from '../parts/small-button'
@@ -25,7 +25,10 @@ const baseTableClasses = {
 }
 const noBorderTopClass = 'border-t-0'
 
-const statKeys = {...objectKeys(BASE_STATS_ENUM), ...objectKeys(EXTENDED_STATS_ENUM)}
+const statKeys = {
+  ...objectKeys(BASE_STATS_ENUM),
+  ...objectKeys(EXTENDED_STATS_ENUM),
+}
 
 export default function CompanionsList() {
   // prob a better way to handle this

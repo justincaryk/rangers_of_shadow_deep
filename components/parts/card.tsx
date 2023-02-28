@@ -20,7 +20,7 @@ export default function Card({
     <div
       className={classnames({
         'block rounded-lg bg-slate-500/30 shadow-lg': true,
-        [className ?? '']: className
+        [className ?? '']: className,
       })}
     >
       <div

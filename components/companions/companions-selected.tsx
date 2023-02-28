@@ -9,7 +9,7 @@ export default function SelectedCompanions() {
   const [ companions ] = useAtom(useCompanions)
   const [ _x, removeCompanion ] = useAtom(useDeleteCompanion)
   const [ _y, refundRecruitmentPoints ] = useAtom(useRefundRecruitmentPoints)
-  
+
   const handleBanishCompanion = (companion: Companion) => {
     removeCompanion(companion)
     refundRecruitmentPoints(companion.cost)

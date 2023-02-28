@@ -1,5 +1,5 @@
 exports.up = knex =>
-    knex.schema.raw(`
+  knex.schema.raw(`
     CREATE TABLE ranger.injuries (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
         name varchar(50) NOT NULL,
@@ -9,5 +9,5 @@ exports.up = knex =>
   `)
 
 exports.down = knex => {
-    knex.schema.dropTable('ranger.injuries')
+  knex.schema.dropTable('ranger.injuries')
 }

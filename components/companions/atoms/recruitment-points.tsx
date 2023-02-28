@@ -1,7 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
-
 import {
   BASE_RECRUITMENT_POINTS,
   MAX_BUILD_POINTS_BOOSTER,
@@ -12,10 +11,16 @@ import {
 
 export const useRecruitmentPoints = atomWithReset(BASE_RECRUITMENT_POINTS)
 
-export const useSpendRecruitmentPoints = atom(null, (get, set, price: number) => {
-  set(useRecruitmentPoints, get(useRecruitmentPoints) - price)
-})
+export const useSpendRecruitmentPoints = atom(
+  null,
+  (get, set, price: number) => {
+    set(useRecruitmentPoints, get(useRecruitmentPoints) - price)
+  }
+)
 
-export const useRefundRecruitmentPoints = atom(null, (get, set, refund: number) => {
+export const useRefundRecruitmentPoints = atom(
+  null,
+  (get, set, refund: number) => {
     set(useRecruitmentPoints, get(useRecruitmentPoints) + refund)
-  })
+  }
+)

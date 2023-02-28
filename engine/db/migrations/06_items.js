@@ -6,10 +6,9 @@ exports.up = knex =>
     CREATE TABLE ranger.items (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
         name varchar(50) NOT NULL,
-        description text NOT NULL,
+        desc text NOT NULL,
         slot_cost smallint default 1,
         limit smallint,
-        desc text NOT NULL,
         class item_class NOT NULL,
         rarity item_rarity default 'mundane'
     );

@@ -1,11 +1,8 @@
-import { Character } from './types';
+import { Character } from './types'
 
 interface CharacterProps {
-    character: Character
+  character: Character
 }
-export default function Character ({character}: CharacterProps) {
-    return (
-        <div>
-        </div>
-    )
+export default function Character({ character }: CharacterProps) {
+  return <div></div>
 }

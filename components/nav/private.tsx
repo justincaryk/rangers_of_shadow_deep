@@ -24,7 +24,7 @@ export const PRIVATE_LINKS = [
 export default function PrivateNavigation() {
   const signout = () => {
     localStorage.setItem(AUTH_TOKEN, '')
-    window.location.href = (PUBLIC_LINK_ROUTES.SIGN_IN)
+    window.location.href = PUBLIC_LINK_ROUTES.SIGN_IN
   }
 
   return (
@@ -56,7 +56,9 @@ export default function PrivateNavigation() {
                   {x.text}
                 </Link>
               ))}
-              <Link href='#' className={NAV_TEXT_STYLE} onClick={signout}>Signout</Link>
+              <Link href='#' className={NAV_TEXT_STYLE} onClick={signout}>
+                Signout
+              </Link>
             </Popover.Group>
           </div>
         </div>

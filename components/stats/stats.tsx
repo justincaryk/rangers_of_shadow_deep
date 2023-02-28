@@ -92,8 +92,7 @@ export default function Stats() {
       {show && (
         <div className='px-4 py-4 sm:p-6'>
           <div className='flex flex-col space-y-2 w-1/4'>
-            {Object.values(BASE_STATS_ENUM)
-              .map(stat => {
+            {Object.values(BASE_STATS_ENUM).map(stat => {
               const canIncrement = checkCanIncrease(stat)
               const canDecrement = checkCanDecrease(stat)
               return (
