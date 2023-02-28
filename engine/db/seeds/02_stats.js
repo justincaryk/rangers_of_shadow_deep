@@ -9,51 +9,51 @@ exports.seed = function (knex) {
       return knex('ranger.stats').insert([
         {
           name: BaseStats.move,
-          type: 'base',
+          stat_type: 'base',
         },
         {
           name: BaseStats.fight,
-          type: 'base',
+          stat_type: 'base',
         },
         {
           name: BaseStats.shoot,
-          type: 'base',
+          stat_type: 'base',
         },
         {
           name: BaseStats.armor,
-          type: 'base',
+          stat_type: 'base',
         },
         {
           name: BaseStats.will,
-          type: 'base',
+          stat_type: 'base',
         },
         {
           name: BaseStats.health,
-          type: 'base',
+          stat_type: 'base',
         },
         {
           name: 'notes',
-          type: 'extended',
+          stat_type: 'extended',
         },
         {
           name: 'damage-inflict',
-          type: 'modifier',
+          stat_type: 'modifier',
         },
         {
           name: 'damage-take',
-          type: 'modifier',
+          stat_type: 'modifier',
         },
         {
           name: 'will-roll-dc-bonus',
-          type: 'modifier',
+          stat_type: 'modifier',
         },
         {
           name: 'will-roll-bonus',
-          type: 'modifier',
+          stat_type: 'modifier',
         },
         {
           name: 'magic-shooting-bonus',
-          type: 'modifier',
+          stat_type: 'modifier',
         },
       ])
     })

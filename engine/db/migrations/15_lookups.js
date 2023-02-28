@@ -52,10 +52,10 @@ exports.up = knex =>
 
 exports.down = knex => {
   //  all of the above tables !
-  knex.schema.dropTable('item_features')
-  knex.schema.dropTable('member_heroic_actions')
-  knex.schema.dropTable('member_stats')
-  knex.schema.dropTable('member_items')
-  knex.schema.dropTable('member_skills')
-  knex.schema.dropTable('member_spells')
+  knex.schema.dropTable('ranger.item_features')
+  knex.schema.dropTable('ranger.member_heroic_actions')
+  knex.schema.dropTable('ranger.member_stats')
+  knex.schema.dropTable('ranger.member_items')
+  knex.schema.dropTable('ranger.member_skills')
+  knex.schema.dropTable('ranger.member_spells')
 }

@@ -4,6 +4,6 @@ exports.seed = function (knex) {
     .del()
     .then(function () {
       // Inserts seed entries
-      return knex('ranger.features').insert([])
+      return knex('ranger.features') //.insert([])
     })
 }
