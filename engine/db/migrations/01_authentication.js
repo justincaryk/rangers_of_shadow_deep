@@ -19,6 +19,20 @@ exports.up = knex =>
         BEGIN
         IF EXISTS (
             SELECT FROM pg_catalog.pg_roles
+            WHERE  rolname = 'role_wizard') THEN
+
+            RAISE NOTICE 'Role "role_wizard" already exists. Skipping.';
+        ELSE
+            CREATE ROLE role_wizard;
+        END IF;
+        END
+        $do$;
+
+        DO
+        $do$
+        BEGIN
+        IF EXISTS (
+            SELECT FROM pg_catalog.pg_roles
             WHERE  rolname = 'anonymous_user') THEN
 
             RAISE NOTICE 'Role "anonymous_user" already exists. Skipping.';
@@ -32,7 +46,7 @@ exports.up = knex =>
         
         CREATE TYPE user_role as enum('wizard', 'minion');
 
-        CREATE TABLE public.minion (
+        CREATE TABLE public.minions (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
             PASSWORD text,
             user_name varchar(50) NOT NULL,
@@ -40,28 +54,27 @@ exports.up = knex =>
             CONSTRAINT core_user_name_key UNIQUE (user_name)
         );
                 
-        CREATE TABLE public.wizard (
+        CREATE TABLE public.wizards (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
-            user_id uuid REFERENCES public.minion (id),
+            user_id uuid REFERENCES public.minions (id),
             CONSTRAINT core_employee_user_id_key UNIQUE (user_id)
         );
         
-        ALTER TABLE public.minion ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE public.minions ENABLE ROW LEVEL SECURITY;
         
-        ALTER TABLE public.wizard ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE public.wizards ENABLE ROW LEVEL SECURITY;
         
         
-        CREATE POLICY policy_minions ON wizard FOR SELECT TO role_minion USING (EXISTS (SELECT user_name
+        CREATE POLICY policy_wizards ON wizards FOR SELECT TO role_wizard USING (EXISTS (SELECT user_name
         FROM
-            public.minion
+            public.minions
         WHERE
             id = user_id
             AND user_name = CURRENT_USER));
         
-        CREATE POLICY policy_minion ON minion TO role_minion USING (user_name = CURRENT_USER);
+        CREATE POLICY policy_minion ON minions TO role_minion USING (user_name = CURRENT_USER);
         
         CREATE EXTENSION pgcrypto;
-        
         
 
         CREATE OR REPLACE FUNCTION signup (username varchar(50), PASSWORD varchar(50))
@@ -73,11 +86,11 @@ exports.up = knex =>
             SELECT
                 user_name
             FROM
-                minion
+                minions
             WHERE
                 $1 = user_name INTO result;
             IF NOT found THEN
-                INSERT INTO minion (user_name, PASSWORD)
+                INSERT INTO minions (user_name, PASSWORD)
                     values($1, crypt($2, gen_salt('bf')));
                 RETURN TRUE;
             END IF;
@@ -95,22 +108,23 @@ exports.up = knex =>
             exp integer, --expiry date as the unix epoch
             user_id uuid, --db identifier of the user
             username text --username used to sign in, user's email in our case
+            user_role 
         );
         
         CREATE OR REPLACE FUNCTION public.signin (username text, PASSWORD text)
         RETURNS public.jwt_token AS $$
         DECLARE
-        account public.minion;
-        wiz_acc public.wizard;
-        ROLE text;
+        account public.minions;
+        wiz_acc public.wizards;
+        ROLE user_role;
         BEGIN
-        SELECT * FROM public.minion AS a
+        SELECT * FROM public.minions AS a
             WHERE a.user_name = $1 INTO account;
-        SELECT * FROM public.wizard AS b
+        SELECT * FROM public.wizards AS b
             WHERE account.id = user_id INTO wiz_acc;
         
         IF wiz_acc.user_id = account.id THEN 
-            ROLE = 'role_minion';
+            ROLE = 'role_wizard';
         ELSE
             ROLE = 'role_minion';
         END IF;
@@ -131,6 +145,6 @@ exports.up = knex =>
     `)
 
 exports.down = knex => {
-  knex.schema.dropTable('public.minion')
-  knex.schema.dropTable('public.wizard')
+  knex.schema.dropTable('public.minions')
+  knex.schema.dropTable('public.wizards')
 }

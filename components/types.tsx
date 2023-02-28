@@ -39,7 +39,7 @@ export type Ranger = {
     [BASE_STATS_ENUM.health]: number
   }
   [RANGER_FIELD.SKILLS]: {
-      [key: Skill['name']]: number
+    [key: Skill['name']]: number
   }
   [RANGER_FIELD.HEROIC_ACTIONS]: HeroicAction['name'][]
   [RANGER_FIELD.SPELLS]: Spell['name'][]
@@ -56,3 +56,17 @@ export enum PLAYER_COUNT {
   THREE = 'three',
   FOUR = 'four',
 }
+
+export const MAX_COMPANIONS_WITH_PLAYERS = {
+  [PLAYER_COUNT.ONE]: 7,
+  [PLAYER_COUNT.TWO]: 3,
+  [PLAYER_COUNT.THREE]: 2,
+  [PLAYER_COUNT.FOUR]: 1,
+} as const
+
+export const MAX_COMPANION_ACTIVATION = {
+  [PLAYER_COUNT.ONE]: 2,
+  [PLAYER_COUNT.TWO]: 1,
+  [PLAYER_COUNT.THREE]: 0,
+  [PLAYER_COUNT.FOUR]: 0,
+} as const
