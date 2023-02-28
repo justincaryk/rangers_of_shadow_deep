@@ -5,8 +5,8 @@ const BaseStats = {
   armor: 'armor',
   will: 'will',
   health: 'health',
-} as const
+}
 
 const StatsArray = Object.values(BaseStats)
 
-export { BaseStats, StatsArray }
+module.exports = { BaseStats, StatsArray }

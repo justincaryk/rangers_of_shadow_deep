@@ -10,10 +10,10 @@ exports.up = knex =>
     CREATE TABLE ranger.level_grants (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       name varchar(50) NOT NULL,
-      desc text NOT NULL,
+      description text NOT NULL,
       grant_type ranger_grant_type NOT NULL,
-      benefit REFERENCES ranger.features (id),
-      limit REFERENCES ranger.features (id),
+      benefit uuid REFERENCES ranger.features (id),
+      entity_limit uuid REFERENCES ranger.features (id)
     );
   `)
 

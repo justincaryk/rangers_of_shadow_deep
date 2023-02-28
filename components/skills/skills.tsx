@@ -191,7 +191,7 @@ export default function Skills() {
                   </div>
                 </div>
                 <div className='italic text-slate-400 text-sm ml-2'>
-                  {skill.desc}
+                  {skill.description}
                 </div>
               </div>
             )

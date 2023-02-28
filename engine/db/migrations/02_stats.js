@@ -5,7 +5,7 @@ exports.up = knex =>
     CREATE TABLE ranger.stats (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
         name varchar(50) NOT NULL,
-        type default 'base'
+        stat_type stat_type default 'base'
     );
   `)
 

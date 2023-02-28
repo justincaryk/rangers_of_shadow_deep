@@ -16,10 +16,10 @@ exports.up = knex =>
         primary_type feature_type NOT NULL,
         rider_subtype rider_subtype,
         modifier_subtype modifier_subtype,
-        item_id REFERENCES ranger.items (id),
-        skill_id REFERENCES ranger.skills (id),
-        stat_id REFERENCES ranger.stats (id),
-        value smallint,
+        item_id uuid REFERENCES ranger.items (id),
+        skill_id uuid REFERENCES ranger.skills (id),
+        stat_id uuid REFERENCES ranger.stats (id),
+        value smallint
     );
   `)
 

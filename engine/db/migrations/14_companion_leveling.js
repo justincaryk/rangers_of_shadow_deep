@@ -3,7 +3,7 @@ exports.up = knex =>
     CREATE TABLE ranger.companion_leveling (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       pp_milestone smallint NOT NULL,
-      benefit REFERENCES ranger.level_grants (id)
+      benefit uuid REFERENCES ranger.level_grants (id)
     );
   `)
 

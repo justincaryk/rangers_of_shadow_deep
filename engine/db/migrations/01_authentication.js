@@ -107,8 +107,8 @@ exports.up = knex =>
             ROLE text, --db role of the user
             exp integer, --expiry date as the unix epoch
             user_id uuid, --db identifier of the user
-            username text --username used to sign in, user's email in our case
-            user_role 
+            username text, --username used to sign in, user's email in our case
+            user_role pg_roles
         );
         
         CREATE OR REPLACE FUNCTION public.signin (username text, PASSWORD text)
@@ -116,7 +116,7 @@ exports.up = knex =>
         DECLARE
         account public.minions;
         wiz_acc public.wizards;
-        ROLE user_role;
+        ROLE text;
         BEGIN
         SELECT * FROM public.minions AS a
             WHERE a.user_name = $1 INTO account;

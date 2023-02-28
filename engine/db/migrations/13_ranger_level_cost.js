@@ -4,8 +4,8 @@ exports.up = knex =>
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       level_min smallint NOT NULL,
       level_max smallint NOT NULL,
-      cost smallinit DEFAULT 1,
-      benefit REFERENCES ranger.level_grants (id)
+      cost smallint DEFAULT 1,
+      benefit uuid REFERENCES ranger.level_grants (id)
     );
   `)
 

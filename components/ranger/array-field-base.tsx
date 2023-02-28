@@ -109,7 +109,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                   </SmallButton>
                 </div>
               }
-              main={item.desc}
+              main={item.description}
             />
           ))}
         </div>

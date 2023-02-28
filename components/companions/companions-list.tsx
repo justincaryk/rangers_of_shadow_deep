@@ -88,7 +88,7 @@ export default function CompanionsList() {
                     )}
                   </div>
                 </div>
-                <div>{comp.desc}</div>
+                <div>{comp.description}</div>
               </div>
               <div>
                 <table

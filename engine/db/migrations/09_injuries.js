@@ -3,8 +3,8 @@ exports.up = knex =>
     CREATE TABLE ranger.injuries (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
         name varchar(50) NOT NULL,
-        desc text,
-        modifier REFERENCES ranger.features (id)
+        description text,
+        modifier uuid REFERENCES ranger.features (id)
     );
   `)
 
