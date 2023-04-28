@@ -1,20 +1,24 @@
 import Image from 'next/image'
 
-
 function getLetterAt(pos: number) {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('')
   return alphabet[pos]
 }
 
-const MemberContent = ({ ranger, i }: any) => (
-  <div className='rounded'>
-    <div className='bg-stone text-white p-2 flex justify-between rounded-t'>
+interface MemberCardProps {
+  ranger: any
+  i: number // TODO: remove and replace with avatar url
+}
+
+const MemberContent = ({ ranger, i }: MemberCardProps) => (
+  <div className='rounded shadow-lg'>
+    <div className='p-2 flex justify-between rounded-t bg-orange-900'>
       <div>
-        <div className='text-xl font-bold text-dirty-orange'>
+        <div className='text-xl font-bold'>
           {ranger?.name}
         </div>
-        <div className='whitespace-nowrap overflow-ellipsis font-roboto text-xs text-gray-400'>
-          <span>Level {ranger.level}</span>
+        <div className='whitespace-nowrap overflow-ellipsis uppercase font-roboto text-xs text-slate-400 font-bold'>
+          <span>Level {ranger.level ?? 0}</span>
         </div>
       </div>
       <div className='w-16 h-16 relative'>
@@ -23,12 +27,10 @@ const MemberContent = ({ ranger, i }: any) => (
           src={`/images/avatars/avatar-${getLetterAt(i)}.png`}
           alt={'avatar'}
           fill
-          // width={50}
-          // height={50}
         />
       </div>
     </div>
-    <div className='p-2 flex justify-between border-b border-l border-r'>
+    <div className='p-2 flex justify-between rounded-b bg-slate-500/30'>
       <div>
         <button
           className='text-sky-blue font-roboto uppercase hover:no-underline cursor-pointer outline-none'
