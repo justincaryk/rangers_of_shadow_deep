@@ -1,6 +1,6 @@
 export const BASE_RECRUITMENT_POINTS = 100
 // max number of build points that can be spent during creation
-export const MAX_BUILD_POINTS_BOOSTER = 3
+export const MAX_BUILD_POINTS_FOR_RP = 3
 // if spending a build point, add 10 for each spent
 export const RP_BONUS_PER_BUILD_POINT = 10
 // leadership skill x1

@@ -30,25 +30,20 @@ import {
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
-  const [ bpForSkills, updateSkillsBuildPoints ] = useAtom(useBpForSkills)
-  const trueAvailBp = useGetTrueAvailBp(bpForSkills)
+  const [ bpSpentForSkills, updateSkillsBuildPoints ] = useAtom(useBpForSkills)
+  const trueAvailBp = useGetTrueAvailBp(MAX_BP_FOR_SKILLS - bpSpentForSkills)
   const [ ranger, updateRanger ] = useAtom(useRanger)
 
   const skillPoints = useMemo(() => {
-    const bgSpent = MAX_BP_FOR_SKILLS - bpForSkills
-    const allotted = bgSpent * SKILL_POINTS_PER_BP
+    const allotted = bpSpentForSkills * SKILL_POINTS_PER_BP
     const remaining =
       allotted -
       Object.values(ranger[RANGER_FIELD.SKILLS]).reduce((prev, curr) => {
         return prev + curr
       }, 0)
 
-    return {
-      bgSpent,
-      allotted,
-      remaining,
-    }
-  }, [ bpForSkills, ranger ])
+    return remaining
+  }, [ bpSpentForSkills, ranger ])
 
   const spendBuildPoint = () => {
     if (trueAvailBp > 0) {
@@ -56,19 +51,19 @@ export default function Skills() {
     }
   }
   const recoverBuildPoint = () => {
-    if (skillPoints.remaining >= SKILL_POINTS_PER_BP) {
+    if (skillPoints >= SKILL_POINTS_PER_BP) {
       updateSkillsBuildPoints(DECREASE)
     }
   }
 
   const checkCanIncrease = (skill: Skill) => {
     // must spend a build point before increasing a skill
-    if (skillPoints.remaining === 0) {
+    if (skillPoints === 0) {
       return false
     }
     const currentSkillValue = ranger[RANGER_FIELD.SKILLS][skill.name] ?? 0
     // if no value assigned or less than remaining => good to go
-    if (skillPoints.bgSpent > currentSkillValue && skillPoints.remaining > 0) {
+    if (bpSpentForSkills > currentSkillValue && skillPoints > 0) {
       return true
     }
 
@@ -126,12 +121,12 @@ export default function Skills() {
         main={
           <div className='space-y-4'>
             <div className='font-bold'>
-              Allotted Skill Points: {skillPoints.remaining}
+              Allotted Skill Points: {bpSpentForSkills}
             </div>
             <div className='space-y-1 text-sm text-dirty-orange'>
               <div>
                 Every <strong>1 BUILD POINT</strong> spent yields{' '}
-                <strong>8 SKILL POINTS</strong>.
+                <strong>{SKILL_POINTS_PER_BP} SKILL POINTS</strong>.
               </div>
               <div>
                 You may <strong>only</strong> increase each skill by 1 for each{' '}

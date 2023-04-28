@@ -13,6 +13,7 @@ function GraphQLProvider({ children }: PropsWithChildren) {
     let headers = new Headers()
 
     if (currentUser?.jwt) {
+      console.log('jwt:::', currentUser?.jwt)
       headers.append('Authorization', `Bearer ${currentUser?.jwt}`)
     }
 

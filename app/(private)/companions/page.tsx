@@ -1,54 +1,133 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect, useCallback } from 'react'
 import { useAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
 import Card from '../../../components/parts/card'
+import SmallButton from '../../../components/parts/small-button'
 import Dropdown from '../../../components/parts/dropdown'
+import MinorHeader from '../../../components/parts/minor-header'
 import CompanionsList from '../../../components/companions/companions-list'
 import SelectedCompanions from '../../../components/companions/companions-selected'
 
-import { useRecruitmentPoints } from '../../../components/companions/atoms/recruitment-points'
+import { useBpForRecruitmentPoints } from '../../../components/ranger/atoms/build-points'
+import {
+  useAdjustedRecruitmentPoints,
+  useSpentRecruitmentPoints,
+} from '../../../components/companions/atoms/recruitment-points'
 import { useUpdatePlayerCount } from '../../../components/companions/atoms/players'
 import { useCompanions } from '../../../components/companions/atoms/companions'
 
 import { PLAYER_COUNT } from '../../../components/types'
 import {
-  // getAdjustedRecruitmentPoints,
+  getAdjustedRecruitmentPoints,
   objectKeys,
+  useGetTrueAvailBp,
 } from '../../../components/utils'
 
-export default function Companions() {
-  const [ recruitmentPoints ] = useAtom(useRecruitmentPoints)
-  const resetRecruitmentPoints = useResetAtom(useRecruitmentPoints)
-  const resetCompanions = useResetAtom(useCompanions)
-  const [ players, updatePlayers ] = useAtom(useUpdatePlayerCount)
-  // const adjustedRecruitmentPoints = useMemo(() => {
-  //   return getAdjustedRecruitmentPoints(players, BASE_RECRUITMENT_POINTS)
-  // }, [players, recruitmentPoints])
+import { DECREASE, INCREASE } from '../../../components/rules/ranger-rules'
 
-  const options = useMemo(() => {
+import {
+  BASE_RECRUITMENT_POINTS,
+  RP_BONUS_PER_BUILD_POINT,
+  MAX_BUILD_POINTS_FOR_RP,
+} from '../../../components/rules/companion-rules'
+
+export default function Companions() {
+  const [ bpSpentOnRp, updateBpSpentOnRp ] = useAtom(useBpForRecruitmentPoints)
+  const trueAvailBp = useGetTrueAvailBp(MAX_BUILD_POINTS_FOR_RP - bpSpentOnRp)
+
+  const [ spentRp ] = useAtom(useSpentRecruitmentPoints)
+  const [ adjustedTotalRp, setAdjustedTotalBp ] = useAtom(
+    useAdjustedRecruitmentPoints
+  )
+
+  const resetSpent = useResetAtom(useSpentRecruitmentPoints)
+  const resetAdjusted = useResetAtom(useAdjustedRecruitmentPoints)
+  const resetCompanions = useResetAtom(useCompanions)
+
+  const resetViewState = useCallback(() => {
+    resetSpent()
+    resetAdjusted()
+    resetCompanions()
+  }, [ resetSpent, resetAdjusted, resetCompanions ])
+
+  const [ players, updatePlayers ] = useAtom(useUpdatePlayerCount)
+
+  const updateAdjustedRecruitmentPoints = useCallback(() => {
+    const bonusRp = bpSpentOnRp * RP_BONUS_PER_BUILD_POINT
+    const total = getAdjustedRecruitmentPoints(
+      players,
+      bonusRp + BASE_RECRUITMENT_POINTS
+    )
+    setAdjustedTotalBp(total)
+  }, [ bpSpentOnRp, players, setAdjustedTotalBp ])
+
+  useEffect(() => {
+    updateAdjustedRecruitmentPoints()
+  }, [ players, bpSpentOnRp, updateAdjustedRecruitmentPoints ])
+
+  const playerOptions = useMemo(() => {
     let counter = 0
     return objectKeys(PLAYER_COUNT).map(x => {
       counter++
       return {
-        value: x,
+        value: PLAYER_COUNT[x],
         text: counter,
       }
     })
   }, [])
 
+  const spendBuildPoint = async () => {
+    if (trueAvailBp > 0) {
+      await updateBpSpentOnRp(INCREASE)
+    }
+  }
+  const recoverBuildPoint = () => {
+    if (bpSpentOnRp > 0) {
+      updateBpSpentOnRp(DECREASE)
+    }
+  }
+
   const handlePlayerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updatePlayers(
-      PLAYER_COUNT[e.currentTarget.value as keyof typeof PLAYER_COUNT]
-    )
-    resetRecruitmentPoints()
-    resetCompanions()
+    resetViewState()
+    updatePlayers(e.currentTarget.value as PLAYER_COUNT)
   }
 
   return (
     <div className='space-y-4'>
+      <MinorHeader
+        content='companions'
+        subtext={'Available build points:'}
+        subvalue={trueAvailBp}
+      />
+
+      <Card
+        header={null}
+        main={
+          <div className='space-y-4'>
+            <div className='font-bold'>
+              Allotted Build Points for Recruitment Points: {bpSpentOnRp}
+            </div>
+            <div className='space-y-1 text-sm text-dirty-orange'>
+              <div>
+                Every <strong>1 BUILD POINT</strong> spent yields{' '}
+                <strong>{RP_BONUS_PER_BUILD_POINT} RECRUITMENT POINTS</strong>.
+              </div>
+            </div>
+            <div className='space-x-2'>
+              <SmallButton onClick={spendBuildPoint}>
+                Increase allotment
+              </SmallButton>
+              <SmallButton onClick={recoverBuildPoint} className='bg-gray-400'>
+                Decrease allotment
+              </SmallButton>
+            </div>
+          </div>
+        }
+      />
+
       <Card
         header={null}
         main={
@@ -60,7 +139,7 @@ export default function Companions() {
                 </div>
                 <Dropdown
                   className='w-32'
-                  options={options}
+                  options={playerOptions}
                   value={players}
                   onChange={handlePlayerChange}
                 />
@@ -71,7 +150,10 @@ export default function Companions() {
               </div>
             </div>
             <div className='font-bold uppercase'>
-              Remaining Recruitment Points: {recruitmentPoints}
+              Total Recruitment Points: {adjustedTotalRp}
+            </div>
+            <div className='font-bold uppercase'>
+              Remaining Recruitment Points: {adjustedTotalRp - spentRp}
             </div>
           </div>
         }

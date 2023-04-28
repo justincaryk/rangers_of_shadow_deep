@@ -16,7 +16,7 @@ export default function MinorHeader({
         <div className='uppercase font-bold text-lg'>{content}</div>
         <div className='w-6'>{icon}</div>
       </div>
-      {subvalue && (
+      {subtext && (
         <div className='flex gap-2 mt-2 px-2'>
           {subtext}
           <span className='font-bold'>{subvalue}</span>

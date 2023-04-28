@@ -8,12 +8,13 @@ import classnames from 'classnames'
 import SmallButton from '../parts/small-button'
 import { useAtom } from 'jotai'
 import {
-  useRecruitmentPoints,
+  useSpentRecruitmentPoints,
+  useAdjustedRecruitmentPoints,
   useSpendRecruitmentPoints,
 } from './atoms/recruitment-points'
 import { useAddCompanion } from './atoms/companions'
 
-import toast from 'react-hot-toast'
+// import toast from 'react-hot-toast'
 import { useState } from 'react'
 import { Spinner } from '../parts/spinner'
 
@@ -25,16 +26,20 @@ const baseTableClasses = {
 }
 const noBorderTopClass = 'border-t-0'
 
-const statKeys = {
+const statKeys = [
   ...objectKeys(BASE_STATS_ENUM),
   ...objectKeys(EXTENDED_STATS_ENUM),
-}
+]
 
 export default function CompanionsList() {
   // prob a better way to handle this
   const [ buying, setBuying ] = useState<string | null>(null)
 
-  const [ recruitmentPoints ] = useAtom(useRecruitmentPoints)
+  const [ spentRp ] = useAtom(useSpentRecruitmentPoints)
+  const [ adjustedTotalRp, setAdjustedTotalBp ] = useAtom(
+    useAdjustedRecruitmentPoints
+  )
+
   const [ _x, spendRecruitmentPoints ] = useAtom(useSpendRecruitmentPoints)
   const [ _y, buyCompanion ] = useAtom(useAddCompanion)
 
@@ -42,8 +47,10 @@ export default function CompanionsList() {
     setBuying(name)
     setTimeout(() => setBuying(null), 1500)
   }
+
   const tryBuyCompanion = (companion: Companion) => {
-    if (companion.cost < recruitmentPoints) {
+    const availRp = adjustedTotalRp - spentRp
+    if (companion.cost < availRp) {
       turnOnBuying(companion.name)
       spendRecruitmentPoints(companion.cost)
       buyCompanion(companion)
