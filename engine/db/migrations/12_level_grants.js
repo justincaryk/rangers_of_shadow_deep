@@ -1,6 +1,6 @@
 exports.up = knex =>
   knex.schema.raw(`
-    CREATE TYPE grant_type as enum(
+    CREATE TYPE ranger_grant_type as enum(
       'skills',
       'stats',
       'recruitment_points',
@@ -16,6 +16,13 @@ exports.up = knex =>
       benefit uuid REFERENCES ranger.features (id),
       entity_limit uuid REFERENCES ranger.features (id)
     );
+    
+    CREATE POLICY level_grants_policy ON ranger.level_grants 
+      FOR SELECT
+      TO role_minion
+      USING (true);
+
+    GRANT SELECT ON ranger.level_grants TO role_minion;
   `)
 
 exports.down = knex => {

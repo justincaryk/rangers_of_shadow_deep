@@ -13,6 +13,13 @@ exports.up = knex =>
         .join(' ,')},
       notes text
     );
+
+    CREATE POLICY companions_policy ON ranger.companions 
+      FOR SELECT
+      TO role_minion
+      USING (true);
+
+    GRANT SELECT ON ranger.companions TO role_minion;
   `)
 
 exports.down = knex => {

@@ -6,6 +6,13 @@ exports.up = knex =>
       cost smallint default 1,
       description text
     );
+
+    CREATE POLICY skills_policy ON ranger.skills 
+      FOR SELECT
+      TO role_minion
+      USING (true);
+
+    GRANT SELECT ON ranger.skills TO role_minion;
   `)
 
 exports.down = knex => {

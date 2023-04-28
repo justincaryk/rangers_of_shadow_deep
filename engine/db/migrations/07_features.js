@@ -21,6 +21,13 @@ exports.up = knex =>
         stat_id uuid REFERENCES ranger.stats (id),
         value smallint
     );
+
+    CREATE POLICY features_policy ON ranger.features 
+      FOR SELECT
+      TO role_minion
+      USING (true);
+
+    GRANT SELECT ON ranger.features TO role_minion;
   `)
 
 exports.down = knex => {

@@ -7,20 +7,27 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { NAV_TEXT_STYLE } from '../utils'
 import { PRIVATE_LINK_ROUTES, PUBLIC_LINK_ROUTES } from './routes'
-import { useCurrentUser } from '../auth/atoms/current-user'
-import { useAtom } from 'jotai'
 import { AUTH_TOKEN } from '../auth/types'
 
 export const PRIVATE_LINKS = [
   {
+    link: PRIVATE_LINK_ROUTES.DASHBOARD,
+    text: 'Dashboard',
+    hasNav: false,
+    home: true,
+  },
+  {
     link: PRIVATE_LINK_ROUTES.RANGER,
     text: 'Ranger',
+    hasNav: true,
   },
   {
     link: PRIVATE_LINK_ROUTES.COMPANIONS,
     text: 'Companions',
+    hasNav: true,
   },
 ]
+
 export default function PrivateNavigation() {
   const signout = () => {
     localStorage.setItem(AUTH_TOKEN, '')
@@ -36,13 +43,17 @@ export default function PrivateNavigation() {
               <span className='sr-only'>
                 Rangers of Shadow Deep Companion App
               </span>
-              <Image
-                width={200}
-                height={100}
-                // className='h-8 w-auto sm:h-10'
-                src='/images/logo-lg.png'
-                alt=''
-              />
+              {PRIVATE_LINKS.filter(x => x.home).map(x => (
+                <Link href={x.link} key={x.text}>
+                  <Image
+                    width={200}
+                    height={100}
+                    // className='h-8 w-auto sm:h-10'
+                    src='/images/logo-lg.png'
+                    alt=''
+                  />
+                </Link>
+              ))}
             </div>
             <div className='-my-2 -mr-2 md:hidden'>
               <Popover.Button className='inline-flex items-center justify-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'>
@@ -51,7 +62,7 @@ export default function PrivateNavigation() {
               </Popover.Button>
             </div>
             <Popover.Group as='nav' className='hidden space-x-10 md:flex'>
-              {PRIVATE_LINKS.map(x => (
+              {PRIVATE_LINKS.filter(x => x.hasNav).map(x => (
                 <Link href={x.link} key={x.text} className={NAV_TEXT_STYLE}>
                   {x.text}
                 </Link>

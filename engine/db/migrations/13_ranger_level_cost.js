@@ -7,6 +7,13 @@ exports.up = knex =>
       cost smallint DEFAULT 1,
       benefit uuid REFERENCES ranger.level_grants (id)
     );
+
+    CREATE POLICY ranger_level_cost_policy ON ranger.ranger_level_cost 
+      FOR SELECT
+      TO role_minion
+      USING (true);
+
+    GRANT SELECT ON ranger.ranger_level_cost TO role_minion;
   `)
 
 exports.down = knex => {

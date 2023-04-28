@@ -10,8 +10,15 @@ exports.up = knex =>
         slot_cost smallint default 1,
         entity_limit smallint,
         class item_class NOT NULL,
-        rarity item_rarity default 'mundane'
+        rarity item_rarity default 'mundane' NOT NULL
     );
+
+    CREATE POLICY items_policy ON ranger.items 
+      FOR SELECT
+      TO role_minion
+      USING (true);
+
+    GRANT SELECT ON ranger.items TO role_minion;
   `)
 
 exports.down = knex => {

@@ -6,6 +6,13 @@ exports.up = knex =>
         description text,
         modifier uuid REFERENCES ranger.features (id)
     );
+    
+    CREATE POLICY injuries_policy ON ranger.injuries 
+      FOR SELECT
+      TO role_minion
+      USING (true);
+
+    GRANT SELECT ON ranger.injuries TO role_minion;
   `)
 
 exports.down = knex => {
