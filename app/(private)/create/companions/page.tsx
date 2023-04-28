@@ -4,35 +4,35 @@ import { useMemo, useEffect, useCallback } from 'react'
 import { useAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
-import Card from '../../../components/parts/card'
-import SmallButton from '../../../components/parts/small-button'
-import Dropdown from '../../../components/parts/dropdown'
-import MinorHeader from '../../../components/parts/minor-header'
-import CompanionsList from '../../../components/companions/companions-list'
-import SelectedCompanions from '../../../components/companions/companions-selected'
+import Card from '../../../../components/parts/card'
+import SmallButton from '../../../../components/parts/small-button'
+import Dropdown from '../../../../components/parts/dropdown'
+import MinorHeader from '../../../../components/parts/minor-header'
+import CompanionsList from '../../../../components/companions/companions-list'
+import SelectedCompanions from '../../../../components/companions/companions-selected'
 
-import { useBpForRecruitmentPoints } from '../../../components/ranger/atoms/build-points'
+import { useBpForRecruitmentPoints } from '../../../../components/ranger/atoms/build-points'
 import {
   useAdjustedRecruitmentPoints,
   useSpentRecruitmentPoints,
-} from '../../../components/companions/atoms/recruitment-points'
-import { useUpdatePlayerCount } from '../../../components/companions/atoms/players'
-import { useCompanions } from '../../../components/companions/atoms/companions'
+} from '../../../../components/companions/atoms/recruitment-points'
+import { useUpdatePlayerCount } from '../../../../components/companions/atoms/players'
+import { useCompanions } from '../../../../components/companions/atoms/companions'
 
-import { PLAYER_COUNT } from '../../../components/types'
+import { PLAYER_COUNT } from '../../../../components/types'
 import {
   getAdjustedRecruitmentPoints,
   objectKeys,
   useGetTrueAvailBp,
-} from '../../../components/utils'
+} from '../../../../components/utils'
 
-import { DECREASE, INCREASE } from '../../../components/rules/ranger-rules'
+import { DECREASE, INCREASE } from '../../../../components/rules/ranger-rules'
 
 import {
   BASE_RECRUITMENT_POINTS,
   RP_BONUS_PER_BUILD_POINT,
   MAX_BUILD_POINTS_FOR_RP,
-} from '../../../components/rules/companion-rules'
+} from '../../../../components/rules/companion-rules'
 
 export default function Companions() {
   const [ bpSpentOnRp, updateBpSpentOnRp ] = useAtom(useBpForRecruitmentPoints)

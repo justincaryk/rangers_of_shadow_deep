@@ -13,6 +13,11 @@ async function redirects() {
       destination: '/auth/signin',
       permanent: true,
     },
+    {
+      source: '/create',
+      destination: '/create/ranger',
+      permanent: true,
+    },
   ]
 }
 
