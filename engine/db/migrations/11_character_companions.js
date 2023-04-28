@@ -4,6 +4,7 @@ exports.up = knex =>
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
       companion_id uuid REFERENCES ranger.companions (id),
+      name varchar(50) NOT NULL,
       progression_points smallint default 0
     );
   `)
