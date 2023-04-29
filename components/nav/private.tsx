@@ -17,12 +17,12 @@ export const PRIVATE_LINKS = [
     home: true,
   },
   {
-    link: PRIVATE_LINK_ROUTES.RANGER,
+    link: PRIVATE_LINK_ROUTES.CREATE_RANGER,
     text: 'Ranger',
     hasNav: true,
   },
   {
-    link: PRIVATE_LINK_ROUTES.COMPANIONS,
+    link: PRIVATE_LINK_ROUTES.CREATE_COMPANIONS,
     text: 'Companions',
     hasNav: true,
   },

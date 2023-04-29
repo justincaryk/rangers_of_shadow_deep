@@ -20,6 +20,9 @@ const MemberContent = ({ ranger, i }: MemberCardProps) => (
         <div className='whitespace-nowrap overflow-ellipsis uppercase font-roboto text-xs text-slate-400 font-bold'>
           <span>Level {ranger.level ?? 0}</span>
         </div>
+        <div className='whitespace-nowrap overflow-ellipsis uppercase font-roboto text-xs text-slate-400 font-bold'>
+          <span>XP: {ranger.xp ?? 0}</span>
+        </div>
       </div>
       <div className='w-16 h-16 relative'>
         <Image
