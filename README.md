@@ -39,14 +39,23 @@ To setup:
 
 ## Schema & Types Generation
 
-This starter repo autogenerates types from the schema. In order to access typed queries/mutations, simply look in `[root]/graphql`. The majority of queries should be provided by postgraphile; however, if you need to add custom queries, you can add them in here for automatic type generation.
-
-**NOTE: TYPES NEED TO BE MANUALLY GENERATED ON && UPDATED BY FOLLOWING THE STEPS BELOW**
+This starter repo automatically generates types from the schema. In order to access typed queries/mutations, simply look in `[root]/graphql`. Add queries and mutatations in their respective folders and follow the steps below to generate types for these hooks.
 
 1. Run `yarn dev`
 2. Open a new terminal window
 3. Run `yarn codegen`
-4. Stop both terminals.
+
+## Tanstack Query + Grapqhl-Request
+
+This application wraps graphql-request client utilities with tanstack's query package, which is used for cache optimization and granular control.
+
+See the tanstack documentation for more information https://tanstack.com/query/v4/docs/react/graphql
+
+## State management
+
+This application favors an atomic state management approach rather than a large top down approach like redux. 
+
+See Jotai documentation for more information https://jotai.org/docs/
 
 ## Hooks (optional)
 
