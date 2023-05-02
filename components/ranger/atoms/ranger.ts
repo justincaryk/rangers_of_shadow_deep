@@ -3,7 +3,8 @@ import { Ranger, RANGER_FIELD } from '../../types'
 import { BASE_STATS } from '../../rules/ranger-rules'
 
 const BASE_RANGER: Ranger = {
-  [RANGER_FIELD.PERSONAL]: {},
+  id: null,
+  [RANGER_FIELD.CORE]: {},
   [RANGER_FIELD.STATS]: BASE_STATS,
   [RANGER_FIELD.SKILLS]: {},
   [RANGER_FIELD.HEROIC_ACTIONS]: [],
@@ -15,6 +16,8 @@ const BASE_RANGER: Ranger = {
   },
 }
 
-export const useRanger = atom(BASE_RANGER, (get, set, data: Ranger) => {
-  set(useRanger, data)
-})
+export const useRanger = atom(BASE_RANGER,
+  (get, set, data: Ranger) => {
+    set(useRanger, data)
+  }
+)

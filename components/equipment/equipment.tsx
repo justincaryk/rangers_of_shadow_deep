@@ -9,31 +9,31 @@ import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
 import { MAX_STARTING_ITEM_SLOTS } from '../rules/ranger-rules'
-import { useEquipmentQuery } from './use-equipment-query'
+// import { useEquipmentQuery } from './use-equipment-query'
 
 export default function Equipment() {
   const [ show, toggleShow ] = useState(true)
   const [ inventorySlots, updateInvetorySlots ] = useState(
     MAX_STARTING_ITEM_SLOTS
   )
-  const { data, isLoading } = useEquipmentQuery()
+  // const { data, isLoading } = useEquipmentQuery()
 
-  const items = useMemo(() => {
-    if (isLoading || !data?.allItems?.nodes?.length) {
-      return {
-        mundane: [],
-        magic: [],
-      }
-    }
-    return {
-      mundane: data.allItems.nodes.filter(
-        item => item?.rarity === ItemRarity.Mundane
-      ),
-      magic: data.allItems.nodes.filter(
-        item => item?.rarity === ItemRarity.Magic
-      ),
-    }
-  }, [ data, isLoading ])
+  const items: any = {magic: [], mundane: []}//useMemo(() => {
+  //   if (isLoading || !data?.allItems?.nodes?.length) {
+  //     return {
+  //       mundane: [],
+  //       magic: [],
+  //     }
+  //   }
+  //   return {
+  //     mundane: data.allItems.nodes.filter(
+  //       item => item?.rarity === ItemRarity.Mundane
+  //     ),
+  //     magic: data.allItems.nodes.filter(
+  //       item => item?.rarity === ItemRarity.Magic
+  //     ),
+  //   }
+  // }, [ data, isLoading ])
 
   // TODO: add / remove custom equipment
   // TODO: make starting equipment list to always include 1 free dagger or 1 free throwing knife
@@ -55,7 +55,7 @@ export default function Equipment() {
         <div className='px-4 py-5 sm:p-6'>
           <div>Basic Equipment List</div>
           <div className='space-y-4'>
-            {items.mundane.map(item => (
+            {items.mundane.map((item: any) => (
               <div key={item?.id}>
                 <div className='text-lg font-bold'>{item?.name}</div>
 
@@ -93,7 +93,7 @@ export default function Equipment() {
           </div>
           <div>Magical Equipment</div>
           <div className='space-y-4'>
-            {items.magic.map(item => (
+            {items.magic.map((item: any) => (
               <div key={item?.id}>
                 <div className='text-lg font-bold'>{item?.name}</div>
 

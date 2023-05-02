@@ -13,9 +13,13 @@ import { useGetTrueAvailBp } from '../utils'
 import { useBpForStats } from '../ranger/atoms/build-points'
 import { useRanger } from '../ranger/atoms/ranger'
 import { BASE_STATS, DECREASE, INCREASE } from '../rules/ranger-rules'
+import { useStatsApi } from './stats-api'
+import { StatCondition, StatType } from '../../graphql/generated/graphql'
 
 export default function Stats() {
   const [ show, toggleShow ] = useState(false)
+
+  const { data, status } = useStatsApi().getStats
 
   // how many build points available for stats
   const [ bpForStats, updateBuildPoints ] = useAtom(useBpForStats)
@@ -50,27 +54,27 @@ export default function Stats() {
     return false
   }
 
-  const updateStat = (stat: BASE_STATS_ENUM, modifier: number) => {
+  const updateStat = (stat: StatCondition, modifier: number) => {
     if (modifier === INCREASE) {
-      if (!checkCanIncrease(stat)) {
+      if (!checkCanIncrease(stat.name as BASE_STATS_ENUM)) {
         return null
       }
     } else {
-      if (!checkCanDecrease(stat)) {
+      if (!checkCanDecrease(stat.name as BASE_STATS_ENUM)) {
         return null
       }
     }
-    const currentStats = ranger[RANGER_FIELD.STATS]
-    const currentSkillValue = currentStats[stat]
+    // const currentStats = ranger[RANGER_FIELD.STATS]
+    // const currentSkillValue = currentStats[stat]
 
     // update ranger state
-    updateRanger({
-      ...ranger,
-      [RANGER_FIELD.STATS]: {
-        ...currentStats,
-        [stat]: currentSkillValue + modifier,
-      },
-    })
+    // updateRanger({
+    //   ...ranger,
+    //   [RANGER_FIELD.STATS]: {
+    //     ...currentStats,
+    //     [stat]: currentSkillValue + modifier,
+    //   },
+    // })
 
     // update build points
     updateBuildPoints(modifier)
@@ -91,43 +95,51 @@ export default function Stats() {
       </div>
       {show && (
         <div className='px-4 py-4 sm:p-6'>
-          <div className='flex flex-col space-y-2 w-1/4'>
-            {Object.values(BASE_STATS_ENUM).map(stat => {
-              const canIncrement = checkCanIncrease(stat)
-              const canDecrement = checkCanDecrease(stat)
-              return (
-                <div key={stat} className='grid grid-cols-3 gap-x-4'>
-                  <div className='uppercase font-bold text-small'>{stat}:</div>
-                  {ranger[RANGER_FIELD.STATS][stat]}
-                  <div className='flex gap-2'>
-                    <div
-                      className={classnames({
-                        'w-6': true,
-                        'cursor-not-allowed': !canIncrement,
-                        'cursor-pointer': canIncrement,
-                      })}
-                    >
-                      <Increment
-                        onClick={() => updateStat(stat, INCREASE)}
-                        disabled={!canIncrement}
-                      />
+          <div className='flex flex-col space-y-2'>
+            {data?.allStats?.nodes
+              .filter(stat => stat?.statType === StatType.Base)
+              .map(stat => {
+                const canIncrement = checkCanIncrease(
+                  stat?.name as BASE_STATS_ENUM
+                )
+                const canDecrement = checkCanDecrease(
+                  stat?.name as BASE_STATS_ENUM
+                )
+                return (
+                  <div key={stat?.id} className='grid grid-flow-col auto-cols-min gap-x-2'>
+                    <div className='uppercase font-bold text-small w-24'>
+                      {BASE_STATS_ENUM[stat?.name as BASE_STATS_ENUM]}: &nbsp;
                     </div>
-                    <div
-                      className={classnames({
-                        'w-6': true,
-                        'cursor-not-allowed': !canDecrement,
-                        'cursor-pointer': canDecrement,
-                      })}
-                    >
-                      <Decrement
-                        onClick={() => updateStat(stat, DECREASE)}
-                        disabled={!canDecrement}
-                      />
+                    <div className='w-10'>{ranger[RANGER_FIELD.STATS][stat?.name as BASE_STATS_ENUM]}</div>
+                    <div className='flex gap-2'>
+                      <div
+                        className={classnames({
+                          'w-6': true,
+                          'cursor-not-allowed': !canIncrement,
+                          'cursor-pointer': canIncrement,
+                        })}
+                      >
+                        <Increment
+                          onClick={() => stat && updateStat(stat, INCREASE)}
+                          disabled={!canIncrement}
+                        />
+                      </div>
+                      <div
+                        className={classnames({
+                          'w-6': true,
+                          'cursor-not-allowed': !canDecrement,
+                          'cursor-pointer': canDecrement,
+                        })}
+                      >
+                        <Decrement
+                          onClick={() => stat && updateStat(stat, DECREASE)}
+                          disabled={!canDecrement}
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
           </div>
         </div>
       )}

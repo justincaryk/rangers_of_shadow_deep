@@ -19,7 +19,7 @@ export const PRIVATE_LINKS = [
   {
     link: PRIVATE_LINK_ROUTES.CREATE_RANGER,
     text: 'Ranger',
-    hasNav: true,
+    hasNav: false,
   },
   {
     link: PRIVATE_LINK_ROUTES.CREATE_COMPANIONS,

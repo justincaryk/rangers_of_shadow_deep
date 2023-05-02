@@ -1,7 +1,8 @@
+import { Character } from '../graphql/generated/graphql'
 import { HeroicAction, Skill, Spell } from './data'
 
 export enum RANGER_FIELD {
-  PERSONAL = 'personal',
+  CORE = 'core',
   STATS = 'stats',
   SKILLS = 'skills',
   HEROIC_ACTIONS = 'heroicActions',
@@ -29,7 +30,8 @@ export enum MODS {
 }
 
 export type Ranger = {
-  [RANGER_FIELD.PERSONAL]: {}
+  id: string | null
+  [RANGER_FIELD.CORE]: Partial<Character>
   [RANGER_FIELD.STATS]: {
     [BASE_STATS_ENUM.move]: number
     [BASE_STATS_ENUM.fight]: number
