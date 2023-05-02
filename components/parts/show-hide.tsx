@@ -5,5 +5,5 @@ interface Props {
   onClick: () => void
 }
 export default function ShowHide({ isShow, onClick }: Props) {
-  return <div onClick={onClick}>{isShow ? <EyeSlashIcon /> : <EyeIcon />}</div>
+  return isShow ? <EyeSlashIcon onClick={onClick} /> : <EyeIcon onClick={onClick} />
 }

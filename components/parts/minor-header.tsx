@@ -1,12 +1,14 @@
 interface Props {
   content: string
   icon?: React.ReactNode | JSX.Element
+  iconSize?: string
   subtext?: string
   subvalue?: number
 }
 export default function MinorHeader({
   content,
   icon,
+  iconSize = 'w-8',
   subtext,
   subvalue,
 }: Props) {
@@ -14,7 +16,7 @@ export default function MinorHeader({
     <>
       <div className='flex items-center gap-x-1'>
         <div className='uppercase font-bold text-lg'>{content}</div>
-        <div className='w-8'>{icon}</div>
+        <div className={iconSize}>{icon}</div>
       </div>
       {subtext && (
         <div className='flex gap-2 mt-2'>

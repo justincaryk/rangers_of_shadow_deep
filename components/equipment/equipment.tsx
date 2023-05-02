@@ -44,7 +44,17 @@ export default function Equipment() {
       {show && (
         <div>
           <div className='py-4'>
-            <MinorHeader content='Basic Equipment List' />
+            <MinorHeader
+              content='Basic Equipment List'
+              icon={
+                <ShowHide
+                  isShow={showMundane}
+                  onClick={() => toggleShowMundane(!showMundane)}
+                />
+              }
+              iconSize={'w-6'}
+            />
+
             {data?.mundane?.nodes.map((item: any) => (
               <div key={item?.id} className='px-2'>
                 <div className='flex gap-6 mt-4'>
@@ -86,7 +96,16 @@ export default function Equipment() {
           </div>
 
           <div className='py-4'>
-            <MinorHeader content='Magical Equipment' />
+            <MinorHeader
+              content='Magical Equipment'
+              icon={
+                <ShowHide
+                  isShow={showMagic}
+                  onClick={() => toggleShowMagic(!showMagic)}
+                />
+              }
+              iconSize={'w-6'}
+            />
             {data?.magic?.nodes.map((item: any) => (
               <div key={item?.id} className='px-2 border-'>
                 <div className='flex gap-6 mb-8 mt-8'>
