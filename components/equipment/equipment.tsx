@@ -17,29 +17,13 @@ import { useEquipmentApi } from './equipment-api'
 
 export default function Equipment() {
   const [ show, toggleShow ] = useState(false)
-  
+  const [ showMagic, toggleShowMagic ] = useState(true)
+  const [ showMundane, toggleShowMundane ] = useState(true)
+
   const [ inventorySlots, updateInvetorySlots ] = useState(
     MAX_STARTING_ITEM_SLOTS
   )
-  const { data, status } = useEquipmentApi().getEquipment
-
-  const items = useMemo(() => {
-    if (status !== 'success' || !data?.allItems?.nodes.length) {
-      return {
-        mundane: [],
-        magic: [],
-      }
-    }
-
-    return {
-      mundane: data.allItems.nodes.filter(
-        item => item?.rarity === ItemRarity.Mundane
-      ),
-      magic: data.allItems.nodes.filter(
-        item => item?.rarity === ItemRarity.Magic
-      ),
-    }
-  }, [ data, status ])
+  const { data } = useEquipmentApi().getEquipment
 
   // TODO: add / remove custom equipment
   // TODO: make starting equipment list to always include 1 free dagger or 1 free throwing knife
@@ -58,77 +42,84 @@ export default function Equipment() {
         />
       </div>
       {show && (
-        <div className='px-4 py-5 sm:p-6'>
-          <div>Basic Equipment List</div>
-          <div className='space-y-4'>
-            {items.mundane.map((item: any) => (
-              <div key={item?.id}>
-                <div className='text-lg font-bold capitalize'>{item?.name}</div>
-
-                <div className='flex gap-2'>
-                  <div
-                    className={classnames({
-                      'w-6': true,
-                      'cursor-pointer': true,
-                    })}
-                  >
-                    <Increment
-                      onClick={() => {}} //updateSkill(skill, INCREASE)}
-                      // disabled={!canIncrement}
-                    />
+        <div>
+          <div className='py-4'>
+            <MinorHeader content='Basic Equipment List' />
+            {data?.mundane?.nodes.map((item: any) => (
+              <div key={item?.id} className='px-2'>
+                <div className='flex gap-6 mt-4'>
+                  <div className='text-lg font-bold capitalize'>
+                    {item?.name}
                   </div>
-                  <div
-                    className={classnames({
-                      'w-6': true,
-                      // 'cursor-not-allowed': !canDecrement,
-                      // 'cursor-pointer': canDecrement,
-                    })}
-                  >
-                    <Decrement
-                      onClick={() => {}} //updateSkill(skill, DECREASE)}
-                      // disabled={!canDecrement}
-                    />
+
+                  <div className='flex gap-2'>
+                    <div
+                      className={classnames({
+                        'w-6': true,
+                        'cursor-pointer': true,
+                      })}
+                    >
+                      <Increment
+                        onClick={() => {}} //updateSkill(skill, INCREASE)}
+                        // disabled={!canIncrement}
+                      />
+                    </div>
+                    <div
+                      className={classnames({
+                        'w-6': true,
+                        // 'cursor-not-allowed': !canDecrement,
+                        // 'cursor-pointer': canDecrement,
+                      })}
+                    >
+                      <Decrement
+                        onClick={() => {}} //updateSkill(skill, DECREASE)}
+                        // disabled={!canDecrement}
+                      />
+                    </div>
                   </div>
                 </div>
-
                 <div className='italic text-slate-400 text-sm ml-2'>
                   {item?.description}
                 </div>
               </div>
             ))}
           </div>
-          <div>Magical Equipment</div>
-          <div className='space-y-4'>
-            {items.magic.map((item: any) => (
-              <div key={item?.id}>
-                <div className='text-lg font-bold capitalize'>{item?.name}</div>
 
-                <div className='flex gap-2'>
-                  <div
-                    className={classnames({
-                      'w-6': true,
-                      'cursor-pointer': true,
-                    })}
-                  >
-                    <Increment
-                      onClick={() => {}} //updateSkill(skill, INCREASE)}
-                      // disabled={!canIncrement}
-                    />
+          <div className='py-4'>
+            <MinorHeader content='Magical Equipment' />
+            {data?.magic?.nodes.map((item: any) => (
+              <div key={item?.id} className='px-2 border-'>
+                <div className='flex gap-6 mb-8 mt-8'>
+                  <div className='text-lg font-bold capitalize'>
+                    {item?.name}
                   </div>
-                  <div
-                    className={classnames({
-                      'w-6': true,
-                      // 'cursor-not-allowed': !canDecrement,
-                      // 'cursor-pointer': canDecrement,
-                    })}
-                  >
-                    <Decrement
-                      onClick={() => {}} //updateSkill(skill, DECREASE)}
-                      // disabled={!canDecrement}
-                    />
+
+                  <div className='flex gap-2'>
+                    <div
+                      className={classnames({
+                        'w-6': true,
+                        'cursor-pointer': true,
+                      })}
+                    >
+                      <Increment
+                        onClick={() => {}} //updateSkill(skill, INCREASE)}
+                        // disabled={!canIncrement}
+                      />
+                    </div>
+                    <div
+                      className={classnames({
+                        'w-6': true,
+                        // 'cursor-not-allowed': !canDecrement,
+                        // 'cursor-pointer': canDecrement,
+                      })}
+                    >
+                      <Decrement
+                        onClick={() => {}} //updateSkill(skill, DECREASE)}
+                        // disabled={!canDecrement}
+                      />
+                    </div>
                   </div>
                 </div>
-
                 <div className='italic text-slate-400 text-sm ml-2'>
                   {item?.description}
                 </div>
