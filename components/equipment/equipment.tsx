@@ -36,7 +36,7 @@ export default function Equipment() {
         </div>
         <MinorHeader
           content='equipment'
-          icon={<WrenchScrewdriverIcon className='' />}
+          icon={<WrenchScrewdriverIcon />}
           subtext='Available inventory slots:'
           subvalue={inventorySlots}
         />
