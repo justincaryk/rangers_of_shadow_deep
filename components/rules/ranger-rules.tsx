@@ -1,3 +1,4 @@
+import { SetBaseStatsMutationVariables } from '../../graphql/generated/graphql'
 import { BASE_STATS_ENUM } from '../types'
 
 export const INCREASE = 1
@@ -9,7 +10,12 @@ export const MAX_BP_FOR_HEROIC_ACTIONS_AND_SPELLS = 5
 export const MAX_BP_FOR_SKILLS = 5
 export const SKILL_POINTS_PER_BP = 8
 
-export const BASE_STATS = {
+type Mapped<T> = {
+  [Prop in keyof T]: number
+}
+interface BaseStats extends Mapped<SetBaseStatsMutationVariables> {}
+
+export const BASE_STATS: BaseStats = {
   [BASE_STATS_ENUM.move]: 6,
   [BASE_STATS_ENUM.fight]: 2,
   [BASE_STATS_ENUM.shoot]: 1,
