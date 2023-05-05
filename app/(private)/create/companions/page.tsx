@@ -30,7 +30,7 @@ import { DECREASE, INCREASE } from '../../../../components/rules/creation-rules'
 
 import {
   BASE_RECRUITMENT_POINTS,
-  RP_BONUS_PER_BUILD_POINT,
+  RECRUITMENT_POINTS_PER_BP,
   MAX_BP_FOR_RP,
 } from '../../../../components/rules/creation-rules'
 
@@ -56,7 +56,7 @@ export default function Companions() {
   const [ players, updatePlayers ] = useAtom(useUpdatePlayerCount)
 
   const updateAdjustedRecruitmentPoints = useCallback(() => {
-    const bonusRp = bpSpentOnRp * RP_BONUS_PER_BUILD_POINT
+    const bonusRp = bpSpentOnRp * RECRUITMENT_POINTS_PER_BP
     const total = getAdjustedRecruitmentPoints(
       players,
       bonusRp + BASE_RECRUITMENT_POINTS
@@ -113,14 +113,14 @@ export default function Companions() {
             <div className='space-y-1 text-sm text-dirty-orange'>
               <div>
                 Every <strong>1 BUILD POINT</strong> spent yields{' '}
-                <strong>{RP_BONUS_PER_BUILD_POINT} RECRUITMENT POINTS</strong>.
+                <strong>{RECRUITMENT_POINTS_PER_BP} RECRUITMENT POINTS</strong>.
               </div>
             </div>
             <div className='space-x-2'>
-              <SmallButton onClick={spendBuildPoint}>
+              <SmallButton primary onClick={spendBuildPoint}>
                 Increase allotment
               </SmallButton>
-              <SmallButton onClick={recoverBuildPoint} className='bg-gray-400'>
+              <SmallButton onClick={recoverBuildPoint}>
                 Decrease allotment
               </SmallButton>
             </div>

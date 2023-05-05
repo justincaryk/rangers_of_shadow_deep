@@ -14,6 +14,54 @@ export default gql`
       totalStatPoints
       totalRecruitmentPoints
       nodeId
+      memberHeroicActionsByCharacterId {
+        nodes {
+          __typename
+          id
+          heroicActionId
+          characterId
+          nodeId
+        }
+      }
+      memberItemsByCharacterId {
+        nodes {
+          __typename
+          id
+          characterId
+          itemId
+          nodeId
+        }
+      }
+      memberStatsByCharacterId {
+        nodes {
+          __typename
+          id
+          characterId
+          value
+          statsId
+          nodeId
+        }
+      }
+      memberSpellsByCharacterId {
+        nodes {
+          __typename
+          id
+          characterId
+          spellId
+          nodeId
+        }
+        totalCount
+      }
+      memberSkillsByCharacterId {
+        nodes {
+          __typename
+          id
+          skillId
+          characterId
+          value
+          nodeId
+        }
+      }
     }
   }
 `

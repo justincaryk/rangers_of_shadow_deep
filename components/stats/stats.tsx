@@ -21,7 +21,6 @@ export default function Stats() {
   const [ show, toggleShow ] = useState(false)
 
   const { data: stats } = useStatsApi().getStats
-  const { data: rangerStats } = useStatsApi().getStatsByRangerId
   const { data: ranger } = useRangerApi().getRangerById
 
   const { mutate: mutateStat, status: mutateStatStatus } =
@@ -84,7 +83,7 @@ export default function Stats() {
       console.error('no matching member stat id: ', {
         statId: stat.id,
         memberStats:
-          rangerStats?.characterById?.memberStatsByCharacterId.nodes ?? [],
+          ranger?.characterById?.memberStatsByCharacterId.nodes ?? [],
       })
       throw new Error()
     }
@@ -104,7 +103,7 @@ export default function Stats() {
 
   function getMemberStatFromStatId(statId: string) {
     return (
-      rangerStats?.characterById?.memberStatsByCharacterId.nodes.find(
+      ranger?.characterById?.memberStatsByCharacterId.nodes.find(
         x => statId && statId === x?.statsId
       ) || null
     )

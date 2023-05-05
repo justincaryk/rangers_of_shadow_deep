@@ -103,10 +103,10 @@ export default function InitCreate() {
         'flex gap-x-5': true,
       })}
     >
-      <SmallButton onClick={createRanger}>Create Ranger</SmallButton>
+      <SmallButton onClick={createRanger} primary>Create Ranger</SmallButton>
 
       <Link href={PRIVATE_LINK_ROUTES.CREATE_COMPANIONS}>
-        <SmallButton>Create Companion</SmallButton>
+        <SmallButton primary>Create Companion</SmallButton>
       </Link>
     </div>
   )

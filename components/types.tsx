@@ -1,5 +1,6 @@
 import { Character } from '../graphql/generated/graphql'
 import { HeroicAction, Skill, Spell } from './data'
+import { objectKeys } from './utils'
 
 export enum RANGER_FIELD {
   CORE = 'core',
@@ -29,27 +30,32 @@ export enum MODS {
   MAGIC_SHOOTING_BONUS = 'magic-shooting-bonus',
 }
 
-export type Ranger = {
-  id: string | null
-  [RANGER_FIELD.CORE]: Partial<Character>
-  [RANGER_FIELD.STATS]: {
-    [BASE_STATS_ENUM.move]: number
-    [BASE_STATS_ENUM.fight]: number
-    [BASE_STATS_ENUM.shoot]: number
-    [BASE_STATS_ENUM.armor]: number
-    [BASE_STATS_ENUM.will]: number
-    [BASE_STATS_ENUM.health]: number
-  }
-  [RANGER_FIELD.SKILLS]: {
-    [key: Skill['name']]: number
-  }
-  [RANGER_FIELD.HEROIC_ACTIONS]: HeroicAction['name'][]
-  [RANGER_FIELD.SPELLS]: Spell['name'][]
-  [RANGER_FIELD.EQUIPMENT]: {
-    weapons: string[]
-    armor: string[]
-    equipment: string[]
-  }
+export type RangerLookupFieldHashKeyStrings = 'heroic_actions' | 'spells' | 'skills' | 'stats'
+
+export const RANGER_LOOKUP_FIELD_HASH_KEYS: { [x: string]: RangerLookupFieldHashKeyStrings } = {
+  HEROIC_ACTIONS: 'heroic_actions',
+  SPELLS: 'spells',
+  SKILLS: 'skills',
+  STATS: 'stats',
+}
+
+type CharacterByIdLookupFields = Pick<
+  Character,
+  | 'memberHeroicActionsByCharacterId'
+  | 'memberItemsByCharacterId'
+  | 'memberSkillsByCharacterId'
+  | 'memberSpellsByCharacterId'
+  | 'memberStatsByCharacterId'
+>
+
+type LookupFieldMap = {
+  [key: string]: keyof CharacterByIdLookupFields
+}
+export const RANGER_LOOKUP_FIELD_HASH: LookupFieldMap = {
+  [RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS]: 'memberHeroicActionsByCharacterId',
+  [RANGER_LOOKUP_FIELD_HASH_KEYS.SPELLS]: 'memberSpellsByCharacterId',
+  [RANGER_LOOKUP_FIELD_HASH_KEYS.SKILLS]: 'memberSkillsByCharacterId',
+  [RANGER_LOOKUP_FIELD_HASH_KEYS.STATS]: 'memberStatsByCharacterId',
 }
 
 export enum PLAYER_COUNT {

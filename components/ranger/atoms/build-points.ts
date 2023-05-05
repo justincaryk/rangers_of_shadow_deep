@@ -1,18 +1,18 @@
+'use client'
+
 import { atom, useAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import {
   MAX_BP_FOR_RP,
-  RP_BONUS_PER_BUILD_POINT,
-} from '../../rules/creation-rules'
-
-import {
+  RECRUITMENT_POINTS_PER_BP,
   BASE_BUILD_POINTS,
   MAX_BP_FOR_HEROIC_SPELLS,
   MAX_BP_FOR_SKILLS,
   MAX_BP_FOR_STATS,
   SKILL_POINTS_PER_BP,
 } from '../../rules/creation-rules'
+
 import { useRangerApi } from '../ranger-api'
 
 // read only atoms - always export
@@ -40,7 +40,7 @@ export function useSyncRangerBp() {
       const { totalHeroicActions, totalStatPoints, totalRecruitmentPoints, totalSkillPoints } = data.characterById
 
       const skillPointsConvertedToBp = Math.floor(totalSkillPoints / SKILL_POINTS_PER_BP)
-      const recruitmentPointsConvertedToBp = Math.floor(totalRecruitmentPoints / RP_BONUS_PER_BUILD_POINT)
+      const recruitmentPointsConvertedToBp = Math.floor(totalRecruitmentPoints / RECRUITMENT_POINTS_PER_BP)
 
       // only deduct what is allowed at create
       const heroicMod = Math.min(totalHeroicActions, MAX_BP_FOR_HEROIC_SPELLS)

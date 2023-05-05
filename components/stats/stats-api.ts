@@ -1,11 +1,9 @@
 import useGraphQL from '../graphql/useGraphQL'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useParams } from 'next/navigation'
 
 import {
   SetBaseStatsMutation,
   SetBaseStatsMutationVariables,
-  StatsByCharacterIdQuery,
   StatsQuery,
   UpdateMemberStatByIdMutation,
   UpdateMemberStatByIdMutationVariables,
@@ -13,8 +11,8 @@ import {
 
 import GetStatsRequest from '../../graphql/queries/stats'
 import SetBaseCharacterStats from '../../graphql/mutations/character-stats-base'
-import StatsByCharacterIdRequest from '../../graphql/queries/character-stats'
 import UpdateMemberStatById from '../../graphql/mutations/character-stats-update'
+import { RANGER_QUERY_KEYS } from '../ranger/ranger-api'
 
 export enum STATS_QUERY_KEYS {
   STATS = 'stats',
@@ -25,7 +23,6 @@ export enum STATS_QUERY_KEYS {
 export function useStatsApi() {
   const { graphQLClient } = useGraphQL()
   const queryClient = useQueryClient()
-  const params = useParams()
 
   return {
     createBaseStats: useMutation({
@@ -48,19 +45,9 @@ export function useStatsApi() {
         queryClient.invalidateQueries({
           queryKey: [ STATS_QUERY_KEYS.COMPANION_STATS ],
         })
-      },
-    }),
-    getStatsByRangerId: useQuery({
-      queryKey: [ STATS_QUERY_KEYS.RANGER_STATS ],
-      queryFn: async () => {
-        return params?.id
-          ? graphQLClient.request<StatsByCharacterIdQuery>(
-              StatsByCharacterIdRequest,
-              {
-                id: params?.id,
-              }
-            )
-          : null
+        queryClient.invalidateQueries({
+          queryKey: [ RANGER_QUERY_KEYS.RANGER ],
+        })
       },
     }),
     getStats: useQuery({

@@ -33,14 +33,15 @@ export default function Skills() {
   const [ ranger, updateRanger ] = useAtom(useRanger)
 
   const skillPoints = useMemo(() => {
-    const allotted = skillsBp * SKILL_POINTS_PER_BP
-    const remaining =
-      allotted -
-      Object.values(ranger[RANGER_FIELD.SKILLS]).reduce((prev, curr) => {
-        return prev + curr
-      }, 0)
+    // const allotted = skillsBp * SKILL_POINTS_PER_BP
+    // const remaining =
+    //   allotted -
+    //   Object.values(ranger[RANGER_FIELD.SKILLS]).reduce((prev, curr) => {
+    //     return prev + curr
+    //   }, 0)
 
-    return remaining
+    // return remaining
+    return 0
   }, [ skillsBp, ranger ])
 
   const spendBpForSkillPoints = () => {
@@ -132,10 +133,10 @@ export default function Skills() {
               </div>
             </div>
             <div className='space-x-2'>
-              <SmallButton onClick={spendBpForSkillPoints}>
+              <SmallButton onClick={spendBpForSkillPoints} primary>
                 Increase allotment
               </SmallButton>
-              <SmallButton onClick={recoverBuildPoint} className='bg-gray-400'>
+              <SmallButton onClick={recoverBuildPoint}>
                 Decrease allotment
               </SmallButton>
             </div>

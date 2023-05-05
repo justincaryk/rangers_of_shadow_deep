@@ -17,8 +17,8 @@ export const MAX_STARTING_ITEM_SLOTS = 5
 
 // Build Point Conversions Values:
 export const SKILL_POINTS_PER_BP = 8
-export const RP_BONUS_PER_BUILD_POINT = 10
-export const RP_BONUS_PER_LEADERSHIP_SP = 1
+export const RECRUITMENT_POINTS_PER_BP = 10
+export const RECRUITMENT_POINTS_PER_LEADERSHIP_POINT = 1
 export const INITIAL_RECRUIT_SKILL_BUMP = 3
 
 type Mapped<T> = {

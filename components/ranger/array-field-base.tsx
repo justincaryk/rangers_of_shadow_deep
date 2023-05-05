@@ -2,84 +2,147 @@
 
 import { BoltIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import Card from '../parts/card'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
 import SmallButton from '../parts/small-button'
 
-import { RANGER_FIELD } from '../types'
-import { useGetTrueAvailBp } from '../utils'
-import { useHeroicActionBp } from './atoms/build-points'
-
-import { useRanger } from './atoms/ranger'
-import { DECREASE, INCREASE } from '../rules/creation-rules'
-
+// types
+import { RANGER_LOOKUP_FIELD_HASH_KEYS, RangerLookupFieldHashKeyStrings, RANGER_LOOKUP_FIELD_HASH } from '../types'
 import { HeroicAction } from '../heroic-actions/types'
 import { Spell } from '../spells/types'
-import { UnionType } from 'typescript'
+import { MemberHeroicAction, MemberSpell } from '../../graphql/generated/graphql'
 
-const SectionIcon = (type: RANGER_FIELD) => {
-  if (type === RANGER_FIELD.HEROIC_ACTIONS) return <BoltIcon className='text-yellow-400' />
-  if (type === RANGER_FIELD.SPELLS) return <SparklesIcon className='text-pink-400' />
+// state hooks
+import { useHeroicActionBp } from './atoms/build-points'
+import { useRangerApi } from './ranger-api'
+import { useHeroicActionApi } from '../heroic-actions/heroic-actions-api'
+import { useSpellsApi } from '../spells/spells-api'
+
+const SectionIcon = (type: RangerLookupFieldHashKeyStrings) => {
+  if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS) return <BoltIcon className='text-yellow-400' />
+  if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.SPELLS) return <SparklesIcon className='text-pink-400' />
   return null
 }
 
 interface Props {
-  type: RANGER_FIELD.HEROIC_ACTIONS | RANGER_FIELD.SPELLS
+  type: RangerLookupFieldHashKeyStrings
   data: (HeroicAction | Spell)[]
 }
 
 export default function ArrayFieldBase({ type, data }: Props) {
   const [ show, toggleShow ] = useState(false)
-  const [ heroicBp ] = useAtom(useHeroicActionBp)
-  const trueAvailBp = useGetTrueAvailBp(heroicBp)
+  const [ submitting, setSubmitting ] = useState(false)
 
-  const [ ranger, updateRanger ] = useAtom(useRanger)
-  const currentField = useMemo(() => {
-    return ranger[type]
+  const [ heroicBp ] = useAtom(useHeroicActionBp)
+  const { data: ranger } = useRangerApi().getRangerById
+
+  const { mutate: mutateActionLearn, status: statusActionLearn } = useHeroicActionApi().learnHeroicAction
+  const { mutate: mutateActionUnlearn, status: statusActionUnlearn } = useHeroicActionApi().unlearnHeroicAction
+  const { mutate: mutateSpellLearn, status: statusSpellLearn } = useSpellsApi().learnSpell
+  const { mutate: mutateSpellUnlearn, status: statusSpellUnlearn } = useSpellsApi().unlearnSpell
+
+  useEffect(() => {
+    if (statusActionLearn === 'loading') {
+      setSubmitting(true)
+      return
+    }
+    if (statusActionUnlearn === 'loading') {
+      setSubmitting(true)
+      return
+    }
+    if (statusSpellLearn === 'loading') {
+      setSubmitting(true)
+      return
+    }
+    if (statusSpellUnlearn === 'loading') {
+      setSubmitting(true)
+      return
+    }
+    if (submitting) {
+      setSubmitting(false)
+    }
+  }, [ statusActionLearn, statusActionUnlearn, statusSpellLearn, statusSpellUnlearn ])
+
+  const rangerLookupRefData = useMemo(() => {
+    const base = ranger?.characterById
+    const lookupKey = RANGER_LOOKUP_FIELD_HASH[type]
+
+    return base?.[lookupKey]?.nodes ?? []
   }, [ ranger, type ])
 
-  const handleItemClicked = (item: HeroicAction | Spell) => {
-    if (!Array.isArray(currentField)) {
-      return null
-    }
-
-    // if it exists => remove it
-    if (currentField.indexOf(item.name) > -1) {
-      updateRanger({
-        ...ranger,
-        [type]: currentField.filter(x => x != item.name),
-      })
-      // update build points
-      // updateMinorBuildPoints(DECREASE)
-      return null
-    }
-
-    // if no build points avail => exit
-    if (trueAvailBp === 0) {
-      return null
-    }
-
-    // add it
-    updateRanger({
-      ...ranger,
-      [type]: [ ...currentField, item.name ],
-    })
-    // update build points
-    // updateMinorBuildPoints(INCREASE)
-  }
-
   const headerContent = useMemo(() => {
-    if (type === RANGER_FIELD.HEROIC_ACTIONS) {
+    if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS) {
       return 'heroic abilities'
     }
-    if (type === RANGER_FIELD.SPELLS) {
+    if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.SPELLS) {
       return 'spells'
     }
     return 'invalid section type'
   }, [ type ])
+
+  const checkIsFieldLearned = (id: string) => {
+    for (const ref of rangerLookupRefData) {
+      const { heroicActionId = null } = ref as MemberHeroicAction
+      const { spellId = null } = ref as MemberSpell
+      if (id === heroicActionId || id === spellId) {
+        return {
+          refId: ref.id,
+          known: true,
+        }
+      }
+    }
+    return {
+      refId: null,
+      known: false,
+    }
+  }
+
+  const handleItemClicked = (item: HeroicAction | Spell) => {
+    if (submitting) {
+      return
+    }
+
+    const { known, refId } = checkIsFieldLearned(item.id)
+
+    const baseDeletePayload = {
+      id: refId,
+      characterId: ranger?.characterById?.id,
+    }
+
+    switch (true) {
+      case known && type === 'heroic_actions':
+        mutateActionUnlearn({
+          ...baseDeletePayload,
+          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
+        })
+        break
+      case !known && type === 'heroic_actions':
+        mutateActionLearn({
+          heroicActionId: item.id,
+          characterId: ranger?.characterById?.id,
+          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
+        })
+        break
+      case known && type === 'spells':
+        mutateSpellLearn({
+          spellId: item.id,
+          characterId: ranger?.characterById?.id,
+          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
+        })
+        break
+      case !known && type === 'spells':
+        mutateSpellUnlearn({
+          ...baseDeletePayload,
+          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
+        })
+        break
+      default:
+        break
+    }
+  }
 
   return (
     <div>
@@ -91,7 +154,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
           content={headerContent}
           icon={SectionIcon(type)}
           subtext={'Available build points:'}
-          subvalue={trueAvailBp}
+          subvalue={heroicBp}
         />
       </div>
       {show && (
@@ -102,11 +165,8 @@ export default function ArrayFieldBase({ type, data }: Props) {
               header={
                 <div className='flex justify-between items-center'>
                   <div className='font-semibold capitalize'>{item.name}</div>
-                  <SmallButton
-                    onClick={() => handleItemClicked(item)}
-                    className={currentField.indexOf(item.name) > -1 ? 'bg-gray-400' : ''}
-                  >
-                    {currentField.indexOf(item.name) > -1 ? 'UNLEARN' : 'LEARN'}
+                  <SmallButton onClick={() => handleItemClicked(item)} primary={!checkIsFieldLearned(item.id).known}>
+                    {checkIsFieldLearned(item.id).known ? 'UNLEARN' : 'LEARN'}
                   </SmallButton>
                 </div>
               }
@@ -116,10 +176,15 @@ export default function ArrayFieldBase({ type, data }: Props) {
         </div>
       )}
       {/* always show preview of selected heroic actions  */}
-      {!show && currentField.length > 0 && (
+      {!show && ranger && (
         <div className='space-y-4'>
-          {currentField.map(name => {
-            const item = data.find(item => item.name === name)
+          {rangerLookupRefData.map(itemRef => {
+            const item = data.find(item => {
+              if (itemRef.__typename === 'MemberHeroicAction' && item.id === itemRef.heroicActionId) return true
+              if (itemRef.__typename === 'MemberSpell' && item.id === itemRef.spellId) return true
+              return false
+            })
+            
             if (!item) {
               return null
             }
@@ -129,15 +194,10 @@ export default function ArrayFieldBase({ type, data }: Props) {
                 header={
                   <div className='flex justify-between items-center'>
                     <div className='font-semibold capitalize'>{item.name}</div>
-                    <SmallButton
-                      onClick={() => handleItemClicked(item)}
-                      className={currentField.indexOf(item.name) > -1 ? 'bg-gray-400' : ''}
-                    >
-                      {currentField.indexOf(item.name) > -1 ? 'UNLEARN' : 'LEARN'}
-                    </SmallButton>
+                    <SmallButton onClick={() => handleItemClicked(item.id)}>{'UNLEARN'}</SmallButton>
                   </div>
                 }
-                main={null}
+                main={item.description}
               />
             )
           })}
