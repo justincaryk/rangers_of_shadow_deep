@@ -22,6 +22,7 @@ export default gql`
           characterId
           nodeId
         }
+        totalCount
       }
       memberItemsByCharacterId {
         nodes {
@@ -31,6 +32,7 @@ export default gql`
           itemId
           nodeId
         }
+        totalCount
       }
       memberStatsByCharacterId {
         nodes {
@@ -41,6 +43,7 @@ export default gql`
           statsId
           nodeId
         }
+        totalCount
       }
       memberSpellsByCharacterId {
         nodes {
@@ -61,6 +64,7 @@ export default gql`
           value
           nodeId
         }
+        totalCount
       }
     }
   }

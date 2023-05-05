@@ -28,7 +28,7 @@ export function useSyncRangerBp() {
   const [ , setBp ] = useAtom(useSetCurrentBuildPoints)
   const [ , setStatsBp ] = useAtom(useSetStatsBp)
   const [ , setSkillsBp ] = useAtom(useSetSkillsBp)
-  const [ , setRpBp ] = useAtom(useSetSkillsBp)
+  const [ , setRpBp ] = useAtom(useSetRecruitmentBp)
   const [ , setHeroicBp ] = useAtom(useSetHeroicActionBp)
 
   const { data } = useRangerApi().getRangerById
@@ -47,7 +47,7 @@ export function useSyncRangerBp() {
       const skillMod = Math.min(skillPointsConvertedToBp, MAX_BP_FOR_SKILLS)
       const statMod = Math.min(totalStatPoints, MAX_BP_FOR_STATS)
       const recruitmentMod = Math.min(recruitmentPointsConvertedToBp, MAX_BP_FOR_RP)
-
+      
       totalBp -= heroicMod
       totalBp -= skillMod
       totalBp -= statMod
@@ -74,17 +74,17 @@ const useSetCurrentBuildPoints = atom(
 )
 
 const useSetHeroicActionBp = atom(MAX_BP_FOR_HEROIC_SPELLS, (get, set, value: number) => {
-  set(useSetHeroicActionBp, value)
+  set(useHeroicActionBp, value)
 })
 
 const useSetStatsBp = atom(null, (_get, set, value: number) => {
   set(useStatsBp, value)
 })
 
-const useSetSkillsBp = atom(0, (_get, set, value: number) => {
-  set(useSetSkillsBp, value)
+const useSetSkillsBp = atom(null, (_get, set, value: number) => {
+  set(useSkillsBp, value)
 })
 
 const useSetRecruitmentBp = atom(0, (_get, set, value: number) => {
-  set(useSetRecruitmentBp, value)
+  set(useRecruitmentPointsBp, value)
 })

@@ -87,6 +87,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
     for (const ref of rangerLookupRefData) {
       const { heroicActionId = null } = ref as MemberHeroicAction
       const { spellId = null } = ref as MemberSpell
+
       if (id === heroicActionId || id === spellId) {
         return {
           refId: ref.id,
@@ -190,11 +191,11 @@ export default function ArrayFieldBase({ type, data }: Props) {
             }
             return (
               <Card
-                key={item.name}
+                key={item.id}
                 header={
                   <div className='flex justify-between items-center'>
                     <div className='font-semibold capitalize'>{item.name}</div>
-                    <SmallButton onClick={() => handleItemClicked(item.id)}>{'UNLEARN'}</SmallButton>
+                    <SmallButton onClick={() => handleItemClicked(item)}>{'UNLEARN'}</SmallButton>
                   </div>
                 }
                 main={item.description}
