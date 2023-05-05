@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 import { Ranger, RANGER_FIELD } from '../../types'
-import { BASE_STATS } from '../../rules/ranger-rules'
+import { BASE_STATS } from '../../rules/creation-rules'
 
 const BASE_RANGER: Ranger = {
   id: null,

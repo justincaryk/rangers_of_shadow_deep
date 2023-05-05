@@ -11,7 +11,7 @@ import MinorHeader from '../../../../components/parts/minor-header'
 import CompanionsList from '../../../../components/companions/companions-list'
 import SelectedCompanions from '../../../../components/companions/companions-selected'
 
-import { useBpForRecruitmentPoints } from '../../../../components/ranger/atoms/build-points'
+import { useRecruitmentPointsBp } from '../../../../components/ranger/atoms/build-points'
 import {
   useAdjustedRecruitmentPoints,
   useSpentRecruitmentPoints,
@@ -26,17 +26,17 @@ import {
   useGetTrueAvailBp,
 } from '../../../../components/utils'
 
-import { DECREASE, INCREASE } from '../../../../components/rules/ranger-rules'
+import { DECREASE, INCREASE } from '../../../../components/rules/creation-rules'
 
 import {
   BASE_RECRUITMENT_POINTS,
   RP_BONUS_PER_BUILD_POINT,
-  MAX_BUILD_POINTS_FOR_RP,
-} from '../../../../components/rules/companion-rules'
+  MAX_BP_FOR_RP,
+} from '../../../../components/rules/creation-rules'
 
 export default function Companions() {
-  const [ bpSpentOnRp, updateBpSpentOnRp ] = useAtom(useBpForRecruitmentPoints)
-  const trueAvailBp = useGetTrueAvailBp(MAX_BUILD_POINTS_FOR_RP - bpSpentOnRp)
+  const [ bpSpentOnRp ] = useAtom(useRecruitmentPointsBp)
+  const trueAvailBp = useGetTrueAvailBp(MAX_BP_FOR_RP - bpSpentOnRp)
 
   const [ spentRp ] = useAtom(useSpentRecruitmentPoints)
   const [ adjustedTotalRp, setAdjustedTotalBp ] = useAtom(
@@ -81,12 +81,12 @@ export default function Companions() {
 
   const spendBuildPoint = async () => {
     if (trueAvailBp > 0) {
-      await updateBpSpentOnRp(INCREASE)
+      // await updateBpSpentOnRp(INCREASE)
     }
   }
   const recoverBuildPoint = () => {
     if (bpSpentOnRp > 0) {
-      updateBpSpentOnRp(DECREASE)
+      // updateBpSpentOnRp(DECREASE)
     }
   }
 

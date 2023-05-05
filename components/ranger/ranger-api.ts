@@ -73,10 +73,12 @@ export function useRangerApi() {
     }),
     getRangerById: useQuery({
       queryKey: [ RANGER_QUERY_KEYS.RANGER ],
-      queryFn: async () =>
-        graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
+      queryFn: async () => {
+        return params?.id ? (
+          graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
           id: params?.id,
-        }),
+          })) : null
+        },
     }),
   }
 }

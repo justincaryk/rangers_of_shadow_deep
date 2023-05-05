@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import {
-  MemberStatInput,
   SetBaseStatsMutationVariables,
 } from '../../graphql/generated/graphql'
 
@@ -15,7 +14,7 @@ import { sectionBaseStyles } from '../parts/styles'
 
 import { useRangerApi } from '../ranger/ranger-api'
 import { useStatsApi } from '../stats/stats-api'
-import { BASE_STATS } from '../rules/ranger-rules'
+import { BASE_STATS } from '../rules/creation-rules'
 import { BASE_STATS_ENUM } from '../types'
 
 export default function InitCreate() {
@@ -50,7 +49,7 @@ export default function InitCreate() {
 
   const hydrateNewRanger = useCallback(() => {
     const rangerId = rangerCreateResult?.createCharacter?.character?.id
-
+    console.log('executing hydrate....')
     const baseStatsPayload: SetBaseStatsMutationVariables = Object.assign(
       {},
       ...Object.values(BASE_STATS_ENUM).map(key => ({
@@ -68,8 +67,15 @@ export default function InitCreate() {
 
   // hydrate new ranger with defaults
   useEffect(() => {
+    // bail if executing hydrate
+    if (hydrateStatsStatus === 'loading') {
+      return;
+    }
     // begin async execution
-    if (rangerCreateStatus === 'success' && getStatsStatus === 'success' && hydrateStatsStatus !== 'success') {
+    if (
+      rangerCreateStatus === 'success' &&
+      getStatsStatus === 'success' &&
+      hydrateStatsStatus !== 'success') {
       hydrateNewRanger()
     }
     // on resolve, set ready for reroute

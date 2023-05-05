@@ -1,14 +1,20 @@
+import useGraphQL from '../graphql/useGraphQL'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useParams } from 'next/navigation'
+
 import {
   SetBaseStatsMutation,
   SetBaseStatsMutationVariables,
+  StatsByCharacterIdQuery,
   StatsQuery,
+  UpdateMemberStatByIdMutation,
+  UpdateMemberStatByIdMutationVariables,
 } from '../../graphql/generated/graphql'
-import useGraphQL from '../graphql/useGraphQL'
 
 import GetStatsRequest from '../../graphql/queries/stats'
-// import { useParams } from 'next/navigation'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import SetBaseCharacterStats from '../../graphql/mutations/character-stats-base'
+import StatsByCharacterIdRequest from '../../graphql/queries/character-stats'
+import UpdateMemberStatById from '../../graphql/mutations/character-stats-update'
 
 export enum STATS_QUERY_KEYS {
   STATS = 'stats',
@@ -18,8 +24,8 @@ export enum STATS_QUERY_KEYS {
 
 export function useStatsApi() {
   const { graphQLClient } = useGraphQL()
-  // const queryClient = useQueryClient()
-  // const params = useParams()
+  const queryClient = useQueryClient()
+  const params = useParams()
 
   return {
     createBaseStats: useMutation({
@@ -29,53 +35,37 @@ export function useStatsApi() {
           data
         ),
     }),
-    //   createRanger: useMutation({
-    //     mutationFn: (data: CreateCharacterMutationVariables) =>
-    //       graphQLClient.request<CreateCharacterMutation>(
-    //         CreateCharacterRequest,
-    //         data
-    //       ),
-    //     onSuccess: () => {
-    //       queryClient.invalidateQueries({
-    //         queryKey: [RANGER_QUERY_KEYS.ALL_RANGERS],
-    //       })
-    //     },
-    //   }),
-    //   updateRanger: useMutation({
-    //     mutationFn: (data: UpdateCharacterMutationVariables) =>
-    //       graphQLClient.request<UpdateCharacterMutation>(
-    //         UpdateCharacterById,
-    //         data
-    //       ),
-    //     onSuccess: () => {
-    //       queryClient.invalidateQueries({ queryKey: [RANGER_QUERY_KEYS.RANGER] })
-    //       queryClient.invalidateQueries({
-    //         queryKey: [RANGER_QUERY_KEYS.ALL_RANGERS],
-    //       })
-    //     },
-    //   }),
-    //   deleteRanger: useMutation({
-    //     mutationFn: (data: DeleteCharacterMutationVariables) =>
-    //       graphQLClient.request<DeleteCharacterMutation>(
-    //         DeleteCharacterRequest,
-    //         data
-    //       ),
-    //     onSuccess: () => {
-    //       queryClient.invalidateQueries({
-    //         queryKey: [RANGER_QUERY_KEYS.ALL_RANGERS],
-    //       })
-    //     },
-    //   }),
+    updateMemberStatById: useMutation({
+      mutationFn: (data: UpdateMemberStatByIdMutationVariables) =>
+        graphQLClient.request<UpdateMemberStatByIdMutation>(
+          UpdateMemberStatById,
+          data
+        ),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [ STATS_QUERY_KEYS.RANGER_STATS ],
+        })
+        queryClient.invalidateQueries({
+          queryKey: [ STATS_QUERY_KEYS.COMPANION_STATS ],
+        })
+      },
+    }),
+    getStatsByRangerId: useQuery({
+      queryKey: [ STATS_QUERY_KEYS.RANGER_STATS ],
+      queryFn: async () => {
+        return params?.id
+          ? graphQLClient.request<StatsByCharacterIdQuery>(
+              StatsByCharacterIdRequest,
+              {
+                id: params?.id,
+              }
+            )
+          : null
+      },
+    }),
     getStats: useQuery({
       queryKey: [ STATS_QUERY_KEYS.STATS ],
       queryFn: async () => graphQLClient.request<StatsQuery>(GetStatsRequest),
     }),
-    //   getRangerById: useQuery({
-    //     queryKey: [RANGER_QUERY_KEYS.RANGER],
-    //     queryFn: async () =>
-    //       graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
-    //         id: params?.id,
-    //       }),
-    //   }),
   }
 }

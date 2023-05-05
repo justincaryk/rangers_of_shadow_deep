@@ -3,7 +3,7 @@ import { atomWithReset } from 'jotai/utils'
 
 import {
   BASE_RECRUITMENT_POINTS,
-} from '../../rules/companion-rules'
+} from '../../rules/creation-rules'
 
 export const useSpentRecruitmentPoints = atomWithReset(0)
 export const useAdjustedRecruitmentPoints = atomWithReset(BASE_RECRUITMENT_POINTS)

@@ -7,8 +7,8 @@ import { useRefundRecruitmentPoints } from './atoms/recruitment-points'
 
 export default function SelectedCompanions() {
   const [ companions ] = useAtom(useCompanions)
-  const [ _x, removeCompanion ] = useAtom(useDeleteCompanion)
-  const [ _y, refundRecruitmentPoints ] = useAtom(useRefundRecruitmentPoints)
+  const [ , removeCompanion ] = useAtom(useDeleteCompanion)
+  const [ , refundRecruitmentPoints ] = useAtom(useRefundRecruitmentPoints)
 
   const handleBanishCompanion = (companion: Companion) => {
     removeCompanion(companion)

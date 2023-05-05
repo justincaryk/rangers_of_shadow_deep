@@ -13,6 +13,7 @@ export default gql`
       totalSkillPoints
       totalStatPoints
       totalRecruitmentPoints
+      nodeId
     }
   }
 `

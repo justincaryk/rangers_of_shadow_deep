@@ -16,9 +16,8 @@ import ShowHide from '../parts/show-hide'
 import SmallButton from '../parts/small-button'
 
 import { RANGER_FIELD } from '../types'
-import { useGetTrueAvailBp } from '../utils'
 
-import { useBpForSkills } from '../ranger/atoms/build-points'
+import { useSkillsBp } from '../ranger/atoms/build-points'
 import { useRanger } from '../ranger/atoms/ranger'
 
 import {
@@ -26,16 +25,15 @@ import {
   INCREASE,
   MAX_BP_FOR_SKILLS,
   SKILL_POINTS_PER_BP,
-} from '../rules/ranger-rules'
+} from '../rules/creation-rules'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
-  const [ bpSpentForSkills, updateSkillsBuildPoints ] = useAtom(useBpForSkills)
-  const trueAvailBp = useGetTrueAvailBp(MAX_BP_FOR_SKILLS - bpSpentForSkills)
+  const [ skillsBp ] = useAtom(useSkillsBp)
   const [ ranger, updateRanger ] = useAtom(useRanger)
 
   const skillPoints = useMemo(() => {
-    const allotted = bpSpentForSkills * SKILL_POINTS_PER_BP
+    const allotted = skillsBp * SKILL_POINTS_PER_BP
     const remaining =
       allotted -
       Object.values(ranger[RANGER_FIELD.SKILLS]).reduce((prev, curr) => {
@@ -43,16 +41,16 @@ export default function Skills() {
       }, 0)
 
     return remaining
-  }, [ bpSpentForSkills, ranger ])
+  }, [ skillsBp, ranger ])
 
-  const spendBuildPoint = () => {
-    if (trueAvailBp > 0) {
-      updateSkillsBuildPoints(INCREASE)
+  const spendBpForSkillPoints = () => {
+    if (skillsBp > 0) {
+      // updateSkillsBuildPoints(INCREASE)
     }
   }
   const recoverBuildPoint = () => {
     if (skillPoints >= SKILL_POINTS_PER_BP) {
-      updateSkillsBuildPoints(DECREASE)
+      // updateSkillsBuildPoints(DECREASE)
     }
   }
 
@@ -63,7 +61,7 @@ export default function Skills() {
     }
     const currentSkillValue = ranger[RANGER_FIELD.SKILLS][skill.name] ?? 0
     // if no value assigned or less than remaining => good to go
-    if (bpSpentForSkills > currentSkillValue && skillPoints > 0) {
+    if (skillsBp > currentSkillValue && skillPoints > 0) {
       return true
     }
 
@@ -113,7 +111,7 @@ export default function Skills() {
           content='skills'
           icon={<FireIcon className='text-orange-400' />}
           subtext={'Available build points:'}
-          subvalue={trueAvailBp}
+          subvalue={skillsBp}
         />
       </div>
       <Card
@@ -121,7 +119,7 @@ export default function Skills() {
         main={
           <div className='space-y-4'>
             <div className='font-bold'>
-              Allotted Skill Points: {bpSpentForSkills}
+              Allotted Skill Points: {skillPoints}
             </div>
             <div className='space-y-1 text-sm text-dirty-orange'>
               <div>
@@ -134,7 +132,7 @@ export default function Skills() {
               </div>
             </div>
             <div className='space-x-2'>
-              <SmallButton onClick={spendBuildPoint}>
+              <SmallButton onClick={spendBpForSkillPoints}>
                 Increase allotment
               </SmallButton>
               <SmallButton onClick={recoverBuildPoint} className='bg-gray-400'>

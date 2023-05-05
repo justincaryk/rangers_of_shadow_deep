@@ -36,12 +36,12 @@ export default function CompanionsList() {
   const [ buying, setBuying ] = useState<string | null>(null)
 
   const [ spentRp ] = useAtom(useSpentRecruitmentPoints)
-  const [ adjustedTotalRp, setAdjustedTotalBp ] = useAtom(
+  const [ adjustedTotalRp ] = useAtom(
     useAdjustedRecruitmentPoints
   )
 
-  const [ _x, spendRecruitmentPoints ] = useAtom(useSpendRecruitmentPoints)
-  const [ _y, buyCompanion ] = useAtom(useAddCompanion)
+  const [ , spendRecruitmentPoints ] = useAtom(useSpendRecruitmentPoints)
+  const [ , buyCompanion ] = useAtom(useAddCompanion)
 
   const turnOnBuying = (name: string) => {
     setBuying(name)

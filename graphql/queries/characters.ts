@@ -16,6 +16,7 @@ export default gql`
         totalStatPoints
         xp
         userId
+        nodeId
       }
     }
   }

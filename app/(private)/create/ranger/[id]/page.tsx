@@ -1,3 +1,5 @@
+'use client'
+
 import classnames from 'classnames'
 import { sectionBaseStyles } from '../../../../../components/parts/styles'
 
@@ -7,8 +9,13 @@ import HeroicActions from '../../../../../components/heroic-actions/heroic-actio
 import Spells from '../../../../../components/spells/spells'
 import Equipment from '../../../../../components/equipment/equipment'
 import Skills from '../../../../../components/skills/skills'
+import { useSyncRangerBp } from '../../../../../components/ranger/atoms/build-points'
 
 export default function Ranger() {
+  // ensure this hook is invoked to keep available build points 
+  // in line with the client state
+  useSyncRangerBp();
+
   return (
     <div className='space-y-4 w-full'>
       <div className={classnames(sectionBaseStyles)}>

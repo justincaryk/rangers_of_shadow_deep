@@ -11,6 +11,7 @@ query GetEquipmentSorted {
       entityLimit
       rarity
       slotCost
+      nodeId
     }
   }
   magic: allItems(condition: { rarity: MAGIC }) {
@@ -22,6 +23,7 @@ query GetEquipmentSorted {
       entityLimit
       rarity
       slotCost
+      nodeId
     }
   }
 }

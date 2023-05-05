@@ -11,7 +11,7 @@ import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
 
-import { MAX_STARTING_ITEM_SLOTS } from '../rules/ranger-rules'
+import { MAX_STARTING_ITEM_SLOTS } from '../rules/creation-rules'
 
 import { useEquipmentApi } from './equipment-api'
 

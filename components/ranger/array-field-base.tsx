@@ -3,35 +3,38 @@
 import { BoltIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import { useMemo, useState } from 'react'
-import { HeroicAction, Spell } from '../data'
+
 import Card from '../parts/card'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
 import SmallButton from '../parts/small-button'
+
 import { RANGER_FIELD } from '../types'
 import { useGetTrueAvailBp } from '../utils'
-import { useBpForHeroicSpells } from './atoms/build-points'
+import { useHeroicActionBp } from './atoms/build-points'
+
 import { useRanger } from './atoms/ranger'
-import { DECREASE, INCREASE } from '../rules/ranger-rules'
+import { DECREASE, INCREASE } from '../rules/creation-rules'
+
+import { HeroicAction } from '../heroic-actions/types'
+import { Spell } from '../spells/types'
+import { UnionType } from 'typescript'
 
 const SectionIcon = (type: RANGER_FIELD) => {
-  if (type === RANGER_FIELD.HEROIC_ACTIONS)
-    return <BoltIcon className='text-yellow-400' />
-  if (type === RANGER_FIELD.SPELLS)
-    return <SparklesIcon className='text-pink-400' />
+  if (type === RANGER_FIELD.HEROIC_ACTIONS) return <BoltIcon className='text-yellow-400' />
+  if (type === RANGER_FIELD.SPELLS) return <SparklesIcon className='text-pink-400' />
   return null
 }
 
 interface Props {
   type: RANGER_FIELD.HEROIC_ACTIONS | RANGER_FIELD.SPELLS
-  data: HeroicAction[] | Spell[]
+  data: (HeroicAction | Spell)[]
 }
 
 export default function ArrayFieldBase({ type, data }: Props) {
   const [ show, toggleShow ] = useState(false)
-  const [ minorBuildPoints, updateMinorBuildPoints ] =
-    useAtom(useBpForHeroicSpells)
-  const trueAvailBp = useGetTrueAvailBp(minorBuildPoints)
+  const [ heroicBp ] = useAtom(useHeroicActionBp)
+  const trueAvailBp = useGetTrueAvailBp(heroicBp)
 
   const [ ranger, updateRanger ] = useAtom(useRanger)
   const currentField = useMemo(() => {
@@ -43,14 +46,14 @@ export default function ArrayFieldBase({ type, data }: Props) {
       return null
     }
 
-    // if it exits => remove it
+    // if it exists => remove it
     if (currentField.indexOf(item.name) > -1) {
       updateRanger({
         ...ranger,
         [type]: currentField.filter(x => x != item.name),
       })
       // update build points
-      updateMinorBuildPoints(DECREASE)
+      // updateMinorBuildPoints(DECREASE)
       return null
     }
 
@@ -65,7 +68,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
       [type]: [ ...currentField, item.name ],
     })
     // update build points
-    updateMinorBuildPoints(INCREASE)
+    // updateMinorBuildPoints(INCREASE)
   }
 
   const headerContent = useMemo(() => {
@@ -101,9 +104,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                   <div className='font-semibold capitalize'>{item.name}</div>
                   <SmallButton
                     onClick={() => handleItemClicked(item)}
-                    className={
-                      currentField.indexOf(item.name) > -1 ? 'bg-gray-400' : ''
-                    }
+                    className={currentField.indexOf(item.name) > -1 ? 'bg-gray-400' : ''}
                   >
                     {currentField.indexOf(item.name) > -1 ? 'UNLEARN' : 'LEARN'}
                   </SmallButton>
@@ -130,15 +131,9 @@ export default function ArrayFieldBase({ type, data }: Props) {
                     <div className='font-semibold capitalize'>{item.name}</div>
                     <SmallButton
                       onClick={() => handleItemClicked(item)}
-                      className={
-                        currentField.indexOf(item.name) > -1
-                          ? 'bg-gray-400'
-                          : ''
-                      }
+                      className={currentField.indexOf(item.name) > -1 ? 'bg-gray-400' : ''}
                     >
-                      {currentField.indexOf(item.name) > -1
-                        ? 'UNLEARN'
-                        : 'LEARN'}
+                      {currentField.indexOf(item.name) > -1 ? 'UNLEARN' : 'LEARN'}
                     </SmallButton>
                   </div>
                 }

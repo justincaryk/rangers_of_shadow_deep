@@ -1,83 +1,90 @@
-import { atom } from 'jotai'
-import { usePlayers } from '../../companions/atoms/players'
-import { useSetAdjustedRecruitmentPoints } from '../../companions/atoms/recruitment-points'
+import { atom, useAtom } from 'jotai'
+import { useEffect } from 'react'
+
 import {
-  BASE_RECRUITMENT_POINTS,
-  MAX_BUILD_POINTS_FOR_RP,
+  MAX_BP_FOR_RP,
   RP_BONUS_PER_BUILD_POINT,
-} from '../../rules/companion-rules'
+} from '../../rules/creation-rules'
 
 import {
   BASE_BUILD_POINTS,
-  MAX_BP_FOR_HEROIC_ACTIONS_AND_SPELLS,
+  MAX_BP_FOR_HEROIC_SPELLS,
   MAX_BP_FOR_SKILLS,
   MAX_BP_FOR_STATS,
-} from '../../rules/ranger-rules'
-import { getAdjustedRecruitmentPoints } from '../../utils'
+  SKILL_POINTS_PER_BP,
+} from '../../rules/creation-rules'
+import { useRangerApi } from '../ranger-api'
 
+// read only atoms - always export
+export const useHeroicActionBp = atom(MAX_BP_FOR_HEROIC_SPELLS)
 export const useBuildPoints = atom(BASE_BUILD_POINTS)
+export const useStatsBp = atom(MAX_BP_FOR_STATS)
+export const useSkillsBp = atom(0)
+export const useRecruitmentPointsBp = atom(0)
 
-const useUpdateBuildPoints = atom(null, (get, set, modifier: number) => {
-  set(useBuildPoints, get(useBuildPoints) - modifier)
+// hook to keep all the bp in sync.
+
+export function useSyncRangerBp() {
+  const [ , setBp ] = useAtom(useSetCurrentBuildPoints)
+  const [ , setStatsBp ] = useAtom(useSetStatsBp)
+  const [ , setSkillsBp ] = useAtom(useSetSkillsBp)
+  const [ , setRpBp ] = useAtom(useSetSkillsBp)
+  const [ , setHeroicBp ] = useAtom(useSetHeroicActionBp)
+
+  const { data } = useRangerApi().getRangerById
+
+  useEffect(() => {
+    if (data?.characterById) {
+      let totalBp = BASE_BUILD_POINTS
+
+      const { totalHeroicActions, totalStatPoints, totalRecruitmentPoints, totalSkillPoints } = data.characterById
+
+      const skillPointsConvertedToBp = Math.floor(totalSkillPoints / SKILL_POINTS_PER_BP)
+      const recruitmentPointsConvertedToBp = Math.floor(totalRecruitmentPoints / RP_BONUS_PER_BUILD_POINT)
+
+      // only deduct what is allowed at create
+      const heroicMod = Math.min(totalHeroicActions, MAX_BP_FOR_HEROIC_SPELLS)
+      const skillMod = Math.min(skillPointsConvertedToBp, MAX_BP_FOR_SKILLS)
+      const statMod = Math.min(totalStatPoints, MAX_BP_FOR_STATS)
+      const recruitmentMod = Math.min(recruitmentPointsConvertedToBp, MAX_BP_FOR_RP)
+
+      totalBp -= heroicMod
+      totalBp -= skillMod
+      totalBp -= statMod
+      totalBp -= recruitmentMod
+
+      setBp(totalBp)
+      setStatsBp(MAX_BP_FOR_STATS - statMod)
+      setSkillsBp(MAX_BP_FOR_SKILLS - skillMod)
+      setRpBp(MAX_BP_FOR_RP - recruitmentMod)
+      setHeroicBp(MAX_BP_FOR_HEROIC_SPELLS - heroicMod)
+    }
+  }, [ data ])
+
+  return null
+}
+
+// all update atoms. these should not be exported
+
+const useSetCurrentBuildPoints = atom(
+  get => get(useBuildPoints),
+  (get, set, value: number) => {
+    set(useBuildPoints, value)
+  }
+)
+
+const useSetHeroicActionBp = atom(MAX_BP_FOR_HEROIC_SPELLS, (get, set, value: number) => {
+  set(useSetHeroicActionBp, value)
 })
 
-export const useBpForHeroicSpells = atom(
-  MAX_BP_FOR_HEROIC_ACTIONS_AND_SPELLS,
-  (get, set, modifier: number) => {
-    // update the total
-    useUpdateBuildPoints.write(get, set, modifier)
-
-    // update the baby
-    set(useBpForHeroicSpells, get(useBpForHeroicSpells) - modifier)
-  }
-)
-
-export const useBpForStats = atom(
-  MAX_BP_FOR_STATS,
-  (get, set, modifier: number) => {
-    // update the total
-    useUpdateBuildPoints.write(get, set, modifier)
-
-    // update the baby
-    set(useBpForStats, get(useBpForStats) - modifier)
-  }
-)
-
-export const useBpForSkills = atom(0, (get, set, modifier: number) => {
-  const current = get(useBpForSkills)
-  const validModifier =
-    current < MAX_BP_FOR_SKILLS || (modifier < 0 && current > 0) ? modifier : 0
-
-  // update the total
-  useUpdateBuildPoints.write(get, set, validModifier)
-
-  // update the baby
-  set(useBpForSkills, get(useBpForSkills) + validModifier)
+const useSetStatsBp = atom(null, (_get, set, value: number) => {
+  set(useStatsBp, value)
 })
 
-export const useBpForRecruitmentPoints = atom(
-  0,
-  (get, set, modifier: number) => {
-    const current = get(useBpForRecruitmentPoints)
-    const validModifier =
-      current < MAX_BUILD_POINTS_FOR_RP || (modifier < 0 && current > 0)
-        ? modifier
-        : 0
+const useSetSkillsBp = atom(0, (_get, set, value: number) => {
+  set(useSetSkillsBp, value)
+})
 
-    // update the total
-    useUpdateBuildPoints.write(get, set, validModifier)
-
-    const updatedVal = get(useBpForRecruitmentPoints) + validModifier
-
-    // update the baby
-    set(useBpForRecruitmentPoints, updatedVal)
-
-    // update adjusted RP.
-    // CALC: ( base RP + RP conferred by BP spent ) -> adjusted by player count
-    // const players = get(usePlayers)
-    // const rpTotal =
-    //   BASE_RECRUITMENT_POINTS + updatedVal * RP_BONUS_PER_BUILD_POINT
-    // const adjustedRp = getAdjustedRecruitmentPoints(players, rpTotal)
-    // set(useSetAdjustedRecruitmentPoints, adjustedRp)
-  }
-)
+const useSetRecruitmentBp = atom(0, (_get, set, value: number) => {
+  set(useSetRecruitmentBp, value)
+})

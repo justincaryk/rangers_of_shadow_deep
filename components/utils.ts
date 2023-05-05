@@ -13,12 +13,7 @@ export function objectKeys<Obj extends object>(obj: Obj): (keyof Obj)[] {
 
 export function useGetTrueAvailBp(minorBp: number) {
   const [ totalBp ] = useAtom(useBuildPoints)
-
-  if (totalBp > minorBp) {
-    return minorBp
-  } else {
-    return totalBp
-  }
+  return Math.min(totalBp, minorBp)
 }
 
 export function getAdjustedRecruitmentPoints(

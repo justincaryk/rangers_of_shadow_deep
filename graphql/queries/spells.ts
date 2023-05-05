@@ -1,12 +1,13 @@
 import { gql } from 'graphql-request'
 
 export default gql`
-  query Stats {
-    allStats {
+  query Spells {
+    allSpells {
       nodes {
         id
+        cost
+        description
         name
-        statType
         nodeId
       }
     }
