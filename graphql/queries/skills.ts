@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 export default gql`
   query Skills {
-    allSkills {
+    allSkills(orderBy: NAME_ASC) {
       nodes {
         id
         name

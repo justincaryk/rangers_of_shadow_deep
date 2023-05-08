@@ -4,9 +4,9 @@ import { FireIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
 
 import { useAtom } from 'jotai'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
-import { Skill } from './types'
+import { MemberSkill } from './types'
 
 import Card from '../parts/card'
 import Decrement from '../parts/decrement'
@@ -17,37 +17,45 @@ import SmallButton from '../parts/small-button'
 
 import { useSkillsBp } from '../ranger/atoms/build-points'
 
-import { DECREASE, INCREASE, MAX_BP_FOR_SKILLS, SKILL_POINTS_PER_BP } from '../rules/creation-rules'
+import { DECREASE, INCREASE, SKILL_POINTS_PER_BP } from '../rules/creation-rules'
 import { useRangerApi } from '../ranger/ranger-api'
 import { useSkillsApi } from './skills-api'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
   const [ skillsBp ] = useAtom(useSkillsBp)
+
   const { data: skills } = useSkillsApi().getSkills
+  const {
+    mutate: mutateUpdateSkill,
+    status: updateSkillMutateStatus,
+    reset: resetUpdateSkillMutation,
+  } = useSkillsApi().updateMemberSkill
+
+  // reset the mutation to ensure multiple updates are allowed
+  useEffect(() => {
+    if (updateSkillMutateStatus === 'success') {
+      resetUpdateSkillMutation()
+    }
+  }, [ updateSkillMutateStatus, resetUpdateSkillMutation ])
+
   const { data: ranger } = useRangerApi().getRangerById
   const { mutate: mutateSpendBp } = useRangerApi().updateRanger
-
   const budgetedSkillsCount = useMemo(() => {
     return ranger?.characterById?.totalSkillPoints ?? 0
   }, [ ranger ])
+
   const purchasedSkillsCount = useMemo(() => {
-    return ranger?.characterById?.memberSkillsByCharacterId.totalCount ?? 0
+    return (
+      ranger?.characterById?.memberSkillsByCharacterId.nodes.reduce((acc, rangerSkill) => {
+        return acc + rangerSkill.value
+      }, 0) ?? 0
+    )
   }, [ ranger ])
 
-  // const [ ranger, updateRanger ] = useAtom(useRanger)
-
-  // const skillPoints = useMemo(() => {
-  //   // const allotted = skillsBp * SKILL_POINTS_PER_BP
-  //   // const remaining =
-  //   //   allotted -
-  //   //   Object.values(ranger[RANGER_FIELD.SKILLS]).reduce((prev, curr) => {
-  //   //     return prev + curr
-  //   //   }, 0)
-
-  //   // return remaining
-  //   return 0
-  // }, [ skillsBp, ranger ])
+  const remainingSkillPoints = useMemo(() => {
+    return budgetedSkillsCount - purchasedSkillsCount
+  }, [ budgetedSkillsCount, purchasedSkillsCount ])
 
   const spendBpForSkillPoints = () => {
     if (skillsBp > 0) {
@@ -59,6 +67,7 @@ export default function Skills() {
       })
     }
   }
+
   const recoverBuildPoint = () => {
     const pointBalance = budgetedSkillsCount - purchasedSkillsCount
 
@@ -72,52 +81,51 @@ export default function Skills() {
     }
   }
 
-  const checkCanIncrease = (skill: Skill) => {
-    // must spend a build point before increasing a skill
-    // if (skillPoints === 0) {
-    //   return false
-    // }
-    // const currentSkillValue = ranger[RANGER_FIELD.SKILLS][skill.name] ?? 0
-    // // if no value assigned or less than remaining => good to go
-    // if (skillsBp > currentSkillValue && skillPoints > 0) {
-    return true
-    // }
-
-    // return false
+  const getRangerSkillBySkillId = (skillId: string): MemberSkill | null => {
+    const { nodes: rangerSkills } = ranger?.characterById?.memberSkillsByCharacterId ?? { nodes: [] }
+    const rangerSkill = rangerSkills.find(rs => rs.skillId === skillId)
+    return rangerSkill ?? null
   }
 
-  const checkCanDecrease = (skill: Skill) => {
+  const checkCanIncrease = (rangerSkill?: MemberSkill | null) => {
+    // must spend a build point and have some points remining to increase a skill
+    if (budgetedSkillsCount === 0 || remainingSkillPoints === 0) {
+      return false
+    }
+
+    if (rangerSkill && skillsBp > rangerSkill.value)
+      if (skillsBp > rangerSkill.value) {
+        return true
+      }
+
+    return false
+  }
+
+  const checkCanDecrease = (rangerSkill?: MemberSkill | null) => {
     // if defined and not zero => good to go
-    // if (ranger[RANGER_FIELD.SKILLS][skill.name]) {
-    return true
-    // }
+    if (rangerSkill && rangerSkill.value > 0) {
+      return true
+    }
 
-    // return false
+    return false
   }
 
-  // const updateSkill = (skill: Skill, modifier: number) => {
-  //   if (modifier === INCREASE) {
-  //     if (!checkCanIncrease(skill)) {
-  //       return null
-  //     }
-  //   } else {
-  //     if (!checkCanDecrease(skill)) {
-  //       return null
-  //     }
-  //   }
+  const updateSkill = (rangerSkill: MemberSkill | null, modifier: number) => {
+    if (updateSkillMutateStatus != 'idle' || !rangerSkill) {
+      return null
+    }
+    if (modifier === INCREASE && !checkCanIncrease(rangerSkill)) {
+      return null
+    }
+    if (modifier === DECREASE && !checkCanDecrease(rangerSkill)) {
+      return null
+    }
 
-  //   const currentSkills = ranger[RANGER_FIELD.SKILLS]
-  //   const currentSkillValue = currentSkills[skill.name] ?? 0
-
-  //   // update ranger state
-  //   updateRanger({
-  //     ...ranger,
-  //     [RANGER_FIELD.SKILLS]: {
-  //       ...currentSkills,
-  //       [skill.name]: currentSkillValue + modifier,
-  //     },
-  //   })
-  // }
+    mutateUpdateSkill({
+      id: rangerSkill.id,
+      value: rangerSkill.value + modifier,
+    })
+  }
 
   return (
     <div className='space-y-4'>
@@ -136,7 +144,10 @@ export default function Skills() {
         header={null}
         main={
           <div className='space-y-4'>
-            <div className='font-bold'>Allotted Skill Points: {budgetedSkillsCount}</div>
+            <div className='flex gap-x-4'>
+              <div className='font-bold'>Allotted Skill Points: {budgetedSkillsCount}</div>
+              <div className='font-bold'>Unspent Skill Points: {remainingSkillPoints}</div>
+            </div>
             <div className='space-y-1 text-sm text-dirty-orange'>
               <div>
                 Every <strong>1 BUILD POINT</strong> spent yields <strong>{SKILL_POINTS_PER_BP} SKILL POINTS</strong>.
@@ -157,37 +168,33 @@ export default function Skills() {
       {show && (
         <div className='space-y-4'>
           {skills?.allSkills?.nodes.map(skill => {
-            const canIncrement = checkCanIncrease(skill)
-            const canDecrement = checkCanDecrease(skill)
+            const rangerSkill = getRangerSkillBySkillId(skill.id)
+            const canIncrement = checkCanIncrease(rangerSkill)
+            const canDecrement = checkCanDecrease(rangerSkill)
+
             return (
               <div key={skill.name}>
                 <div className='grid grid-flow-col auto-cols-min justify-start gap-x-4 items-center w-1/2'>
                   <div className='font-semibold capitalize w-28'>{skill.name}</div>
-                  <div className='text-lg font-bold'>{/* +{ranger[RANGER_FIELD.SKILLS][skill.name] ?? 0} */}</div>
+                  <div className='text-lg font-bold'>{rangerSkill?.value ?? 0}</div>
                   <div className='flex gap-2'>
                     <div
-                    // className={classnames({
-                    //   'w-6': true,
-                    //   'cursor-not-allowed': !canIncrement,
-                    //   'cursor-pointer': canIncrement,
-                    // })}
+                      className={classnames({
+                        'w-6': true,
+                        'cursor-not-allowed': !canIncrement,
+                        'cursor-pointer': canIncrement,
+                      })}
                     >
-                      {/* <Increment
-                        onClick={() => updateSkill(skill, INCREASE)}
-                        disabled={!canIncrement}
-                      /> */}
+                      <Increment onClick={() => updateSkill(rangerSkill, INCREASE)} disabled={!canIncrement} />
                     </div>
                     <div
-                    // className={classnames({
-                    //   'w-6': true,
-                    //   'cursor-not-allowed': !canDecrement,
-                    //   'cursor-pointer': canDecrement,
-                    // })}
+                      className={classnames({
+                        'w-6': true,
+                        'cursor-not-allowed': !canDecrement,
+                        'cursor-pointer': canDecrement,
+                      })}
                     >
-                      {/* <Decrement
-                        onClick={() => updateSkill(skill, DECREASE)}
-                        disabled={!canDecrement}
-                      /> */}
+                      <Decrement onClick={() => updateSkill(rangerSkill, DECREASE)} disabled={!canDecrement} />
                     </div>
                   </div>
                 </div>
