@@ -1,5 +1,3 @@
-'use client'
-
 import classnames from 'classnames'
 import React from 'react'
 
@@ -23,6 +21,8 @@ export default function SmallButton({ onClick, primary, className, children }: P
       data-mdb-ripple='true'
       data-mdb-ripple-color='light'
       className={classnames({
+        'bg-blue-600': false,
+        'bg-gray-600': false,
         ...baseStyles,
         [className || '']: className,
       })}

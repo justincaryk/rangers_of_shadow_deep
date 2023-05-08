@@ -2,15 +2,12 @@ import useGraphQL from '../graphql/useGraphQL'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 import {
-  SetBaseStatsMutation,
-  SetBaseStatsMutationVariables,
   StatsQuery,
   UpdateMemberStatByIdMutation,
   UpdateMemberStatByIdMutationVariables,
 } from '../../graphql/generated/graphql'
 
 import GetStatsRequest from '../../graphql/queries/stats'
-import SetBaseCharacterStats from '../../graphql/mutations/character-stats-base'
 import UpdateMemberStatById from '../../graphql/mutations/character-stats-update'
 import { RANGER_QUERY_KEYS } from '../ranger/ranger-api'
 
@@ -25,13 +22,6 @@ export function useStatsApi() {
   const queryClient = useQueryClient()
 
   return {
-    createBaseStats: useMutation({
-      mutationFn: (data: SetBaseStatsMutationVariables) =>
-        graphQLClient.request<SetBaseStatsMutation>(
-          SetBaseCharacterStats,
-          data
-        ),
-    }),
     updateMemberStatById: useMutation({
       mutationFn: (data: UpdateMemberStatByIdMutationVariables) =>
         graphQLClient.request<UpdateMemberStatByIdMutation>(

@@ -40,7 +40,7 @@ export default gql`
           id
           characterId
           value
-          statsId
+          statId
           nodeId
         }
         totalCount

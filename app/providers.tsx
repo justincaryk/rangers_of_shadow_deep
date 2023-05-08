@@ -6,10 +6,10 @@ import ReactQueryProvider from '../components/react-query/provider'
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ReactQueryProvider>
-      <AuthProvider>
-        <GraphQLProvider>{children}</GraphQLProvider>
-      </AuthProvider>
-    </ReactQueryProvider>
+    <AuthProvider>
+      <GraphQLProvider>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+      </GraphQLProvider>
+    </AuthProvider>
   )
 }

@@ -8,10 +8,5 @@ import { useSpellsApi } from './spells-api'
 export default function HeroicActions() {
   const { data } = useSpellsApi().getSpells
 
-  return (
-    <ArrayFieldBase
-      type={RANGER_LOOKUP_FIELD_HASH_KEYS.SPELLS}
-      data={data?.allSpells?.nodes ?? []}
-    />
-  )
+  return <ArrayFieldBase type={RANGER_LOOKUP_FIELD_HASH_KEYS.SPELLS} data={data?.allSpells?.nodes ?? []} />
 }

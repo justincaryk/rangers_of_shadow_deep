@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation'
 
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
-import { AuthFormFields, AUTH_TOKEN } from './types'
+import { AUTH_TOKEN } from './types'
 
-import { useSignin } from './use-signin-query'
+import { useAuthApi } from './auth-api'
 import { parseJwt } from '../utils'
 import { useAtom } from 'jotai'
 import { useCurrentUser, useSetCurrentUser } from './atoms/current-user'
 import { PRIVATE_LINK_ROUTES } from '../nav/routes'
+import { SigninInput } from '../../graphql/generated/graphql'
 
 const SigninSchema = Yup.object().shape({
   username: Yup.string().required('Required'),
@@ -22,7 +23,7 @@ export default function SigninForm() {
   const router = useRouter()
 
   const [ signinError, setSigninError ] = useState(false)
-  const { mutate: signin, data, status } = useSignin()
+  const { mutate: signin, data, status } = useAuthApi().signIn
 
   const [ _, setCurrentUser ] = useAtom(useSetCurrentUser)
   const [ currentUser ] = useAtom(useCurrentUser)
@@ -53,7 +54,7 @@ export default function SigninForm() {
     }
   }, [ status, data, setSigninError ])
 
-  const handleSubmit = async (values: AuthFormFields) => {
+  const handleSubmit = async (values: SigninInput) => {
     await signin(values)
   }
 
@@ -76,7 +77,7 @@ export default function SigninForm() {
           <Form className='space-y-4 relative pt-6'>
             <div>
               <label
-                className='block text-center hidden'
+                className='text-center hidden'
                 htmlFor='username'
                 aria-label='username'
               >
@@ -91,7 +92,7 @@ export default function SigninForm() {
 
             <div>
               <label
-                className='block text-center hidden'
+                className='text-center hidden'
                 htmlFor='password'
                 aria-label='password'
               >

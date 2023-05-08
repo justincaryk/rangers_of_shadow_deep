@@ -104,7 +104,7 @@ export default function Stats() {
   function getMemberStatFromStatId(statId: string) {
     return (
       ranger?.characterById?.memberStatsByCharacterId.nodes.find(
-        x => statId && statId === x?.statsId
+        x => statId && statId === x?.statId
       ) || null
     )
   }

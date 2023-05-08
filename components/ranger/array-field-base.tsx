@@ -87,7 +87,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
     for (const ref of rangerLookupRefData) {
       const { heroicActionId = null } = ref as MemberHeroicAction
       const { spellId = null } = ref as MemberSpell
-
+      
       if (id === heroicActionId || id === spellId) {
         return {
           refId: ref.id,
@@ -114,12 +114,6 @@ export default function ArrayFieldBase({ type, data }: Props) {
     }
 
     switch (true) {
-      case known && type === 'heroic_actions':
-        mutateActionUnlearn({
-          ...baseDeletePayload,
-          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
-        })
-        break
       case !known && type === 'heroic_actions':
         mutateActionLearn({
           heroicActionId: item.id,
@@ -127,14 +121,20 @@ export default function ArrayFieldBase({ type, data }: Props) {
           newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
         })
         break
-      case known && type === 'spells':
+      case known && type === 'heroic_actions':
+        mutateActionUnlearn({
+          ...baseDeletePayload,
+          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
+        })
+        break
+      case !known && type === 'spells':
         mutateSpellLearn({
           spellId: item.id,
           characterId: ranger?.characterById?.id,
           newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
         })
         break
-      case !known && type === 'spells':
+      case known && type === 'spells':
         mutateSpellUnlearn({
           ...baseDeletePayload,
           newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
@@ -185,7 +185,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
               if (itemRef.__typename === 'MemberSpell' && item.id === itemRef.spellId) return true
               return false
             })
-            
+
             if (!item) {
               return null
             }

@@ -10,26 +10,32 @@ exports.seed = function (knex) {
         {
           name: BaseStats.move,
           stat_type: 'base',
+          ranger_default: 6,
         },
         {
           name: BaseStats.fight,
           stat_type: 'base',
+          ranger_default: 2,
         },
         {
           name: BaseStats.shoot,
           stat_type: 'base',
+          ranger_default: 1,
         },
         {
           name: BaseStats.armor,
           stat_type: 'base',
+          ranger_default: 10,
         },
         {
           name: BaseStats.will,
           stat_type: 'base',
+          ranger_default: 4,
         },
         {
           name: BaseStats.health,
           stat_type: 'base',
+          ranger_default: 18,
         },
         {
           name: 'notes',

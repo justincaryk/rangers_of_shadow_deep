@@ -2,20 +2,13 @@ import classnames from 'classnames'
 import { useAtom } from 'jotai'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
-import {
-  SetBaseStatsMutationVariables,
-} from '../../graphql/generated/graphql'
-
+import { useEffect, useState } from 'react'
 import { useCurrentUser } from '../auth/atoms/current-user'
 import { PRIVATE_LINK_ROUTES } from '../nav/routes'
 import SmallButton from '../parts/small-button'
 import { sectionBaseStyles } from '../parts/styles'
 
 import { useRangerApi } from '../ranger/ranger-api'
-import { useStatsApi } from '../stats/stats-api'
-import { BASE_STATS } from '../rules/creation-rules'
-import { BASE_STATS_ENUM } from '../types'
 
 export default function InitCreate() {
   const [ characterHydrated, setCharacterHydrated ] = useState(false)
@@ -29,11 +22,9 @@ export default function InitCreate() {
   } = useRangerApi().createRanger
 
   const {
-    mutate: hydrateStats,
-    status: hydrateStatsStatus,
-  } = useStatsApi().createBaseStats
-
-  const { data: statsData, status: getStatsStatus } = useStatsApi().getStats
+    mutate: hydrateRangerMutate,
+    status: hydrationStatus,
+  } = useRangerApi().hydrateRanger
 
   const [ currentUser ] = useAtom(useCurrentUser)
 
@@ -47,42 +38,30 @@ export default function InitCreate() {
     }
   }
 
-  const hydrateNewRanger = useCallback(() => {
-    const rangerId = rangerCreateResult?.createCharacter?.character?.id
-    console.log('executing hydrate....')
-    const baseStatsPayload: SetBaseStatsMutationVariables = Object.assign(
-      {},
-      ...Object.values(BASE_STATS_ENUM).map(key => ({
-        [key]: {
-          characterId: rangerId,
-          statsId: statsData?.allStats?.nodes.find(stat => stat?.name === key)?.id,
-          value: BASE_STATS[BASE_STATS_ENUM[key]],
-        },
-      }))
-    )
+  const initHydrateRangerMutation = () => {
+    if (hydrationStatus !== 'idle') {
+      return null;
+    } 
 
-    // stats
-    hydrateStats(baseStatsPayload)
-  }, [ rangerCreateResult, statsData, hydrateStats ])
+    const rangerId = rangerCreateResult?.createCharacter?.character?.id
+    
+    hydrateRangerMutate({
+      characterId: rangerId,
+    })
+  }
 
   // hydrate new ranger with defaults
   useEffect(() => {
-    // bail if executing hydrate
-    if (hydrateStatsStatus === 'loading') {
-      return;
+    // if hydration is idle and we have a new character id => init hydration
+    if ( hydrationStatus === 'idle' && rangerCreateStatus === 'success') {
+      initHydrateRangerMutation()
     }
-    // begin async execution
-    if (
-      rangerCreateStatus === 'success' &&
-      getStatsStatus === 'success' &&
-      hydrateStatsStatus !== 'success') {
-      hydrateNewRanger()
+    // if hydration is complete -> flip the switch to reroute
+    else if (hydrationStatus === 'success' && !characterHydrated) {
+      setCharacterHydrated(true)
     }
-    // on resolve, set ready for reroute
-    if (hydrateStatsStatus === 'success' && !characterHydrated) {
-        setCharacterHydrated(true)
-    }
-  }, [ getStatsStatus, rangerCreateStatus, hydrateStatsStatus, hydrateNewRanger, characterHydrated ])
+    
+  }, [  rangerCreateStatus, hydrationStatus, characterHydrated ])
 
   //  reroute when hydrated...
   useEffect(() => {
@@ -94,7 +73,7 @@ export default function InitCreate() {
         )
         router.push(editUrl)
     }
-  }, [ characterHydrated, router, rangerCreateResult ])
+  }, [ router, rangerCreateResult, characterHydrated ])
 
   return (
     <div
@@ -104,6 +83,7 @@ export default function InitCreate() {
       })}
     >
       <SmallButton onClick={createRanger} primary>Create Ranger</SmallButton>
+      {/* <SmallButton onClick={initHydrateRangerMutation} primary>HYDRATE Ranger</SmallButton> */}
 
       <Link href={PRIVATE_LINK_ROUTES.CREATE_COMPANIONS}>
         <SmallButton primary>Create Companion</SmallButton>

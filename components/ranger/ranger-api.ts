@@ -7,6 +7,9 @@ import {
   DeleteCharacterMutation,
   UpdateCharacterMutation,
   UpdateCharacterMutationVariables,
+  HydrateRangerInput,
+  HydrateRangerMutation,
+  HydrateRangerMutationVariables,
 } from '../../graphql/generated/graphql'
 import useGraphQL from '../graphql/useGraphQL'
 
@@ -15,6 +18,8 @@ import GetCharacterByIdRequest from '../../graphql/queries/character'
 import UpdateCharacterById from '../../graphql/mutations/character-update'
 import CreateCharacterRequest from '../../graphql/mutations/character-create'
 import DeleteCharacterRequest from '../../graphql/mutations/character-delete'
+import HydrateCharacterRequest from '../../graphql/mutations/character-hydrate'
+
 import { useParams } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -80,5 +85,15 @@ export function useRangerApi() {
           })) : null
         },
     }),
+    hydrateRanger: useMutation({
+      mutationFn: (data: HydrateRangerMutationVariables) =>
+        graphQLClient.request<HydrateRangerMutation>(
+          HydrateCharacterRequest,
+          data
+        ),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
+      },
+    })
   }
 }

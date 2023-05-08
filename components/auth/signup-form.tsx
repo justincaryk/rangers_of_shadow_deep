@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
-import { AuthFormFields } from './types'
-import { useSignup } from './use-signup-query'
 import { useRouter } from 'next/navigation'
 import { PUBLIC_LINK_ROUTES } from '../nav/routes'
+import { useAuthApi } from './auth-api'
+import { SignupInput } from '../../graphql/generated/graphql'
 
 const SignupSchema = Yup.object().shape({
   username: Yup.string()
@@ -18,7 +18,7 @@ const SignupSchema = Yup.object().shape({
 
 export default function SignupForm() {
   const [ signupError, setSignupError ] = useState<string | null>(null)
-  const { mutate: signup, status, data } = useSignup()
+  const { mutate: signup, status, data } = useAuthApi().signUp
 
   const router = useRouter()
 
@@ -36,7 +36,7 @@ export default function SignupForm() {
     }
   }, [ data, setSignupError, status, router ])
 
-  const handleSubmit = async (data: AuthFormFields) => {
+  const handleSubmit = async (data: SignupInput) => {
     await signup(data)
   }
 
@@ -58,7 +58,7 @@ export default function SignupForm() {
           <Form className='space-y-4 relative pt-6'>
             <div>
               <label
-                className='block text-center hidden'
+                className='text-center hidden'
                 htmlFor='username'
                 aria-label='choose a username'
               >
@@ -77,7 +77,7 @@ export default function SignupForm() {
 
             <div>
               <label
-                className='block text-center hidden'
+                className='text-center hidden'
                 htmlFor='password'
                 aria-label='create a password'
               >
@@ -106,12 +106,4 @@ export default function SignupForm() {
       </Formik>
     </div>
   )
-}
-
-{
-  /* {signUpSuccessful ? (
-        <div className='space-y-4 relative w-1/2 m-auto m-0 pt-12 text-xl text-center font-bold'>
-          Sign up successful!
-        </div>
-      ) : ( */
 }
