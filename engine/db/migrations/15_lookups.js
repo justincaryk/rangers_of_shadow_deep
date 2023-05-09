@@ -60,6 +60,23 @@ exports.up = knex =>
       bp_spent_on_stats smallint DEFAULT 0 NOT NULL,
       bp_spent_on_rp smallint DEFAULT 0 NOT NULL
     );
+
+    -- ranger + level ups
+    CREATE TABLE ranger.member_level (
+      id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
+      character_id uuid REFERENCES ranger.characters (id) NOT NULL,
+      level_grant_id uuid REFERENCES ranger.level_grants (id) NOT NULL,
+      granted smallint DEFAULT 1 NOT NULL
+    );
+
+    -- ranger + injuries
+    CREATE TABLE ranger.member_injuries (
+      id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
+      character_id uuid REFERENCES ranger.characters (id),
+      companion_id uuid REFERENCES ranger.character_companions (id),
+      injury_id uuid REFERENCES ranger.injuries (id) NOT NULL,
+      acquired smallint DEFAULT 1 NOT NULL
+    );
   `)
 
 exports.down = knex => {

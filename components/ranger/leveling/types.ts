@@ -6,6 +6,8 @@ export type LevelGrant = Omit<
   | 'featureByBenefit'
   | 'featureByEntityLimit'
   | 'rangerLevelCostsByBenefit'
+  | 'memberLevelsByLevelGrantId'
+  | 'featuresByLevelGrantId'
   | 'nodeId'
 >
 

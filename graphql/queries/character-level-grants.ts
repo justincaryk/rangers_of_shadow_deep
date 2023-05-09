@@ -15,10 +15,8 @@ export default gql`
         id
         name
         description
-        entityLimit
         grantType
         firstLevelGranted
-        benefit
         nodeId
       }
     }

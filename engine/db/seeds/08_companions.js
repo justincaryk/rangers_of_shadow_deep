@@ -183,7 +183,7 @@ exports.seed = function (knex) {
           notes: 'Dagger, Throwing Knife, Climb +2, Perception +2, Pick Lock +5, Traps +5, Stealth +5',
           name: 'rogue',
           description:
-            'Rogues aren’t the best fighters, but they are highly skilled individuals, who can be invaluable if you need a lock picked or a trap disarmed.',
+            'Rogues aren\'t the best fighters, but they are highly skilled individuals, who can be invaluable if you need a lock picked or a trap disarmed.',
           subtype: 'rogue',
           cost: 20,
         },

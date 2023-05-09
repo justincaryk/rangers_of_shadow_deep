@@ -5,7 +5,8 @@ exports.up = knex =>
       user_id uuid REFERENCES public.minions (id),
       companion_id uuid REFERENCES ranger.companions (id),
       name varchar(50) NOT NULL,
-      progression_points smallint default 0
+      progression_points smallint default 0,
+      bonus_skill uuid REFERENCES ranger.skills (id)
     );
   `)
 

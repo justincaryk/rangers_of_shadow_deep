@@ -13,9 +13,7 @@ exports.up = knex =>
       name varchar(50) NOT NULL,
       description text NOT NULL,
       grant_type ranger_grant_type NOT NULL,
-      first_level_granted smallint default 1 NOT NULL,
-      benefit uuid REFERENCES ranger.features (id),
-      entity_limit uuid REFERENCES ranger.features (id)
+      first_level_granted smallint default 1 NOT NULL
     );
     
     CREATE POLICY level_grants_policy ON ranger.level_grants 

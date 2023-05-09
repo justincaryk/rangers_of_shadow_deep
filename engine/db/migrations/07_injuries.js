@@ -4,7 +4,7 @@ exports.up = knex =>
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
         name varchar(50) NOT NULL,
         description text,
-        modifier uuid REFERENCES ranger.features (id)
+        hard_cap smallint default 1 not null
     );
     
     CREATE POLICY injuries_policy ON ranger.injuries 

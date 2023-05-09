@@ -49,6 +49,12 @@ exports.up = knex =>
       CREATE POLICY wiz_access_policy_cbp on ranger.character_bp_lookup
         TO role_wizard USING (true) WITH CHECK (true);
 
+      CREATE POLICY wiz_access_policy_mlvl on ranger.member_level
+        TO role_wizard USING (true) WITH CHECK (true);
+
+      CREATE POLICY wiz_access_policy_minjuries on ranger.member_injuries
+        TO role_wizard USING (true) WITH CHECK (true);
+        
       CREATE POLICY wiz_access_policy_rlc on ranger.ranger_level_cost
         TO role_wizard USING (true) WITH CHECK (true);
 

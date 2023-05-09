@@ -221,7 +221,7 @@ export const companions: Companion[] = [
     },
     name: 'rogue',
     description:
-      'Rogues aren’t the best fighters, but they are highly skilled individuals, who can be invaluable if you need a lock picked or a trap disarmed.',
+      'Rogues aren\'t the best fighters, but they are highly skilled individuals, who can be invaluable if you need a lock picked or a trap disarmed.',
     subtype: 'rogue',
     cost: 20,
   },
@@ -479,7 +479,7 @@ export const mundaneEquipment: MundaneItems = [
   {
     name: 'crossbow',
     description:
-      'A common weapon wielded by the forces of the Shadow Deep, crossbows take one action to load and one action to fire. If a figure wishes, he may replace his movement action with a "reload’ action. Crossbows have a +2 damage modifier and a maximum range of 24”. It is assumed that all crossbows start the game loaded and ready to fire. A figure must also carry a quiver, or some type of magic ammunition, to use a crossbow.',
+      'A common weapon wielded by the forces of the Shadow Deep, crossbows take one action to load and one action to fire. If a figure wishes, he may replace his movement action with a "reload\' action. Crossbows have a +2 damage modifier and a maximum range of 24”. It is assumed that all crossbows start the game loaded and ready to fire. A figure must also carry a quiver, or some type of magic ammunition, to use a crossbow.',
     class: EQUIPMENT_CLASS.WEAPON,
     rarity: RARITY_ENUM.MUNDANE,
     slotCost: 1,
@@ -640,7 +640,7 @@ export const magicEquipment: MagicItems = [
   {
     name: 'spell book',
     description:
-      'If a figure is carrying a spellbook, and it reaches the end of a scenario with uncast spells, it may select one of these uncast spells to be "saved’ in the spellbook. This spell may then be cast in a future scenario following the normal rules for spellcasting. Once the spell is cast, it is removed from the spellbook. A spellbook can never hold more than one spell at any given time.',
+      'If a figure is carrying a spellbook, and it reaches the end of a scenario with uncast spells, it may select one of these uncast spells to be "saved\' in the spellbook. This spell may then be cast in a future scenario following the normal rules for spellcasting. Once the spell is cast, it is removed from the spellbook. A spellbook can never hold more than one spell at any given time.',
     class: EQUIPMENT_CLASS.WONDROUS,
     rarity: RARITY_ENUM.MAGIC,
     slotCost: 1,

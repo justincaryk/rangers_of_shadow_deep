@@ -18,7 +18,7 @@ interface LevelUpCardProps {
 const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
   const { mutate: mutateRanger } = useRangerApi().updateRanger
   const { data: rules } = useLevelingApi().rangerRules
-
+  
   const handleSubmit = (data: LevelingFormFields) => {
     mutateRanger({
       id: ranger?.characterById?.id,
