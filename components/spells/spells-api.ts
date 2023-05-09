@@ -2,6 +2,8 @@ import {
   LearnHeroicActionMutationVariables,
   LearnSpellMutation,
   LearnSpellMutationVariables,
+  SetSpellUsesMutation,
+  SetSpellUsesMutationVariables,
   SpellsQuery,
   UnlearnSpellMutation,
   UnlearnSpellMutationVariables,
@@ -9,8 +11,9 @@ import {
 import useGraphQL from '../graphql/useGraphQL'
 
 import GetSpellsRequest from '../../graphql/queries/spells'
-import LearnSpellRequest from '../../graphql/mutations/character-spell-update'
+import LearnSpellRequest from '../../graphql/mutations/character-spell-create'
 import UnlearnSpellRequest from '../../graphql/mutations/character-spell-delete'
+import SetSpellUsesRequest from '../../graphql/mutations/character-spell-update'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { RANGER_QUERY_KEYS } from '../ranger/ranger-api'
@@ -31,6 +34,15 @@ export function useSpellsApi() {
     learnSpell: useMutation({
       mutationFn: (data: LearnSpellMutationVariables) =>
         graphQLClient.request<LearnSpellMutation>(LearnSpellRequest, data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [ RANGER_QUERY_KEYS.RANGER ],
+        })
+      },
+    }),
+    buyAdditionalUse: useMutation({
+      mutationFn: (data: SetSpellUsesMutationVariables) =>
+        graphQLClient.request<SetSpellUsesMutation>(SetSpellUsesRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [ RANGER_QUERY_KEYS.RANGER ],

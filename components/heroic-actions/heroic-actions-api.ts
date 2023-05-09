@@ -2,6 +2,8 @@ import {
   HeroicActionsQuery,
   LearnHeroicActionMutation,
   LearnHeroicActionMutationVariables,
+  SetHeroicActionUsesMutation,
+  SetHeroicActionUsesMutationVariables,
   UnlearnHeroicActionMutation,
   UnlearnHeroicActionMutationVariables,
 } from '../../graphql/generated/graphql'
@@ -10,6 +12,7 @@ import useGraphQL from '../graphql/useGraphQL'
 import GetHeroicActionsRequest from '../../graphql/queries/heroic-actions'
 import LearnHeroicActionRequest from '../../graphql/mutations/character-heroic-action-create'
 import UnlearnHeroicActionRequest from '../../graphql/mutations/character-heroic-action-delete'
+import SetHeroicActionUsesRequest from '../../graphql/mutations/character-heroic-action-update'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -27,6 +30,15 @@ export function useHeroicActionApi() {
     learnHeroicAction: useMutation({
       mutationFn: (data: LearnHeroicActionMutationVariables) =>
         graphQLClient.request<LearnHeroicActionMutation>(LearnHeroicActionRequest, data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [ RANGER_QUERY_KEYS.RANGER ],
+        })
+      },
+    }),
+    buyAdditionalUse: useMutation({
+      mutationFn: (data: SetHeroicActionUsesMutationVariables) =>
+        graphQLClient.request<SetHeroicActionUsesMutation>(SetHeroicActionUsesRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [ RANGER_QUERY_KEYS.RANGER ],

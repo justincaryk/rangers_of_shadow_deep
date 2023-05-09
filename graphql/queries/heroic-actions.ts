@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 export default gql`
   query HeroicActions {
-    allHeroicActions {
+    allHeroicActions(orderBy: NAME_ASC) {
       nodes {
         cost
         description

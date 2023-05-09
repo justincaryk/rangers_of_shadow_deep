@@ -20,6 +20,7 @@ export default gql`
           id
           heroicActionId
           characterId
+          uses
           nodeId
         }
         totalCount
@@ -51,6 +52,7 @@ export default gql`
           id
           characterId
           spellId
+          uses
           nodeId
         }
         totalCount

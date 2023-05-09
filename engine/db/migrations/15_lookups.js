@@ -12,7 +12,8 @@ exports.up = knex =>
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
       companion_id uuid REFERENCES ranger.character_companions (id),
-      heroic_action_id uuid REFERENCES ranger.heroic_actions (id)
+      heroic_action_id uuid REFERENCES ranger.heroic_actions (id),
+      uses smallint default 1 NOT NULL
     );
 
     -- characters/companions + stats
@@ -46,7 +47,8 @@ exports.up = knex =>
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
       companion_id uuid REFERENCES ranger.character_companions (id),
-      spell_id uuid REFERENCES ranger.spells (id) NOT NULL
+      spell_id uuid REFERENCES ranger.spells (id) NOT NULL,
+      uses smallint default 1 NOT NULL
     );
   `)
 

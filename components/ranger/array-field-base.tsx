@@ -3,6 +3,7 @@
 import { BoltIcon, SparklesIcon } from '@heroicons/react/24/outline'
 import { useAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
+import classnames from 'classnames'
 
 import Card from '../parts/card'
 import MinorHeader from '../parts/minor-header'
@@ -11,15 +12,17 @@ import SmallButton from '../parts/small-button'
 
 // types
 import { RANGER_LOOKUP_FIELD_HASH_KEYS, RangerLookupFieldHashKeyStrings, RANGER_LOOKUP_FIELD_HASH } from '../types'
-import { HeroicAction } from '../heroic-actions/types'
-import { Spell } from '../spells/types'
-import { MemberHeroicAction, MemberSpell } from '../../graphql/generated/graphql'
+import { HeroicAction, MemberHeroicAction } from '../heroic-actions/types'
+import { Spell, MemberSpell } from '../spells/types'
 
 // state hooks
 import { useHeroicActionBp } from './atoms/build-points'
 import { useRangerApi } from './ranger-api'
 import { useHeroicActionApi } from '../heroic-actions/heroic-actions-api'
 import { useSpellsApi } from '../spells/spells-api'
+import Increment from '../parts/increment'
+import Decrement from '../parts/decrement'
+import { DECREASE, INCREASE } from '../rules/creation-rules'
 
 const SectionIcon = (type: RangerLookupFieldHashKeyStrings) => {
   if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS) return <BoltIcon className='text-yellow-400' />
@@ -32,6 +35,12 @@ interface Props {
   data: (HeroicAction | Spell)[]
 }
 
+type LookupFieldData = {
+  known: boolean
+  item: Spell | HeroicAction | null
+  rangerLookupRef: MemberSpell | MemberHeroicAction | null
+}
+
 export default function ArrayFieldBase({ type, data }: Props) {
   const [ show, toggleShow ] = useState(false)
   const [ submitting, setSubmitting ] = useState(false)
@@ -41,8 +50,11 @@ export default function ArrayFieldBase({ type, data }: Props) {
 
   const { mutate: mutateActionLearn, status: statusActionLearn } = useHeroicActionApi().learnHeroicAction
   const { mutate: mutateActionUnlearn, status: statusActionUnlearn } = useHeroicActionApi().unlearnHeroicAction
+  const { mutate: mutateBuyExtraActionUses, status: statusActionBuyUses } = useHeroicActionApi().buyAdditionalUse
+
   const { mutate: mutateSpellLearn, status: statusSpellLearn } = useSpellsApi().learnSpell
   const { mutate: mutateSpellUnlearn, status: statusSpellUnlearn } = useSpellsApi().unlearnSpell
+  const { mutate: mutateBuyExtraSpellUses, status: statusSpellBuyses } = useSpellsApi().buyAdditionalUse
 
   useEffect(() => {
     if (statusActionLearn === 'loading') {
@@ -61,6 +73,14 @@ export default function ArrayFieldBase({ type, data }: Props) {
       setSubmitting(true)
       return
     }
+    if (statusActionBuyUses === 'loading') {
+      setSubmitting(true)
+      return
+    }
+    if (statusSpellBuyses === 'loading') {
+      setSubmitting(true)
+      return
+    }
     if (submitting) {
       setSubmitting(false)
     }
@@ -71,7 +91,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
     const lookupKey = RANGER_LOOKUP_FIELD_HASH[type]
 
     return base?.[lookupKey]?.nodes ?? []
-  }, [ ranger, type ])
+  }, [ ranger, type ]) as MemberHeroicAction[] | MemberSpell[]
 
   const headerContent = useMemo(() => {
     if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS) {
@@ -83,61 +103,96 @@ export default function ArrayFieldBase({ type, data }: Props) {
     return 'invalid section type'
   }, [ type ])
 
-  const checkIsFieldLearned = (id: string) => {
+  const lookupRangerFieldById = (item: Spell | HeroicAction): LookupFieldData => {
     for (const ref of rangerLookupRefData) {
       const { heroicActionId = null } = ref as MemberHeroicAction
       const { spellId = null } = ref as MemberSpell
 
-      if (id === heroicActionId || id === spellId) {
+      if (item.id === heroicActionId || item.id === spellId) {
         return {
-          refId: ref.id,
           known: true,
+          rangerLookupRef: ref,
+          item,
         }
       }
     }
     return {
-      refId: null,
       known: false,
+      rangerLookupRef: null,
+      item,
     }
   }
 
-  const handleItemClicked = (item: HeroicAction | Spell) => {
+  const updateLearnedStatus = (lookupFieldData: LookupFieldData) => {
     if (submitting) {
       return
     }
 
-    const { known, refId } = checkIsFieldLearned(item.id)
-
     const baseDeletePayload = {
-      id: refId,
+      id: lookupFieldData?.rangerLookupRef?.id,
       characterId: ranger?.characterById?.id,
     }
 
     switch (true) {
-      case !known && type === 'heroic_actions':
+      case !lookupFieldData.known && type === 'heroic_actions':
         mutateActionLearn({
-          heroicActionId: item.id,
+          heroicActionId: lookupFieldData.item?.id,
           characterId: ranger?.characterById?.id,
           newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
         })
         break
-      case known && type === 'heroic_actions':
+      case lookupFieldData.known && type === 'heroic_actions':
         mutateActionUnlearn({
           ...baseDeletePayload,
           newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
         })
         break
-      case !known && type === 'spells':
+      case !lookupFieldData.known && type === 'spells':
         mutateSpellLearn({
-          spellId: item.id,
+          spellId: lookupFieldData.item?.id,
           characterId: ranger?.characterById?.id,
           newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
         })
         break
-      case known && type === 'spells':
+      case lookupFieldData.known && type === 'spells':
         mutateSpellUnlearn({
           ...baseDeletePayload,
           newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
+        })
+        break
+      default:
+        break
+    }
+  }
+  const updateNumberOfUses = (lookupFieldData: LookupFieldData, modifier: number) => {
+    if (submitting || !lookupFieldData.known) {
+      return
+    }
+
+    const newValue = (lookupFieldData.rangerLookupRef?.uses || 1) + modifier
+    
+    // remove the lookup ref altogether
+    if (newValue === 0) {
+      return updateLearnedStatus(lookupFieldData)
+    }
+
+    // update the number of uses.
+    const updatePayload = {
+      lookupId: lookupFieldData.rangerLookupRef?.id,
+      characterId: ranger?.characterById?.id,
+      uses: newValue,
+      newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) + modifier,
+    }
+
+    switch (true) {
+      case type === 'heroic_actions':
+        mutateBuyExtraActionUses({
+          ...updatePayload,
+        })
+        break
+      case type === 'spells':
+        mutateBuyExtraSpellUses({
+          ...updatePayload,
         })
         break
       default:
@@ -160,20 +215,65 @@ export default function ArrayFieldBase({ type, data }: Props) {
       </div>
       {show && (
         <div className='space-y-4'>
-          {data.map(item => (
-            <Card
-              key={item.name}
-              header={
-                <div className='flex justify-between items-center'>
-                  <div className='font-semibold capitalize'>{item.name}</div>
-                  <SmallButton onClick={() => handleItemClicked(item)} primary={!checkIsFieldLearned(item.id).known}>
-                    {checkIsFieldLearned(item.id).known ? 'UNLEARN' : 'LEARN'}
-                  </SmallButton>
-                </div>
-              }
-              main={item.description}
-            />
-          ))}
+          {data.map(item => {
+            const lookupFieldData = lookupRangerFieldById(item)
+            const canIncrement = lookupFieldData.rangerLookupRef && lookupFieldData.rangerLookupRef.uses < heroicBp
+            const canDecrement = lookupFieldData.rangerLookupRef && lookupFieldData.rangerLookupRef.uses > 0
+            return (
+              <Card
+                key={item.id}
+                header={
+                  <div className='flex justify-between items-center'>
+                    <div className='flex gap-x-2 items-center'>
+                      <div className='font-semibold capitalize'>{item.name}</div>
+                      {lookupFieldData.rangerLookupRef ? (
+                        <div className='text-sm font-semibold'>( uses: { lookupFieldData.rangerLookupRef?.uses} )</div>
+                      ) : null}
+                    </div>
+                    <div className='flex justify-end items-center gap-x-3'>
+                      <div className='flex gap-x-1'>
+                        {lookupFieldData.known && (
+                          <div
+                            className={classnames({
+                              'w-6': true,
+                              'cursor-not-allowed': !canIncrement,
+                              'cursor-pointer': canIncrement,
+                            })}
+                          >
+                            <Increment
+                              onClick={() => updateNumberOfUses(lookupFieldData, INCREASE)}
+                              disabled={!canIncrement}
+                            />
+                          </div>
+                        )}
+                        {lookupFieldData.known && (
+                          <div
+                            className={classnames({
+                              'w-6': true,
+                              'cursor-not-allowed': !canDecrement,
+                              'cursor-pointer': canDecrement,
+                            })}
+                          >
+                            <Decrement
+                              onClick={() => updateNumberOfUses(lookupFieldData, DECREASE)}
+                              disabled={!canDecrement}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      <SmallButton
+                        onClick={() => updateLearnedStatus(lookupFieldData)}
+                        primary={!lookupFieldData.known}
+                      >
+                        {lookupFieldData.known ? 'UNLEARN' : 'LEARN'}
+                      </SmallButton>
+                    </div>
+                  </div>
+                }
+                main={item.description}
+              />
+            )
+          })}
         </div>
       )}
       {/* always show preview of selected heroic actions  */}
@@ -181,8 +281,8 @@ export default function ArrayFieldBase({ type, data }: Props) {
         <div className='space-y-4'>
           {rangerLookupRefData.map(itemRef => {
             const item = data.find(item => {
-              if (itemRef.__typename === 'MemberHeroicAction' && item.id === itemRef.heroicActionId) return true
-              if (itemRef.__typename === 'MemberSpell' && item.id === itemRef.spellId) return true
+              if (item.id === (itemRef as MemberHeroicAction).heroicActionId) return true
+              if (item.id === (itemRef as MemberSpell).spellId) return true
               return false
             })
 
@@ -194,8 +294,21 @@ export default function ArrayFieldBase({ type, data }: Props) {
                 key={item.id}
                 header={
                   <div className='flex justify-between items-center'>
-                    <div className='font-semibold capitalize'>{item.name}</div>
-                    <SmallButton onClick={() => handleItemClicked(item)}>{'UNLEARN'}</SmallButton>
+                    <div className='font-semibold capitalize'>
+                      {item.name} {`( uses: ${itemRef.uses} )`}
+                    </div>
+
+                    <SmallButton
+                      onClick={() =>
+                        mutateActionUnlearn({
+                          characterId: ranger.characterById?.id,
+                          id: itemRef.id,
+                          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
+                        })
+                      }
+                    >
+                      {'UNLEARN'}
+                    </SmallButton>
                   </div>
                 }
                 main={item.description}

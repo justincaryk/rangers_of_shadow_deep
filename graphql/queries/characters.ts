@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 export default gql`
   query AllCharacters {
-    allCharacters {
+    allCharacters(orderBy: NAME_ASC) {
       totalCount
       nodes {
         avatarUrl
