@@ -23,14 +23,13 @@ export default function AssignmentSection({ ranger, bpLookupRecord, attributeKey
   const [ totalBuildPoints ] = useAtom(useBuildPoints)
   const currentAttribute = ATTR_TO_BP_LOOKUP_KEY_HASH[attributeKey]
 
-  const { mutate: mutateRanger } = useRangerApi().updateRanger
-  const { mutate: mutateBpLookup } = useRangerApi().updateRangerBpAllottment
+  const { mutate: mutateRanger, status: rangerLoadingStatus } = useRangerApi().updateRanger
+  const { mutate: mutateBpLookup, status: bpLookupLoadingStatus } = useRangerApi().updateRangerBpAllottment
 
   const checkCanIncrement = () => {
-    const currentlyAllotted = bpLookupRecord[currentAttribute.bpVarKey]
-    // pick the max for the attribute or total bp, whichever is lower
-    const trueMax = Math.min(currentAttribute.maxAllowed, totalBuildPoints)
-    return trueMax > currentlyAllotted
+    const allotted = bpLookupRecord[currentAttribute.bpVarKey]
+    const isInbounds = allotted < currentAttribute.maxAllowed
+    return totalBuildPoints > 0 && isInbounds
   }
 
   const checkCanDecrement = () => {
@@ -42,11 +41,20 @@ export default function AssignmentSection({ ranger, bpLookupRecord, attributeKey
   const canDecrement = checkCanDecrement()
 
   const handleAllotBp = (modifier: number) => {
+    if (rangerLoadingStatus === 'loading' && bpLookupLoadingStatus === 'loading') {
+      return null;
+    }
+    if (modifier === INCREASE && !canIncrement) {
+      return null
+    }
+    if (modifier === DECREASE && !canDecrement) {
+      return null
+    }
+
     mutateBpLookup({
       lookupId: bpLookupRecord.id,
       [currentAttribute.bpMutateVarKey]: bpLookupRecord[currentAttribute.bpVarKey] + modifier,
     })
-
 
     mutateRanger({
       id: bpLookupRecord.characterId,

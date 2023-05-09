@@ -23,9 +23,6 @@ export default function Ranger() {
         <Personal />
       </div>
       <div className={classnames(sectionBaseStyles)}>
-        <RecruitmentPoints />
-      </div>
-      <div className={classnames(sectionBaseStyles)}>
         <Stats />
       </div>
       <div className={classnames(sectionBaseStyles)}>
@@ -39,6 +36,9 @@ export default function Ranger() {
       </div>
       <div className={classnames(sectionBaseStyles)}>
         <Equipment />
+      </div>
+      <div className={classnames(sectionBaseStyles)}>
+        <RecruitmentPoints />
       </div>
     </div>
   )
