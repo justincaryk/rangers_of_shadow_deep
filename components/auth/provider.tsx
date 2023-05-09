@@ -41,9 +41,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     // reroute FROM public pages if signed in
     if (
       currentUser?.userId &&
-      Object.values(PUBLIC_LINK_ROUTES).includes(
-        pathname as PUBLIC_LINK_ROUTES
-      ) &&
+      Object.values(PUBLIC_LINK_ROUTES).includes(pathname as PUBLIC_LINK_ROUTES) &&
       !hydrating
     ) {
       router.replace(PRIVATE_LINK_ROUTES.DASHBOARD)
@@ -51,9 +49,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     // reroute TO signin if signed out
     else if (
       !currentUser?.userId &&
-      Object.values(PRIVATE_LINK_ROUTES).includes(
-        pathname as PRIVATE_LINK_ROUTES
-      ) &&
+      Object.values(PRIVATE_LINK_ROUTES).includes(pathname as PRIVATE_LINK_ROUTES) &&
       !hydrating
     ) {
       router.replace(PUBLIC_LINK_ROUTES.SIGN_IN)

@@ -21,20 +21,12 @@ function GraphQLProvider({ children }: PropsWithChildren) {
   }, [ currentUser ])
 
   const [ graphQLClient ] = useState(
-    new GraphQLClient(
-      process.env.NEXT_PUBLIC_GRAPHQL_HOST ||
-        'http://localhost:3000/api/graphql',
-      {
-        headers,
-      }
-    )
+    new GraphQLClient(process.env.NEXT_PUBLIC_GRAPHQL_HOST || 'http://localhost:3000/api/graphql', {
+      headers,
+    })
   )
 
-  return (
-    <GraphQLClientContext.Provider value={{ graphQLClient }}>
-      {children}
-    </GraphQLClientContext.Provider>
-  )
+  return <GraphQLClientContext.Provider value={{ graphQLClient }}>{children}</GraphQLClientContext.Provider>
 }
 
 export default GraphQLProvider

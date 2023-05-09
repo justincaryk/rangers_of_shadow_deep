@@ -23,8 +23,7 @@ export default function Stats() {
   const { data: stats } = useStatsApi().getStats
   const { data: ranger } = useRangerApi().getRangerById
 
-  const { mutate: mutateStat, status: mutateStatStatus } =
-    useStatsApi().updateMemberStatById
+  const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStatById
   const { mutate: mutateRanger, status: mutateRangerStatus } = useRangerApi().updateRanger
 
   // how many build points available for stats
@@ -43,9 +42,7 @@ export default function Stats() {
     }
 
     // only 1 upgrade allowed per stat at creation
-    if (
-      getCurrentStatValue(stat.id) === BASE_STATS[stat.name as BASE_STATS_ENUM]
-    ) {
+    if (getCurrentStatValue(stat.id) === BASE_STATS[stat.name as BASE_STATS_ENUM]) {
       return true
     }
 
@@ -53,9 +50,7 @@ export default function Stats() {
   }
 
   const checkCanDecrease = (stat: Stat) => {
-    if (
-      getCurrentStatValue(stat.id) > BASE_STATS[stat.name as BASE_STATS_ENUM]
-    ) {
+    if (getCurrentStatValue(stat.id) > BASE_STATS[stat.name as BASE_STATS_ENUM]) {
       return true
     }
 
@@ -78,12 +73,11 @@ export default function Stats() {
     }
 
     const memberStat = getMemberStatFromStatId(stat.id)
-    
+
     if (!memberStat) {
       console.error('no matching member stat id: ', {
         statId: stat.id,
-        memberStats:
-          ranger?.characterById?.memberStatsByCharacterId.nodes ?? [],
+        memberStats: ranger?.characterById?.memberStatsByCharacterId.nodes ?? [],
       })
       throw new Error()
     }
@@ -97,23 +91,16 @@ export default function Stats() {
       id: memberStat.characterId,
       patch: {
         totalStatPoints: (ranger?.characterById?.totalStatPoints ?? 0) + modifier,
-      }
+      },
     })
   }
 
   function getMemberStatFromStatId(statId: string) {
-    return (
-      ranger?.characterById?.memberStatsByCharacterId.nodes.find(
-        x => statId && statId === x?.statId
-      ) || null
-    )
+    return ranger?.characterById?.memberStatsByCharacterId.nodes.find(x => statId && statId === x?.statId) || null
   }
 
   function getCurrentStatValue(statId: string) {
-    return (
-      getMemberStatFromStatId(statId)?.value ||
-      'Could not find current set value'
-    )
+    return getMemberStatFromStatId(statId)?.value || 'Could not find current set value'
   }
 
   return (
@@ -124,7 +111,7 @@ export default function Stats() {
         </div>
         <MinorHeader
           content='stats'
-          icon={<AdjustmentsHorizontalIcon  className='text-rose-600' />}
+          icon={<AdjustmentsHorizontalIcon className='text-rose-600' />}
           subtext='Available build points:'
           subvalue={trueAvailBp}
         />
@@ -138,10 +125,7 @@ export default function Stats() {
                 const canIncrement = checkCanIncrease(stat)
                 const canDecrement = checkCanDecrease(stat)
                 return (
-                  <div
-                    key={stat?.id}
-                    className='grid grid-flow-col auto-cols-min gap-x-2'
-                  >
+                  <div key={stat?.id} className='grid grid-flow-col auto-cols-min gap-x-2'>
                     <div className='uppercase font-bold text-small w-24'>
                       {BASE_STATS_ENUM[stat?.name as BASE_STATS_ENUM]}: &nbsp;
                     </div>
@@ -155,10 +139,7 @@ export default function Stats() {
                           'cursor-pointer': canIncrement,
                         })}
                       >
-                        <Increment
-                          onClick={() => stat && updateStat(stat, INCREASE)}
-                          disabled={!canIncrement}
-                        />
+                        <Increment onClick={() => stat && updateStat(stat, INCREASE)} disabled={!canIncrement} />
                       </div>
                       <div
                         className={classnames({
@@ -167,10 +148,7 @@ export default function Stats() {
                           'cursor-pointer': canDecrement,
                         })}
                       >
-                        <Decrement
-                          onClick={() => stat && updateStat(stat, DECREASE)}
-                          disabled={!canDecrement}
-                        />
+                        <Decrement onClick={() => stat && updateStat(stat, DECREASE)} disabled={!canDecrement} />
                       </div>
                     </div>
                   </div>

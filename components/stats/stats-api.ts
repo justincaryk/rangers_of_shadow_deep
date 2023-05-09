@@ -24,10 +24,7 @@ export function useStatsApi() {
   return {
     updateMemberStatById: useMutation({
       mutationFn: (data: UpdateMemberStatByIdMutationVariables) =>
-        graphQLClient.request<UpdateMemberStatByIdMutation>(
-          UpdateMemberStatById,
-          data
-        ),
+        graphQLClient.request<UpdateMemberStatByIdMutation>(UpdateMemberStatById, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [ STATS_QUERY_KEYS.RANGER_STATS ],

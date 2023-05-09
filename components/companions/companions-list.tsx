@@ -21,24 +21,18 @@ import { Spinner } from '../parts/spinner'
 const baseBorderColor = { 'border border-orange-900 border-collapse': true }
 const baseBgColor = 'bg-amber-600/50'
 const baseTableClasses = {
-  [`table-auto w-full border-collapse border ${baseBorderColor} text-center`]:
-    true,
+  [`table-auto w-full border-collapse border ${baseBorderColor} text-center`]: true,
 }
 const noBorderTopClass = 'border-t-0'
 
-const statKeys = [
-  ...objectKeys(BASE_STATS_ENUM),
-  ...objectKeys(EXTENDED_STATS_ENUM),
-]
+const statKeys = [ ...objectKeys(BASE_STATS_ENUM), ...objectKeys(EXTENDED_STATS_ENUM) ]
 
 export default function CompanionsList() {
   // prob a better way to handle this
   const [ buying, setBuying ] = useState<string | null>(null)
 
   const [ spentRp ] = useAtom(useSpentRecruitmentPoints)
-  const [ adjustedTotalRp ] = useAtom(
-    useAdjustedRecruitmentPoints
-  )
+  const [ adjustedTotalRp ] = useAtom(useAdjustedRecruitmentPoints)
 
   const [ , spendRecruitmentPoints ] = useAtom(useSpendRecruitmentPoints)
   const [ , buyCompanion ] = useAtom(useAddCompanion)
@@ -75,12 +69,8 @@ export default function CompanionsList() {
               <div className='space-y-2'>
                 <div className='flex flex-row items-center justify-between'>
                   <div>
-                    <span className='uppercase font-bold text-lg align-middle'>
-                      {comp.name}
-                    </span>
-                    <span className='ml-2 uppercase text-sm italic align-middle'>
-                      ({comp.subtype})
-                    </span>
+                    <span className='uppercase font-bold text-lg align-middle'>{comp.name}</span>
+                    <span className='ml-2 uppercase text-sm italic align-middle'>({comp.subtype})</span>
                   </div>
                   <div>
                     {buying === comp.name ? (
@@ -106,17 +96,11 @@ export default function CompanionsList() {
                 >
                   <thead>
                     <tr>
-                      <th
-                        className={`pl-1.5 capitalize text-left ${baseBgColor} ${baseBorderColor} py-2`}
-                      >
+                      <th className={`pl-1.5 capitalize text-left ${baseBgColor} ${baseBorderColor} py-2`}>
                         {comp.name}
                       </th>
-                      <th className={`${baseBgColor} ${baseBorderColor} py-2`}>
-                        RP
-                      </th>
-                      <th className={`${baseBorderColor} bg-slate-200/30 py-2`}>
-                        {comp.cost}
-                      </th>
+                      <th className={`${baseBgColor} ${baseBorderColor} py-2`}>RP</th>
+                      <th className={`${baseBorderColor} bg-slate-200/30 py-2`}>{comp.cost}</th>
                     </tr>
                   </thead>
                 </table>
@@ -141,10 +125,7 @@ export default function CompanionsList() {
                   <tbody>
                     <tr>
                       {statKeys.map(key => (
-                        <td
-                          className={`border ${baseBorderColor}`}
-                          key={`${key}-val`}
-                        >
+                        <td className={`border ${baseBorderColor}`} key={`${key}-val`}>
                           {key === EXTENDED_STATS_ENUM.notes ? '' : '+'}
                           {comp.stats[key]}
                         </td>

@@ -3,7 +3,7 @@
 import classnames from 'classnames'
 import { sectionBaseStyles } from '../../../../../components/parts/styles'
 
-import Personal from '../../../../../components/ranger/personal'
+import Personal from '../../../../../components/ranger/core-character'
 import Stats from '../../../../../components/stats/stats'
 import HeroicActions from '../../../../../components/heroic-actions/heroic-actions'
 import Spells from '../../../../../components/spells/spells'

@@ -1,4 +1,3 @@
-
 interface MyCompanionProps {
   companion: any
 }

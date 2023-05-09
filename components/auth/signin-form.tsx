@@ -60,11 +60,7 @@ export default function SigninForm() {
 
   return (
     <div>
-      {signinError ? (
-        <div className='text-red-400 font-bold'>
-          Incorrect username or password
-        </div>
-      ) : null}
+      {signinError ? <div className='text-red-400 font-bold'>Incorrect username or password</div> : null}
       <Formik
         initialValues={{
           username: '',
@@ -76,26 +72,14 @@ export default function SigninForm() {
         {({ errors, touched }) => (
           <Form className='space-y-4 relative pt-6'>
             <div>
-              <label
-                className='text-center hidden'
-                htmlFor='username'
-                aria-label='username'
-              >
+              <label className='text-center hidden' htmlFor='username' aria-label='username'>
                 Enter username
               </label>
-              <Field
-                name='username'
-                placeholder='Aragorn'
-                className='w-full border rounded text-xl p-2 text-center'
-              />
+              <Field name='username' placeholder='Aragorn' className='w-full border rounded text-xl p-2 text-center' />
             </div>
 
             <div>
-              <label
-                className='text-center hidden'
-                htmlFor='password'
-                aria-label='password'
-              >
+              <label className='text-center hidden' htmlFor='password' aria-label='password'>
                 Enter Password
               </label>
               <Field
@@ -106,10 +90,7 @@ export default function SigninForm() {
               />
             </div>
 
-            <button
-              className='w-full border rounded p-3 bg-indigo-600 text-white font-bold'
-              type='submit'
-            >
+            <button className='w-full border rounded p-3 bg-indigo-600 text-white font-bold' type='submit'>
               SIGN IN
             </button>
           </Form>

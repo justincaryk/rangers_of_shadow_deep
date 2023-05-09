@@ -16,10 +16,7 @@ export function useGetTrueAvailBp(minorBp: number) {
   return Math.min(totalBp, minorBp)
 }
 
-export function getAdjustedRecruitmentPoints(
-  players: PLAYER_COUNT,
-  brp: number
-) {
+export function getAdjustedRecruitmentPoints(players: PLAYER_COUNT, brp: number) {
   const adjustments = {
     [PLAYER_COUNT.ONE]: (brp: number) => brp,
     [PLAYER_COUNT.TWO]: (brp: number) => brp * 0.5 - 10,
@@ -47,4 +44,4 @@ export const parseJwt = (token: string) => {
   return JSON.parse(jsonPayload)
 }
 
-export const capitalize = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>;
+export const capitalize = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>

@@ -14,7 +14,7 @@ import { useRecruitmentPointsBp } from '../ranger/atoms/build-points'
 
 import {
   RECRUITMENT_POINTS_PER_BP,
-//   RECRUITMENT_POINTS_PER_LEADERSHIP_POINT,
+  //   RECRUITMENT_POINTS_PER_LEADERSHIP_POINT,
 } from '../rules/creation-rules'
 import { useRangerApi } from '../ranger/ranger-api'
 
@@ -63,27 +63,30 @@ export default function RecruitmentPoints() {
           subvalue={recruitmentBp}
         />
       </div>
-      <Card
-        header={null}
-        main={
-          <div className='space-y-4'>
-            <div className='flex gap-x-4'>
-              <div className='font-bold'>Allotted Recruitment Points: {budgetedRecruitmentCount}</div>
-            </div>
-            <div className='space-y-1 text-sm text-dirty-orange'>
-              <div>
-                Every <strong>1 BUILD POINT</strong> spent yields <strong>{RECRUITMENT_POINTS_PER_BP} RECRUITMENT POINTS</strong>.
+      {show && (
+        <Card
+          header={null}
+          main={
+            <div className='space-y-4'>
+              <div className='flex gap-x-4'>
+                <div className='font-bold'>Allotted Recruitment Points: {budgetedRecruitmentCount}</div>
+              </div>
+              <div className='space-y-1 text-sm text-dirty-orange'>
+                <div>
+                  Every <strong>1 BUILD POINT</strong> spent yields{' '}
+                  <strong>{RECRUITMENT_POINTS_PER_BP} RECRUITMENT POINTS</strong>.
+                </div>
+              </div>
+              <div className='space-x-2'>
+                <SmallButton onClick={spendBpForSkillPoints} primary>
+                  Increase allotment
+                </SmallButton>
+                <SmallButton onClick={recoverBuildPoint}>Decrease allotment</SmallButton>
               </div>
             </div>
-            <div className='space-x-2'>
-              <SmallButton onClick={spendBpForSkillPoints} primary>
-                Increase allotment
-              </SmallButton>
-              <SmallButton onClick={recoverBuildPoint}>Decrease allotment</SmallButton>
-            </div>
-          </div>
-        }
-      />
+          }
+        />
+      )}
     </div>
   )
 }

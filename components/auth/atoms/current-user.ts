@@ -10,9 +10,6 @@ export interface CurrentUser {
 
 export const useCurrentUser = atom<CurrentUser | null>(null)
 
-export const useSetCurrentUser = atom(
-  null,
-  (get, set, currentUser: CurrentUser) => {
-    set(useCurrentUser, currentUser)
-  }
-)
+export const useSetCurrentUser = atom(null, (get, set, currentUser: CurrentUser) => {
+  set(useCurrentUser, currentUser)
+})

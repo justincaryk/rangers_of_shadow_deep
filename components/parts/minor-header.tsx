@@ -5,13 +5,7 @@ interface Props {
   subtext?: string
   subvalue?: number
 }
-export default function MinorHeader({
-  content,
-  icon,
-  iconSize = 'w-8',
-  subtext,
-  subvalue,
-}: Props) {
+export default function MinorHeader({ content, icon, iconSize = 'w-8', subtext, subvalue }: Props) {
   return (
     <>
       <div className='flex items-center gap-x-1'>

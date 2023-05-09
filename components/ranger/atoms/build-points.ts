@@ -47,7 +47,7 @@ export function useSyncRangerBp() {
       const skillMod = Math.min(skillPointsConvertedToBp, MAX_BP_FOR_SKILLS)
       const statMod = Math.min(totalStatPoints, MAX_BP_FOR_STATS)
       const recruitmentMod = Math.min(recruitmentPointsConvertedToBp, MAX_BP_FOR_RP)
-      
+
       totalBp -= heroicMod
       totalBp -= skillMod
       totalBp -= statMod
@@ -59,7 +59,7 @@ export function useSyncRangerBp() {
       setRpBp(MAX_BP_FOR_RP - recruitmentMod)
       setHeroicBp(MAX_BP_FOR_HEROIC_SPELLS - heroicMod)
     }
-  }, [ data ])
+  }, [ data, setBp, setHeroicBp, setRpBp, setSkillsBp, setStatsBp ])
 
   return null
 }

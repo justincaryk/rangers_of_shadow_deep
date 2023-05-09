@@ -5,11 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import PrivateNavigation from '../../components/nav/private'
 import Loading from '../loading'
 
-export default function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <section className='relative h-screen w-full mb-46'>
       <Toaster />

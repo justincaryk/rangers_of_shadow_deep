@@ -84,7 +84,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
     if (submitting) {
       setSubmitting(false)
     }
-  }, [ statusActionLearn, statusActionUnlearn, statusSpellLearn, statusSpellUnlearn ])
+  }, [ statusActionLearn, statusActionUnlearn, statusSpellLearn, statusSpellUnlearn, statusActionBuyUses, statusSpellBuyses, submitting ])
 
   const rangerLookupRefData = useMemo(() => {
     const base = ranger?.characterById
@@ -170,7 +170,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
     }
 
     const newValue = (lookupFieldData.rangerLookupRef?.uses || 1) + modifier
-    
+
     // remove the lookup ref altogether
     if (newValue === 0) {
       return updateLearnedStatus(lookupFieldData)
@@ -227,7 +227,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                     <div className='flex gap-x-2 items-center'>
                       <div className='font-semibold capitalize'>{item.name}</div>
                       {lookupFieldData.rangerLookupRef ? (
-                        <div className='text-sm font-semibold'>( uses: { lookupFieldData.rangerLookupRef?.uses} )</div>
+                        <div className='text-sm font-semibold'>( uses: {lookupFieldData.rangerLookupRef?.uses} )</div>
                       ) : null}
                     </div>
                     <div className='flex justify-end items-center gap-x-3'>

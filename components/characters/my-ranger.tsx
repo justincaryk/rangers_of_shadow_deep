@@ -1,4 +1,3 @@
-
 interface MyRangerProps {
   ranger: any
 }

@@ -40,9 +40,7 @@ export default function PrivateNavigation() {
         <div className=''>
           <div className='flex items-center justify-between md:justify-start md:space-x-10'>
             <div className='flex justify-start lg:w-0 lg:flex-1'>
-              <span className='sr-only'>
-                Rangers of Shadow Deep Companion App
-              </span>
+              <span className='sr-only'>Rangers of Shadow Deep Companion App</span>
               {PRIVATE_LINKS.filter(x => x.home).map(x => (
                 <Link href={x.link} key={x.text}>
                   <Image
@@ -83,10 +81,7 @@ export default function PrivateNavigation() {
           leaveFrom='opacity-100 scale-100'
           leaveTo='opacity-0 scale-95'
         >
-          <Popover.Panel
-            focus
-            className='absolute inset-x-0 top-0 origin-top-right transform p-2 transition md:hidden'
-          >
+          <Popover.Panel focus className='absolute inset-x-0 top-0 origin-top-right transform p-2 transition md:hidden'>
             <div className='divide-y-2 divide-gray-50 rounded-lg shadow-lg ring-1 ring-black ring-opacity-5'>
               <div className='px-5 pt-5 pb-6'>
                 <div className='flex items-center justify-between'>

@@ -18,8 +18,7 @@ function classNames(...classes: string[]) {
 const solutions = [
   {
     name: 'Analytics',
-    description:
-      'Get a better understanding of where your traffic is coming from.',
+    description: 'Get a better understanding of where your traffic is coming from.',
     href: '#',
     icon: ChartBarIcon,
   },
@@ -43,8 +42,7 @@ const solutions = [
   },
   {
     name: 'Automations',
-    description:
-      'Build strategic funnels that will drive your customers to convert',
+    description: 'Build strategic funnels that will drive your customers to convert',
     href: '#',
     icon: ArrowPathIcon,
   },
@@ -98,17 +96,10 @@ export default function Dropdown() {
                           href={item.href}
                           className='-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50'
                         >
-                          <item.icon
-                            className='h-6 w-6 flex-shrink-0 text-indigo-600'
-                            aria-hidden='true'
-                          />
+                          <item.icon className='h-6 w-6 flex-shrink-0 text-indigo-600' aria-hidden='true' />
                           <div className='ml-4'>
-                            <p className='text-base font-medium text-gray-900'>
-                              {item.name}
-                            </p>
-                            <p className='mt-1 text-sm text-gray-500'>
-                              {item.description}
-                            </p>
+                            <p className='text-base font-medium text-gray-900'>{item.name}</p>
+                            <p className='mt-1 text-sm text-gray-500'>{item.description}</p>
                           </div>
                         </a>
                       ))}

@@ -59,6 +59,7 @@
     "autoprefixer": "^10.4.13",
     "dotenv": "^16.0.3",
     "encoding": "^0.1.13",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.2",
     "knex": "^2.3.0",
     "knex-migrate": "^1.7.4",

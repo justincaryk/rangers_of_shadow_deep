@@ -53,7 +53,7 @@ See the tanstack documentation for more information https://tanstack.com/query/v
 
 ## State management
 
-This application favors an atomic state management approach rather than a large top down approach like redux. 
+This application favors an atomic state management approach rather than a large top down approach like redux.
 
 See Jotai documentation for more information https://jotai.org/docs/
 

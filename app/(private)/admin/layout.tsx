@@ -1,10 +1,6 @@
 import React from 'react'
 
-export default function RangerLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RangerLayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <div className='bg-hero-3 h-full w-full bg-no-repeat bg-contain bg-top fixed right-0 top-24 -z-10 opacity-40' />

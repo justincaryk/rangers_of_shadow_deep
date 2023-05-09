@@ -20,11 +20,7 @@ import { useUpdatePlayerCount } from '../../../../components/companions/atoms/pl
 import { useCompanions } from '../../../../components/companions/atoms/companions'
 
 import { PLAYER_COUNT } from '../../../../components/types'
-import {
-  getAdjustedRecruitmentPoints,
-  objectKeys,
-  useGetTrueAvailBp,
-} from '../../../../components/utils'
+import { getAdjustedRecruitmentPoints, objectKeys, useGetTrueAvailBp } from '../../../../components/utils'
 
 import { DECREASE, INCREASE } from '../../../../components/rules/creation-rules'
 
@@ -39,9 +35,7 @@ export default function Companions() {
   const trueAvailBp = useGetTrueAvailBp(MAX_BP_FOR_RP - bpSpentOnRp)
 
   const [ spentRp ] = useAtom(useSpentRecruitmentPoints)
-  const [ adjustedTotalRp, setAdjustedTotalBp ] = useAtom(
-    useAdjustedRecruitmentPoints
-  )
+  const [ adjustedTotalRp, setAdjustedTotalBp ] = useAtom(useAdjustedRecruitmentPoints)
 
   const resetSpent = useResetAtom(useSpentRecruitmentPoints)
   const resetAdjusted = useResetAtom(useAdjustedRecruitmentPoints)
@@ -57,10 +51,7 @@ export default function Companions() {
 
   const updateAdjustedRecruitmentPoints = useCallback(() => {
     const bonusRp = bpSpentOnRp * RECRUITMENT_POINTS_PER_BP
-    const total = getAdjustedRecruitmentPoints(
-      players,
-      bonusRp + BASE_RECRUITMENT_POINTS
-    )
+    const total = getAdjustedRecruitmentPoints(players, bonusRp + BASE_RECRUITMENT_POINTS)
     setAdjustedTotalBp(total)
   }, [ bpSpentOnRp, players, setAdjustedTotalBp ])
 
@@ -97,19 +88,13 @@ export default function Companions() {
 
   return (
     <div className='space-y-4'>
-      <MinorHeader
-        content='companions'
-        subtext={'Available build points:'}
-        subvalue={trueAvailBp}
-      />
+      <MinorHeader content='companions' subtext={'Available build points:'} subvalue={trueAvailBp} />
 
       <Card
         header={null}
         main={
           <div className='space-y-4'>
-            <div className='font-bold'>
-              Allotted Build Points for Recruitment Points: {bpSpentOnRp}
-            </div>
+            <div className='font-bold'>Allotted Build Points for Recruitment Points: {bpSpentOnRp}</div>
             <div className='space-y-1 text-sm text-dirty-orange'>
               <div>
                 Every <strong>1 BUILD POINT</strong> spent yields{' '}
@@ -120,9 +105,7 @@ export default function Companions() {
               <SmallButton primary onClick={spendBuildPoint}>
                 Increase allotment
               </SmallButton>
-              <SmallButton onClick={recoverBuildPoint}>
-                Decrease allotment
-              </SmallButton>
+              <SmallButton onClick={recoverBuildPoint}>Decrease allotment</SmallButton>
             </div>
           </div>
         }
@@ -134,27 +117,16 @@ export default function Companions() {
           <div className='space-y-4'>
             <div>
               <div className='flex flex-row items-center gap-x-4 w-full'>
-                <div className='font-bold uppercase whitespace-nowrap'>
-                  Number of Players:
-                </div>
-                <Dropdown
-                  className='w-32'
-                  options={playerOptions}
-                  value={players}
-                  onChange={handlePlayerChange}
-                />
+                <div className='font-bold uppercase whitespace-nowrap'>Number of Players:</div>
+                <Dropdown className='w-32' options={playerOptions} value={players} onChange={handlePlayerChange} />
               </div>
               <div className='text-sm italic'>
-                Warning! Changing the number of players will remove any selected
-                companions and reset your recruitment points.
+                Warning! Changing the number of players will remove any selected companions and reset your recruitment
+                points.
               </div>
             </div>
-            <div className='font-bold uppercase'>
-              Total Recruitment Points: {adjustedTotalRp}
-            </div>
-            <div className='font-bold uppercase'>
-              Remaining Recruitment Points: {adjustedTotalRp - spentRp}
-            </div>
+            <div className='font-bold uppercase'>Total Recruitment Points: {adjustedTotalRp}</div>
+            <div className='font-bold uppercase'>Remaining Recruitment Points: {adjustedTotalRp - spentRp}</div>
           </div>
         }
       />

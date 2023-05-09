@@ -37,8 +37,7 @@ module.exports = {
         'sky-blue': '#1C9AEF',
       },
       boxShadow: {
-        'md-sky-blue':
-          '0 4px 6px -1px rgba(28, 154, 239, 0.1), 0 2px 4px -1px rgba(28, 154, 239, 0.06)',
+        'md-sky-blue': '0 4px 6px -1px rgba(28, 154, 239, 0.1), 0 2px 4px -1px rgba(28, 154, 239, 0.06)',
       },
       backgroundImage: {
         'hero-1': "url('/images/backgrounds/ranger-bg-1.png')",

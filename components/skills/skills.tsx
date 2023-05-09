@@ -129,7 +129,7 @@ export default function Skills() {
 
   return (
     <div className='space-y-4'>
-      <div className='mt-2'  onClick={() => toggleShow(!show)}>
+      <div className='mt-2' onClick={() => toggleShow(!show)}>
         <div className='w-6 float-right'>
           <ShowHide isShow={show} />
         </div>
@@ -140,69 +140,73 @@ export default function Skills() {
           subvalue={skillsBp}
         />
       </div>
-      <Card
-        header={null}
-        main={
-          <div className='space-y-4'>
-            <div className='flex gap-x-4'>
-              <div className='font-bold'>Allotted Skill Points: {budgetedSkillsCount}</div>
-              <div className='font-bold'>Unspent Skill Points: {remainingSkillPoints}</div>
-            </div>
-            <div className='space-y-1 text-sm text-dirty-orange'>
-              <div>
-                Every <strong>1 BUILD POINT</strong> spent yields <strong>{SKILL_POINTS_PER_BP} SKILL POINTS</strong>.
-              </div>
-              <div>
-                You may <strong>only</strong> increase each skill by 1 for each <strong>BUILD POINT</strong>spent.
-              </div>
-            </div>
-            <div className='space-x-2'>
-              <SmallButton onClick={spendBpForSkillPoints} primary>
-                Increase allotment
-              </SmallButton>
-              <SmallButton onClick={recoverBuildPoint}>Decrease allotment</SmallButton>
-            </div>
-          </div>
-        }
-      />
       {show && (
-        <div className='space-y-4'>
-          {skills?.allSkills?.nodes.map(skill => {
-            const rangerSkill = getRangerSkillBySkillId(skill.id)
-            const canIncrement = checkCanIncrease(rangerSkill)
-            const canDecrement = checkCanDecrease(rangerSkill)
-
-            return (
-              <div key={skill.name}>
-                <div className='grid grid-flow-col auto-cols-min justify-start gap-x-4 items-center w-1/2'>
-                  <div className='font-semibold capitalize w-28'>{skill.name}</div>
-                  <div className='text-lg font-bold'>{rangerSkill?.value ?? 0}</div>
-                  <div className='flex gap-2'>
-                    <div
-                      className={classnames({
-                        'w-6': true,
-                        'cursor-not-allowed': !canIncrement,
-                        'cursor-pointer': canIncrement,
-                      })}
-                    >
-                      <Increment onClick={() => updateSkill(rangerSkill, INCREASE)} disabled={!canIncrement} />
-                    </div>
-                    <div
-                      className={classnames({
-                        'w-6': true,
-                        'cursor-not-allowed': !canDecrement,
-                        'cursor-pointer': canDecrement,
-                      })}
-                    >
-                      <Decrement onClick={() => updateSkill(rangerSkill, DECREASE)} disabled={!canDecrement} />
-                    </div>
+        <>
+          <Card
+            header={null}
+            main={
+              <div className='space-y-4'>
+                <div className='flex gap-x-4'>
+                  <div className='font-bold'>Allotted Skill Points: {budgetedSkillsCount}</div>
+                  <div className='font-bold'>Unspent Skill Points: {remainingSkillPoints}</div>
+                </div>
+                <div className='space-y-1 text-sm text-dirty-orange'>
+                  <div>
+                    Every <strong>1 BUILD POINT</strong> spent yields{' '}
+                    <strong>{SKILL_POINTS_PER_BP} SKILL POINTS</strong>.
+                  </div>
+                  <div>
+                    You may <strong>only</strong> increase each skill by 1 for each <strong>BUILD POINT</strong>spent.
                   </div>
                 </div>
-                <div className='italic text-slate-400 text-sm ml-2'>{skill.description}</div>
+                <div className='space-x-2'>
+                  <SmallButton onClick={spendBpForSkillPoints} primary>
+                    Increase allotment
+                  </SmallButton>
+                  <SmallButton onClick={recoverBuildPoint}>Decrease allotment</SmallButton>
+                </div>
               </div>
-            )
-          })}
-        </div>
+            }
+          />
+
+          <div className='space-y-4'>
+            {skills?.allSkills?.nodes.map(skill => {
+              const rangerSkill = getRangerSkillBySkillId(skill.id)
+              const canIncrement = checkCanIncrease(rangerSkill)
+              const canDecrement = checkCanDecrease(rangerSkill)
+
+              return (
+                <div key={skill.name}>
+                  <div className='grid grid-flow-col auto-cols-min justify-start gap-x-4 items-center w-1/2'>
+                    <div className='font-semibold capitalize w-28'>{skill.name}</div>
+                    <div className='text-lg font-bold'>{rangerSkill?.value ?? 0}</div>
+                    <div className='flex gap-2'>
+                      <div
+                        className={classnames({
+                          'w-6': true,
+                          'cursor-not-allowed': !canIncrement,
+                          'cursor-pointer': canIncrement,
+                        })}
+                      >
+                        <Increment onClick={() => updateSkill(rangerSkill, INCREASE)} disabled={!canIncrement} />
+                      </div>
+                      <div
+                        className={classnames({
+                          'w-6': true,
+                          'cursor-not-allowed': !canDecrement,
+                          'cursor-pointer': canDecrement,
+                        })}
+                      >
+                        <Decrement onClick={() => updateSkill(rangerSkill, DECREASE)} disabled={!canDecrement} />
+                      </div>
+                    </div>
+                  </div>
+                  <div className='italic text-slate-400 text-sm ml-2'>{skill.description}</div>
+                </div>
+              )
+            })}
+          </div>
+        </>
       )}
     </div>
   )

@@ -1,5 +1,5 @@
 exports.up = knex =>
-    knex.schema.raw(`
+  knex.schema.raw(`
       -- __________ RANGER __________
       CREATE POLICY wiz_access_policy_cc on ranger.character_companions
         TO role_wizard USING (true) WITH CHECK (true);
@@ -74,4 +74,4 @@ exports.up = knex =>
       GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO role_wizard;
   `)
 
-exports.down = knex => { }
+exports.down = knex => {}

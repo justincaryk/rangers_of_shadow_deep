@@ -17,7 +17,7 @@ interface MemberCardProps {
 
 const MemberContent = ({ ranger, i }: MemberCardProps) => {
   const { mutate } = useRangerApi().deleteRanger
-  
+
   const deleteCharacter = () => {
     mutate({ id: ranger.id })
   }
@@ -35,12 +35,7 @@ const MemberContent = ({ ranger, i }: MemberCardProps) => {
           </div>
         </div>
         <div className='w-16 h-16 relative'>
-          <Image
-            className='object-cover'
-            src={`/images/avatars/avatar-${getLetterAt(i)}.png`}
-            alt={'avatar'}
-            fill
-          />
+          <Image className='object-cover' src={`/images/avatars/avatar-${getLetterAt(i)}.png`} alt={'avatar'} fill />
         </div>
       </div>
       <div className='p-2 flex justify-between rounded-b bg-slate-500/30'>
@@ -53,9 +48,7 @@ const MemberContent = ({ ranger, i }: MemberCardProps) => {
           </button>
         </div>
         <div>
-          <Link
-            href={PRIVATE_LINK_ROUTES.CREATE_RANGER.replace('[id]', ranger.id)}
-          >
+          <Link href={PRIVATE_LINK_ROUTES.CREATE_RANGER.replace('[id]', ranger.id)}>
             <button className='text-sky-blue font-roboto uppercase hover:no-underline cursor-pointer outline-none'>
               Edit
             </button>
@@ -88,15 +81,11 @@ export default function MyRangers() {
     <>
       <div className='grid grid-cols-3 gap-x-5 gap-y-5'>
         {data?.allCharacters?.nodes.map(
-          (ranger, i) =>
-            ranger && <MemberContent key={ranger.id} ranger={ranger} i={i} />
+          (ranger, i) => ranger && <MemberContent key={ranger.id} ranger={ranger} i={i} />
         ) ?? null}
       </div>
       {!data?.allCharacters?.nodes.length && (
-        <div>
-          No rangers created yet. Get to work and reclaim Shadow Deep for the
-          Light!
-        </div>
+        <div>No rangers created yet. Get to work and reclaim Shadow Deep for the Light!</div>
       )}
     </>
   )

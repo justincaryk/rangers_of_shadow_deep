@@ -14,20 +14,13 @@ const MemberContent = ({ companion, i }: MemberCardProps) => (
   <div className='rounded shadow-lg'>
     <div className='p-2 flex justify-between rounded-t bg-sky-900'>
       <div>
-        <div className='text-xl font-bold'>
-          {companion?.name}
-        </div>
+        <div className='text-xl font-bold'>{companion?.name}</div>
         <div className='whitespace-nowrap overflow-ellipsis font-roboto uppercase font-bold text-xs text-slate-400'>
           <span>Level {companion.progressionPoints ?? 0}</span>
         </div>
       </div>
       <div className='w-16 h-16 relative'>
-        <Image
-          className='object-cover'
-          src={`/images/avatars/avatar-${getLetterAt(i)}.png`}
-          alt={'avatar'}
-          fill
-        />
+        <Image className='object-cover' src={`/images/avatars/avatar-${getLetterAt(i)}.png`} alt={'avatar'} fill />
       </div>
     </div>
     <div className='p-2 flex justify-between rounded-b bg-slate-500/30'>
@@ -59,12 +52,7 @@ const MemberContent = ({ companion, i }: MemberCardProps) => (
 )
 
 export default function Mycompanions() {
-  const dummy = [
-    { name: 'Mike' },
-    { name: 'Bob' },
-    { name: 'Steve' },
-    { name: 'Chris' },
-  ]
+  const dummy = [ { name: 'Mike' }, { name: 'Bob' }, { name: 'Steve' }, { name: 'Chris' } ]
 
   return (
     <div className='grid grid-cols-3 gap-x-5 gap-y-5'>

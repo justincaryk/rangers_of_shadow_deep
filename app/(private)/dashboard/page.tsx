@@ -19,10 +19,7 @@ export default function Dashboard() {
           'space-y-4': true,
         })}
       >
-        <MinorHeader
-          content='Rangers'
-          icon={<UserIcon className='text-emerald-900' />}
-        />
+        <MinorHeader content='Rangers' icon={<UserIcon className='text-emerald-900' />} />
         <MyRangers />
       </div>
 
@@ -32,10 +29,7 @@ export default function Dashboard() {
           'space-y-2': true,
         })}
       >
-        <MinorHeader
-          content='Companions'
-          icon={<UserGroupIcon className='text-emerald-900' />}
-        />
+        <MinorHeader content='Companions' icon={<UserGroupIcon className='text-emerald-900' />} />
         <MyCompanions />
       </div>
     </div>

@@ -2,7 +2,7 @@ import classnames from 'classnames'
 import { useAtom } from 'jotai'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useCurrentUser } from '../auth/atoms/current-user'
 import { PRIVATE_LINK_ROUTES } from '../nav/routes'
 import SmallButton from '../parts/small-button'
@@ -21,10 +21,7 @@ export default function InitCreate() {
     status: rangerCreateStatus,
   } = useRangerApi().createRanger
 
-  const {
-    mutate: hydrateRangerMutate,
-    status: hydrationStatus,
-  } = useRangerApi().hydrateRanger
+  const { mutate: hydrateRangerMutate, status: hydrationStatus } = useRangerApi().hydrateRanger
 
   const [ currentUser ] = useAtom(useCurrentUser)
 
@@ -38,40 +35,36 @@ export default function InitCreate() {
     }
   }
 
-  const initHydrateRangerMutation = () => {
+  const initHydrateRangerMutation = useCallback(() => {
     if (hydrationStatus !== 'idle') {
-      return null;
-    } 
+      return null
+    }
 
     const rangerId = rangerCreateResult?.createCharacter?.character?.id
-    
+
     hydrateRangerMutate({
       characterId: rangerId,
     })
-  }
+  }, [ rangerCreateResult, hydrationStatus, hydrateRangerMutate ])
 
   // hydrate new ranger with defaults
   useEffect(() => {
     // if hydration is idle and we have a new character id => init hydration
-    if ( hydrationStatus === 'idle' && rangerCreateStatus === 'success') {
+    if (hydrationStatus === 'idle' && rangerCreateStatus === 'success') {
       initHydrateRangerMutation()
     }
     // if hydration is complete -> flip the switch to reroute
     else if (hydrationStatus === 'success' && !characterHydrated) {
       setCharacterHydrated(true)
     }
-    
-  }, [  rangerCreateStatus, hydrationStatus, characterHydrated ])
+  }, [ rangerCreateStatus, hydrationStatus, characterHydrated, initHydrateRangerMutation ])
 
   //  reroute when hydrated...
   useEffect(() => {
     if (characterHydrated) {
-        const rangerId = rangerCreateResult?.createCharacter?.character?.id
-        const editUrl = PRIVATE_LINK_ROUTES.CREATE_RANGER.replace(
-          '[id]',
-          rangerId
-        )
-        router.push(editUrl)
+      const rangerId = rangerCreateResult?.createCharacter?.character?.id
+      const editUrl = PRIVATE_LINK_ROUTES.CREATE_RANGER.replace('[id]', rangerId)
+      router.push(editUrl)
     }
   }, [ router, rangerCreateResult, characterHydrated ])
 
@@ -82,7 +75,9 @@ export default function InitCreate() {
         'flex gap-x-5': true,
       })}
     >
-      <SmallButton onClick={createRanger} primary>Create Ranger</SmallButton>
+      <SmallButton onClick={createRanger} primary>
+        Create Ranger
+      </SmallButton>
       {/* <SmallButton onClick={initHydrateRangerMutation} primary>HYDRATE Ranger</SmallButton> */}
 
       <Link href={PRIVATE_LINK_ROUTES.CREATE_COMPANIONS}>

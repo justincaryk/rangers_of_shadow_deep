@@ -6,12 +6,7 @@ interface InputDisplayToggleProps extends InputProps {
   label?: string
   onBlur: FocusEventHandler<FocusEvent<any, Element>>
 }
-export const InputDisplayToggle = ({
-  stateVal,
-  label,
-  onBlur,
-  ...rest
-}: InputDisplayToggleProps) => {
+export const InputDisplayToggle = ({ stateVal, label, onBlur, ...rest }: InputDisplayToggleProps) => {
   const [ isEdit, setIsEdit ] = useState(false)
   const divWrapperRef = React.createRef<HTMLDivElement>()
 
@@ -26,12 +21,7 @@ export const InputDisplayToggle = ({
   }
 
   return (
-    <div
-      onClick={showInput}
-      tabIndex={0}
-      ref={divWrapperRef}
-      className='focus:outline-none cursor-pointer'
-    >
+    <div onClick={showInput} tabIndex={0} ref={divWrapperRef} className='focus:outline-none cursor-pointer'>
       {label && <span className='font-bold'>{label} &nbsp;</span>}
       {isEdit ? (
         <Input className={'inline w-1/4'} onBlur={handleInputBlur} {...rest} autoFocus />

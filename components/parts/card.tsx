@@ -9,13 +9,7 @@ interface Props {
   className?: string
 }
 
-export default function Card({
-  collapsible = false,
-  isExpanded,
-  header,
-  main,
-  className,
-}: Props) {
+export default function Card({ collapsible = false, isExpanded, header, main, className }: Props) {
   return (
     <div
       className={classnames({

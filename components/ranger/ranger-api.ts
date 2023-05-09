@@ -36,10 +36,7 @@ export function useRangerApi() {
   return {
     createRanger: useMutation({
       mutationFn: (data: CreateCharacterMutationVariables) =>
-        graphQLClient.request<CreateCharacterMutation>(
-          CreateCharacterRequest,
-          data
-        ),
+        graphQLClient.request<CreateCharacterMutation>(CreateCharacterRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
@@ -48,10 +45,7 @@ export function useRangerApi() {
     }),
     updateRanger: useMutation({
       mutationFn: (data: UpdateCharacterMutationVariables) =>
-        graphQLClient.request<UpdateCharacterMutation>(
-          UpdateCharacterById,
-          data
-        ),
+        graphQLClient.request<UpdateCharacterMutation>(UpdateCharacterById, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
         queryClient.invalidateQueries({
@@ -61,10 +55,7 @@ export function useRangerApi() {
     }),
     deleteRanger: useMutation({
       mutationFn: (data: DeleteCharacterMutationVariables) =>
-        graphQLClient.request<DeleteCharacterMutation>(
-          DeleteCharacterRequest,
-          data
-        ),
+        graphQLClient.request<DeleteCharacterMutation>(DeleteCharacterRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
@@ -73,27 +64,24 @@ export function useRangerApi() {
     }),
     getAllRangers: useQuery({
       queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
-      queryFn: async () =>
-        graphQLClient.request<AllCharactersQuery>(GetAllCharactersRequest),
+      queryFn: async () => graphQLClient.request<AllCharactersQuery>(GetAllCharactersRequest),
     }),
     getRangerById: useQuery({
       queryKey: [ RANGER_QUERY_KEYS.RANGER ],
       queryFn: async () => {
-        return params?.id ? (
-          graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
-          id: params?.id,
-          })) : null
-        },
+        return params?.id
+          ? graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
+              id: params?.id,
+            })
+          : null
+      },
     }),
     hydrateRanger: useMutation({
       mutationFn: (data: HydrateRangerMutationVariables) =>
-        graphQLClient.request<HydrateRangerMutation>(
-          HydrateCharacterRequest,
-          data
-        ),
+        graphQLClient.request<HydrateRangerMutation>(HydrateCharacterRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
       },
-    })
+    }),
   }
 }

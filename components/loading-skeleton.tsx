@@ -7,9 +7,7 @@ export default function LoadingSkeleton() {
       <div className='w-full bg-stone px-4 relative'>
         <div className='flex items-center justify-between md:justify-start md:space-x-10'>
           <div className='flex justify-start lg:w-0 lg:flex-1'>
-            <span className='sr-only'>
-              Rangers of Shadow Deep Companion App
-            </span>
+            <span className='sr-only'>Rangers of Shadow Deep Companion App</span>
             <Image width={200} height={100} src='/images/logo-lg.png' alt='' />
           </div>
         </div>

@@ -15,8 +15,7 @@ export function useEquipmentApi() {
   return {
     getEquipment: useQuery({
       queryKey: [ EQUIPMENT_QUERY_KEYS.EQUIPMENT ],
-      queryFn: async () =>
-        graphQLClient.request<GetEquipmentSortedQuery>(GetEquipmentSortedRequest),
+      queryFn: async () => graphQLClient.request<GetEquipmentSortedQuery>(GetEquipmentSortedRequest),
     }),
   }
 }
