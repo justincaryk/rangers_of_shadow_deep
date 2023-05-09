@@ -1,4 +1,3 @@
-import { SetBaseStatsMutationVariables } from '../../graphql/generated/graphql'
 import { BASE_STATS_ENUM } from '../types'
 
 export const INCREASE = 1
@@ -21,12 +20,13 @@ export const RECRUITMENT_POINTS_PER_BP = 10
 export const RECRUITMENT_POINTS_PER_LEADERSHIP_POINT = 1
 export const INITIAL_RECRUIT_SKILL_BUMP = 3
 
-type Mapped<T> = {
-  [Prop in keyof T]: number
-}
-interface BaseStats extends Mapped<SetBaseStatsMutationVariables> {}
+// type Mapped<T> = {
+//   [Prop in keyof T]: number
+// }
+// interface BaseStats extends Mapped<SetBaseStatsMutationVariables> {}
 
-export const BASE_STATS: BaseStats = {
+// export const BASE_STATS: BaseStats = {
+export const BASE_STATS = {
   [BASE_STATS_ENUM.move]: 6,
   [BASE_STATS_ENUM.fight]: 2,
   [BASE_STATS_ENUM.shoot]: 1,
@@ -34,4 +34,3 @@ export const BASE_STATS: BaseStats = {
   [BASE_STATS_ENUM.will]: 4,
   [BASE_STATS_ENUM.health]: 18,
 }
-

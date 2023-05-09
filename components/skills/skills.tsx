@@ -129,9 +129,9 @@ export default function Skills() {
 
   return (
     <div className='space-y-4'>
-      <div className='mt-2'>
+      <div className='mt-2'  onClick={() => toggleShow(!show)}>
         <div className='w-6 float-right'>
-          <ShowHide isShow={show} onClick={() => toggleShow(!show)} />
+          <ShowHide isShow={show} />
         </div>
         <MinorHeader
           content='skills'

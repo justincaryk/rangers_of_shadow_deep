@@ -87,7 +87,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
     for (const ref of rangerLookupRefData) {
       const { heroicActionId = null } = ref as MemberHeroicAction
       const { spellId = null } = ref as MemberSpell
-      
+
       if (id === heroicActionId || id === spellId) {
         return {
           refId: ref.id,
@@ -147,9 +147,9 @@ export default function ArrayFieldBase({ type, data }: Props) {
 
   return (
     <div>
-      <div className='mt-2'>
+      <div className='mt-2' onClick={() => toggleShow(!show)}>
         <div className='w-6 float-right'>
-          <ShowHide isShow={show} onClick={() => toggleShow(!show)} />
+          <ShowHide isShow={show} />
         </div>
         <MinorHeader
           content={headerContent}

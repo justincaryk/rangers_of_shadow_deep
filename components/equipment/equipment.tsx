@@ -20,9 +20,7 @@ export default function Equipment() {
   const [ showMagic, toggleShowMagic ] = useState(true)
   const [ showMundane, toggleShowMundane ] = useState(true)
 
-  const [ inventorySlots, updateInvetorySlots ] = useState(
-    MAX_STARTING_ITEM_SLOTS
-  )
+  const [ inventorySlots, updateInvetorySlots ] = useState(MAX_STARTING_ITEM_SLOTS)
   const { data } = useEquipmentApi().getEquipment
 
   // TODO: add / remove custom equipment
@@ -30,9 +28,9 @@ export default function Equipment() {
 
   return (
     <div>
-      <div className='mt-2'>
+      <div className='mt-2' onClick={() => toggleShow(!show)}>
         <div className='w-6 float-right'>
-          <ShowHide isShow={show} onClick={() => toggleShow(!show)} />
+          <ShowHide isShow={show} />
         </div>
         <MinorHeader
           content='equipment'
@@ -46,21 +44,14 @@ export default function Equipment() {
           <div className='py-4'>
             <MinorHeader
               content='Basic Equipment List'
-              icon={
-                <ShowHide
-                  isShow={showMundane}
-                  onClick={() => toggleShowMundane(!showMundane)}
-                />
-              }
+              icon={<ShowHide isShow={showMundane} onClick={() => toggleShowMundane(!showMundane)} />}
               iconSize={'w-6'}
             />
 
             {data?.mundane?.nodes.map((item: any) => (
               <div key={item?.id} className='px-2'>
                 <div className='flex gap-6 mt-4'>
-                  <div className='text-lg font-bold capitalize'>
-                    {item?.name}
-                  </div>
+                  <div className='text-lg font-bold capitalize'>{item?.name}</div>
 
                   <div className='flex gap-2'>
                     <div
@@ -88,9 +79,7 @@ export default function Equipment() {
                     </div>
                   </div>
                 </div>
-                <div className='italic text-slate-400 text-sm ml-2'>
-                  {item?.description}
-                </div>
+                <div className='italic text-slate-400 text-sm ml-2'>{item?.description}</div>
               </div>
             ))}
           </div>
@@ -98,20 +87,13 @@ export default function Equipment() {
           <div className='py-4'>
             <MinorHeader
               content='Magical Equipment'
-              icon={
-                <ShowHide
-                  isShow={showMagic}
-                  onClick={() => toggleShowMagic(!showMagic)}
-                />
-              }
+              icon={<ShowHide isShow={showMagic} onClick={() => toggleShowMagic(!showMagic)} />}
               iconSize={'w-6'}
             />
             {data?.magic?.nodes.map((item: any) => (
               <div key={item?.id} className='px-2 border-'>
                 <div className='flex gap-6 mb-8 mt-8'>
-                  <div className='text-lg font-bold capitalize'>
-                    {item?.name}
-                  </div>
+                  <div className='text-lg font-bold capitalize'>{item?.name}</div>
 
                   <div className='flex gap-2'>
                     <div
@@ -139,9 +121,7 @@ export default function Equipment() {
                     </div>
                   </div>
                 </div>
-                <div className='italic text-slate-400 text-sm ml-2'>
-                  {item?.description}
-                </div>
+                <div className='italic text-slate-400 text-sm ml-2'>{item?.description}</div>
               </div>
             ))}
           </div>

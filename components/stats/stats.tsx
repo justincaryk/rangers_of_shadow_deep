@@ -118,13 +118,13 @@ export default function Stats() {
 
   return (
     <div>
-      <div className='mt-2'>
+      <div className='mt-2' onClick={() => toggleShow(!show)}>
         <div className='w-6 float-right'>
-          <ShowHide isShow={show} onClick={() => toggleShow(!show)} />
+          <ShowHide isShow={show} />
         </div>
         <MinorHeader
           content='stats'
-          icon={<AdjustmentsHorizontalIcon />}
+          icon={<AdjustmentsHorizontalIcon  className='text-rose-600' />}
           subtext='Available build points:'
           subvalue={trueAvailBp}
         />
