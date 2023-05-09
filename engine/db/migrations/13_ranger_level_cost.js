@@ -4,8 +4,7 @@ exports.up = knex =>
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       level_min smallint NOT NULL,
       level_max smallint NOT NULL,
-      cost smallint DEFAULT 1,
-      benefit uuid REFERENCES ranger.level_grants (id)
+      cost smallint DEFAULT 1 NOT NULL
     );
 
     CREATE POLICY ranger_level_cost_policy ON ranger.ranger_level_cost 

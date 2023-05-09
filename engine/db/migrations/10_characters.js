@@ -23,7 +23,10 @@ exports.up = knex =>
           (SELECT id, ranger_default,$1
             FROM ranger.stats 
             WHERE stat_type = 'base');
-
+        
+        INSERT INTO ranger.character_bp_lookup (character_id) 
+          values ($1);
+  
       END 
     $$ 
     LANGUAGE plpgsql;

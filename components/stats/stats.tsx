@@ -1,38 +1,56 @@
 'use client'
 
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
-import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { BASE_STATS_ENUM } from '../types'
-import { useGetTrueAvailBp } from '../utils'
-import { useStatsBp } from '../ranger/atoms/build-points'
+
+import { useMemo, useState } from 'react'
+
+// types
 import { BASE_STATS, DECREASE, INCREASE } from '../rules/creation-rules'
-import { useStatsApi } from './stats-api'
+import { BASE_STATS_ENUM } from '../types'
 import { StatType } from '../../graphql/generated/graphql'
 import { Stat } from './types'
+
+// hooks
+import { useAtom } from 'jotai'
+import { useStatsBp } from '../ranger/atoms/build-points'
+import { useStatsApi } from './stats-api'
 import { useRangerApi } from '../ranger/ranger-api'
 
 export default function Stats() {
   const [ show, toggleShow ] = useState(false)
-
+  const [ statsBp ] = useAtom(useStatsBp)
   const { data: stats } = useStatsApi().getStats
   const { data: ranger } = useRangerApi().getRangerById
 
   const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStatById
-  const { mutate: mutateRanger, status: mutateRangerStatus } = useRangerApi().updateRanger
+  const { mutate: mutateRanger } = useRangerApi().updateRanger
+
+  const spent = useMemo(() => {
+    // on character create, a lookup record is generated with the default stat value for each stat.
+    // so to determine how many are spent
+    // we need to find the diff between the default point total and the rangers point total
+    const defaultAtCreateTotal =
+      stats?.allStats?.nodes.reduce((acc, curr) => (curr.rangerDefault ? curr.rangerDefault + acc : acc), 0) ?? 0
+    const currentRangerTotal =
+      ranger?.characterById?.memberStatsByCharacterId.nodes.reduce((acc, curr) => acc + curr.value, 0) ?? 0
+
+    return currentRangerTotal - defaultAtCreateTotal
+  }, [ ranger, stats ])
+
+  const availablePoints = useMemo(() => {
+    return statsBp - spent
+  }, [ statsBp, spent ])
 
   // how many build points available for stats
-  const [ statsBp ] = useAtom(useStatsBp)
-  const trueAvailBp = useGetTrueAvailBp(statsBp)
 
   const checkCanIncrease = (stat: Stat) => {
     // make sure we have build points available
-    if (trueAvailBp === 0) {
+    if (statsBp === 0 || availablePoints === 0) {
       return false
     }
 
@@ -42,7 +60,7 @@ export default function Stats() {
     }
 
     // only 1 upgrade allowed per stat at creation
-    if (getCurrentStatValue(stat.id) === BASE_STATS[stat.name as BASE_STATS_ENUM]) {
+    if (getCurrentStatValue(stat.id) === stat.rangerDefault) {
       return true
     }
 
@@ -50,7 +68,7 @@ export default function Stats() {
   }
 
   const checkCanDecrease = (stat: Stat) => {
-    if (getCurrentStatValue(stat.id) > BASE_STATS[stat.name as BASE_STATS_ENUM]) {
+    if (stat.rangerDefault && getCurrentStatValue(stat.id) > stat.rangerDefault) {
       return true
     }
 
@@ -86,13 +104,6 @@ export default function Stats() {
       id: memberStat.id,
       value: memberStat.value + modifier,
     })
-
-    mutateRanger({
-      id: memberStat.characterId,
-      patch: {
-        totalStatPoints: (ranger?.characterById?.totalStatPoints ?? 0) + modifier,
-      },
-    })
   }
 
   function getMemberStatFromStatId(statId: string) {
@@ -112,8 +123,8 @@ export default function Stats() {
         <MinorHeader
           content='stats'
           icon={<AdjustmentsHorizontalIcon className='text-rose-600' />}
-          subtext='Available build points:'
-          subvalue={trueAvailBp}
+          subtext='Available points:'
+          subvalue={availablePoints}
         />
       </div>
       {show && (

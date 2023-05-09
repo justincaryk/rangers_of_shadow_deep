@@ -7,6 +7,8 @@ export default gql`
         id
         name
         statType
+        rangerDefault
+        hardCap
         nodeId
       }
     }

@@ -14,6 +14,7 @@ import LevelUpRanger from './leveling/leveling'
 
 import { useBuildPoints } from './atoms/build-points'
 import { useRangerApi } from './ranger-api'
+import BuildPointsAssignment from './build-points/build-points-assignment'
 
 export const RangerPersonalFieldsSchema = Yup.object().shape({
   name: Yup.string().required('Required'),
@@ -34,6 +35,7 @@ export const RangerCoreFieldsSchema = RangerPersonalFieldsSchema && RangerLeveli
 
 export default function CoreCharacter() {
   const [ showLevelUp, setShowLevelUp ] = useState(false)
+  const [ showBuildPoints, setShowBuildPoints ] = useState(false)
 
   const [ totalBuildPoints ] = useAtom(useBuildPoints)
   const { data: ranger, status } = useRangerApi().getRangerById
@@ -64,8 +66,8 @@ export default function CoreCharacter() {
       >
         {({ submitForm }) => (
           <Form className='space-y-1'>
-            <div>
-              <label className='font-semibold w-full' htmlFor='name' aria-label='name'>
+            <div className='flex gap-x-2 items-center'>
+              <label className='font-semibold' htmlFor='name' aria-label='name'>
                 Ranger name:
               </label>
               <Field
@@ -88,9 +90,17 @@ export default function CoreCharacter() {
           <LevelUpRanger />
         </div>
       )}
-      <div className='font-bold ' onFocus={() => {}}>
+      <div className='font-bold '>
         Total BP Remaining: {totalBuildPoints}
       </div>
+      <div className={'cursor-pointer text-blue-500'} onClick={() => setShowBuildPoints(!showBuildPoints)}>
+        {showBuildPoints ? 'Done assigning build points' : 'Assign build points!'}
+      </div>
+      {showBuildPoints && (
+        <div>
+          <BuildPointsAssignment />
+        </div>
+      )}
     </div>
   )
 }

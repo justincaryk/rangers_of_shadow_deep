@@ -7,9 +7,9 @@ export default gql`
       id
       level
       name
-      totalHeroicActions
       xp
       userId
+      totalHeroicActions
       totalSkillPoints
       totalStatPoints
       totalRecruitmentPoints
@@ -67,6 +67,17 @@ export default gql`
           nodeId
         }
         totalCount
+      }
+      characterBpLookupsByCharacterId {
+        nodes {
+          id
+          bpSpentOnStats
+          bpSpentOnSkills
+          bpSpentOnRp
+          bpSpentOnHeroicActions
+          nodeId
+          characterId
+        }
       }
     }
   }

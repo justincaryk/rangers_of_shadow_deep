@@ -1,7 +1,7 @@
 import classnames from 'classnames'
-import React from 'react'
+import React, { ButtonHTMLAttributes } from 'react'
 
-interface Props {
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   onClick?: () => void
   className?: string
   primary?: boolean

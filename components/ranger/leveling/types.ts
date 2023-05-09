@@ -1,4 +1,4 @@
-import { LevelGrant as Codegen_LevelGrant } from '../../../graphql/generated/graphql'
+import { LevelGrant as Codegen_LevelGrant, RangerLevelCost as Codegen_RangerLevelCost } from '../../../graphql/generated/graphql'
 export type LevelGrant = Omit<
   Codegen_LevelGrant,
   | '__typename'
@@ -6,5 +6,11 @@ export type LevelGrant = Omit<
   | 'featureByBenefit'
   | 'featureByEntityLimit'
   | 'rangerLevelCostsByBenefit'
+  | 'nodeId'
+>
+
+export type RangerLevelCost = Omit<
+Codegen_RangerLevelCost,
+  | '__typename'
   | 'nodeId'
 >

@@ -15,6 +15,7 @@ exports.up = knex =>
         ALTER TABLE ranger.member_skills ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.member_spells ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.member_stats ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE ranger.character_bp_lookup ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.ranger_level_cost ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.skills ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.spells ENABLE ROW LEVEL SECURITY;

@@ -5,12 +5,10 @@ import { useEffect } from 'react'
 
 import {
   MAX_BP_FOR_RP,
-  RECRUITMENT_POINTS_PER_BP,
   BASE_BUILD_POINTS,
   MAX_BP_FOR_HEROIC_SPELLS,
   MAX_BP_FOR_SKILLS,
   MAX_BP_FOR_STATS,
-  SKILL_POINTS_PER_BP,
 } from '../../rules/creation-rules'
 
 import { useRangerApi } from '../ranger-api'
@@ -37,27 +35,24 @@ export function useSyncRangerBp() {
     if (data?.characterById) {
       let totalBp = BASE_BUILD_POINTS
 
-      const { totalHeroicActions, totalStatPoints, totalRecruitmentPoints, totalSkillPoints } = data.characterById
-
-      const skillPointsConvertedToBp = Math.floor(totalSkillPoints / SKILL_POINTS_PER_BP)
-      const recruitmentPointsConvertedToBp = Math.floor(totalRecruitmentPoints / RECRUITMENT_POINTS_PER_BP)
+      const { bpSpentOnHeroicActions, bpSpentOnRp, bpSpentOnSkills, bpSpentOnStats } = data.characterById.characterBpLookupsByCharacterId.nodes[0]
 
       // only deduct what is allowed at create
-      const heroicMod = Math.min(totalHeroicActions, MAX_BP_FOR_HEROIC_SPELLS)
-      const skillMod = Math.min(skillPointsConvertedToBp, MAX_BP_FOR_SKILLS)
-      const statMod = Math.min(totalStatPoints, MAX_BP_FOR_STATS)
-      const recruitmentMod = Math.min(recruitmentPointsConvertedToBp, MAX_BP_FOR_RP)
+      const heroicBpSpent = Math.min(bpSpentOnHeroicActions, MAX_BP_FOR_HEROIC_SPELLS)
+      const skillBpSpent = Math.min(bpSpentOnSkills, MAX_BP_FOR_SKILLS)
+      const statBpSpent = Math.min(bpSpentOnStats, MAX_BP_FOR_STATS)
+      const recruitmentBpSpent = Math.min(bpSpentOnRp, MAX_BP_FOR_RP)
 
-      totalBp -= heroicMod
-      totalBp -= skillMod
-      totalBp -= statMod
-      totalBp -= recruitmentMod
+      totalBp -= heroicBpSpent
+      totalBp -= skillBpSpent
+      totalBp -= statBpSpent
+      totalBp -= recruitmentBpSpent
 
       setBp(totalBp)
-      setStatsBp(MAX_BP_FOR_STATS - statMod)
-      setSkillsBp(MAX_BP_FOR_SKILLS - skillMod)
-      setRpBp(MAX_BP_FOR_RP - recruitmentMod)
-      setHeroicBp(MAX_BP_FOR_HEROIC_SPELLS - heroicMod)
+      setStatsBp(statBpSpent)
+      setSkillsBp(skillBpSpent)
+      setRpBp(recruitmentBpSpent)
+      setHeroicBp(heroicBpSpent)
     }
   }, [ data, setBp, setHeroicBp, setRpBp, setSkillsBp, setStatsBp ])
 

@@ -138,26 +138,22 @@ export default function ArrayFieldBase({ type, data }: Props) {
         mutateActionLearn({
           heroicActionId: lookupFieldData.item?.id,
           characterId: ranger?.characterById?.id,
-          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
         })
         break
       case lookupFieldData.known && type === 'heroic_actions':
         mutateActionUnlearn({
           ...baseDeletePayload,
-          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
         })
         break
       case !lookupFieldData.known && type === 'spells':
         mutateSpellLearn({
           spellId: lookupFieldData.item?.id,
           characterId: ranger?.characterById?.id,
-          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 0) + 1,
         })
         break
       case lookupFieldData.known && type === 'spells':
         mutateSpellUnlearn({
           ...baseDeletePayload,
-          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
         })
         break
       default:
@@ -179,9 +175,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
     // update the number of uses.
     const updatePayload = {
       lookupId: lookupFieldData.rangerLookupRef?.id,
-      characterId: ranger?.characterById?.id,
       uses: newValue,
-      newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) + modifier,
     }
 
     switch (true) {
@@ -303,7 +297,6 @@ export default function ArrayFieldBase({ type, data }: Props) {
                         mutateActionUnlearn({
                           characterId: ranger.characterById?.id,
                           id: itemRef.id,
-                          newTotalKnown: (ranger?.characterById?.totalHeroicActions || 1) - 1,
                         })
                       }
                     >

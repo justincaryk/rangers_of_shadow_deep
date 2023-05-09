@@ -1,6 +1,4 @@
 import { Character } from '../graphql/generated/graphql'
-import { HeroicAction, Skill, Spell } from './data'
-import { objectKeys } from './utils'
 
 export enum RANGER_FIELD {
   CORE = 'core',

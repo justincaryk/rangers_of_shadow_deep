@@ -7,8 +7,11 @@ exports.up = knex =>
       name varchar(50) NOT NULL,
       stat_type stat_type default 'base' not null,
       ranger_default int,
+      hard_cap int,
       CONSTRAINT if_base_type_default_int
-        CHECK ( NOT (stats.stat_type = 'base' AND stats.ranger_default IS NULL) )
+        CHECK ( NOT (stats.stat_type = 'base' AND stats.ranger_default IS NULL) ),
+      CONSTRAINT if_base_type_hard_cap
+        CHECK ( NOT (stats.stat_type = 'base' AND stats.hard_cap IS NULL) )
   );
     
     CREATE POLICY stats_policy ON ranger.stats 

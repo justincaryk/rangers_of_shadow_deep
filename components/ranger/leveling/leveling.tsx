@@ -9,6 +9,7 @@ import { useLevelingApi } from './leveling-api'
 import { LevelingFormFields, RangerLevelingFieldsSchema } from '../core-character'
 import { CharacterByIdQuery } from '../../../graphql/generated/graphql'
 import Loader from '../../loader'
+import { determineApplicableRangerLevelUpBenefit, determineApplicableRangerLevelUpCost } from './leveling-utils'
 
 interface LevelUpCardProps {
   ranger: CharacterByIdQuery | null
@@ -22,11 +23,16 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
     mutateRanger({
       id: ranger?.characterById?.id,
       patch: {
-        xp: data.xp,
+        xp: RangerLevelingFieldsSchema.fields.xp.cast(data.xp),
       },
     })
   }
-  const tryBuyLevel = (level: number) => {}
+
+  const tryBuyLevel = () => {
+    const nextLevel = (ranger?.characterById?.level || 0) + 1
+    const levelCost = determineApplicableRangerLevelUpCost(nextLevel, rules?.levelCosts?.nodes ?? [])
+    const levelGrant = determineApplicableRangerLevelUpBenefit(nextLevel, rules?.levelGrants?.nodes ?? [])
+  }
 
   return (
     <div className='space-y-4'>
@@ -35,6 +41,14 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
           Current XP Total: {ranger?.characterById?.xp} (Level {ranger?.characterById?.level})
         </div>
       </div>
+      <ul className='text-dirty-orange list-disc px-6 text-xs'>
+          {rules?.levelGrants?.nodes.map(benefit => (
+            <li key={benefit.id}>
+              <strong className='capitalize'>{benefit.name}: </strong>
+              {benefit.description}
+            </li>
+          ))}
+        </ul>
       <div className='space-y-1 text-sm text-dirty-orange'>
         <div>
           <Formik
@@ -53,13 +67,14 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
                   </label>
                   <Field name='xp' className={`${baseInputClasses}`} onBlur={submitForm} />
                 </div>
+                <Field name='level' hidden />
                 <div className='flex gap-x-2 items-center'>
                   <label className='font-semibold' htmlFor='xp' aria-label='xp'>
                     Buy Level:
                   </label>
-                  <Field name='level' onClick={submitForm} as='button'>
-                    <SmallButton>Level Up</SmallButton>
-                  </Field>
+                  <SmallButton onClick={tryBuyLevel} type='button'>
+                    Level Up
+                  </SmallButton>
                 </div>
               </Form>
             )}

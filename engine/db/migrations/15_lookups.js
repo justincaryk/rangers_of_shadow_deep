@@ -50,6 +50,16 @@ exports.up = knex =>
       spell_id uuid REFERENCES ranger.spells (id) NOT NULL,
       uses smallint default 1 NOT NULL
     );
+
+    -- ranger + buildpoints
+    CREATE TABLE ranger.character_bp_lookup (
+      id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
+      character_id uuid REFERENCES ranger.characters (id),
+      bp_spent_on_heroic_actions smallint DEFAULT 0 NOT NULL,
+      bp_spent_on_skills smallint DEFAULT 0 NOT NULL,
+      bp_spent_on_stats smallint DEFAULT 0 NOT NULL,
+      bp_spent_on_rp smallint DEFAULT 0 NOT NULL
+    );
   `)
 
 exports.down = knex => {

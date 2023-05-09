@@ -34,3 +34,5 @@ export const BASE_STATS = {
   [BASE_STATS_ENUM.will]: 4,
   [BASE_STATS_ENUM.health]: 18,
 }
+
+export const BASE_RANGER_STAT_POINT_TOTAL = Object.values(BASE_BUILD_POINTS).reduce((acc, curr) => acc + curr, [ 0 ])

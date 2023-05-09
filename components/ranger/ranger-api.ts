@@ -7,9 +7,10 @@ import {
   DeleteCharacterMutation,
   UpdateCharacterMutation,
   UpdateCharacterMutationVariables,
-  HydrateRangerInput,
   HydrateRangerMutation,
   HydrateRangerMutationVariables,
+  UpdateBpSpentMutation,
+  UpdateBpSpentMutationVariables,
 } from '../../graphql/generated/graphql'
 import useGraphQL from '../graphql/useGraphQL'
 
@@ -19,6 +20,7 @@ import UpdateCharacterById from '../../graphql/mutations/character-update'
 import CreateCharacterRequest from '../../graphql/mutations/character-create'
 import DeleteCharacterRequest from '../../graphql/mutations/character-delete'
 import HydrateCharacterRequest from '../../graphql/mutations/character-hydrate'
+import UpdateRBpAllottmentRequest from '../../graphql/mutations/character-bp'
 
 import { useParams } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -79,6 +81,13 @@ export function useRangerApi() {
     hydrateRanger: useMutation({
       mutationFn: (data: HydrateRangerMutationVariables) =>
         graphQLClient.request<HydrateRangerMutation>(HydrateCharacterRequest, data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
+      },
+    }),
+    updateRangerBpAllottment: useMutation({
+      mutationFn: (data: UpdateBpSpentMutationVariables) =>
+        graphQLClient.request<UpdateBpSpentMutation>(UpdateRBpAllottmentRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
       },

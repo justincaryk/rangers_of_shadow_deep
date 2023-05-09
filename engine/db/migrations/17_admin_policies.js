@@ -46,6 +46,9 @@ exports.up = knex =>
       CREATE POLICY wiz_access_policy_mst on ranger.member_stats
         TO role_wizard USING (true) WITH CHECK (true);
 
+      CREATE POLICY wiz_access_policy_cbp on ranger.character_bp_lookup
+        TO role_wizard USING (true) WITH CHECK (true);
+
       CREATE POLICY wiz_access_policy_rlc on ranger.ranger_level_cost
         TO role_wizard USING (true) WITH CHECK (true);
 
@@ -74,4 +77,4 @@ exports.up = knex =>
       GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO role_wizard;
   `)
 
-exports.down = knex => {}
+exports.down = knex => { }
