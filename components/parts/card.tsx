@@ -4,12 +4,12 @@ import classnames from 'classnames'
 interface Props {
   collapsible?: boolean
   isExpanded?: boolean
-  header: React.ReactNode | string | null
-  main: React.ReactNode | string | null
+  header?: React.ReactNode | string | null
+  children?: React.ReactNode | string | null
   className?: string
 }
 
-export default function Card({ collapsible = false, isExpanded, header, main, className }: Props) {
+export default function Card({ collapsible = false, isExpanded, header = null, children = null, className }: Props) {
   return (
     <div
       className={classnames({
@@ -28,10 +28,10 @@ export default function Card({ collapsible = false, isExpanded, header, main, cl
       <div
         className={classnames({
           'p-6': true,
-          hidden: !main || (collapsible && !isExpanded),
+          hidden: !children || (collapsible && !isExpanded),
         })}
       >
-        {main}
+        {children}
       </div>
     </div>
   )

@@ -31,22 +31,19 @@ export default function RecruitmentPoints() {
         />
       </div>
       {show && (
-        <Card
-          header={null}
-          main={
-            <div className='space-y-4'>
-              <div className='flex gap-x-4'>
-                <div className='font-bold'>BP Spent at Creation: {recruitmentBp}</div>
-              </div>
-              <div className='space-y-1 text-sm text-dirty-orange'>
-                <div>
-                  Every <strong>1 BUILD POINT</strong> spent yields{' '}
-                  <strong>{RECRUITMENT_POINTS_PER_BP} RECRUITMENT POINTS</strong>.
-                </div>
+        <Card>
+          <div className='space-y-4'>
+            <div className='flex gap-x-4'>
+              <div className='font-bold'>BP Spent at Creation: {recruitmentBp}</div>
+            </div>
+            <div className='space-y-1 text-sm text-dirty-orange'>
+              <div>
+                Every <strong>1 BUILD POINT</strong> spent yields{' '}
+                <strong>{RECRUITMENT_POINTS_PER_BP} RECRUITMENT POINTS</strong>.
               </div>
             </div>
-          }
-        />
+          </div>
+        </Card>
       )}
     </div>
   )

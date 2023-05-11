@@ -84,7 +84,15 @@ export default function ArrayFieldBase({ type, data }: Props) {
     if (submitting) {
       setSubmitting(false)
     }
-  }, [ statusActionLearn, statusActionUnlearn, statusSpellLearn, statusSpellUnlearn, statusActionBuyUses, statusSpellBuyses, submitting ])
+  }, [
+    statusActionLearn,
+    statusActionUnlearn,
+    statusSpellLearn,
+    statusSpellUnlearn,
+    statusActionBuyUses,
+    statusSpellBuyses,
+    submitting,
+  ])
 
   const rangerLookupRefData = useMemo(() => {
     const base = ranger?.characterById
@@ -264,8 +272,9 @@ export default function ArrayFieldBase({ type, data }: Props) {
                     </div>
                   </div>
                 }
-                main={item.description}
-              />
+              >
+                <div>{item.description}</div>
+              </Card>
             )
           })}
         </div>
@@ -304,8 +313,9 @@ export default function ArrayFieldBase({ type, data }: Props) {
                     </SmallButton>
                   </div>
                 }
-                main={item.description}
-              />
+              >
+                <div>{item.description}</div>
+              </Card>
             )
           })}
         </div>

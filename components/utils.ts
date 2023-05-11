@@ -40,3 +40,8 @@ export const parseJwt = (token: string) => {
 }
 
 export const capitalize = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>
+
+export const getLetterAt = (pos: number) => {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('')
+  return alphabet[pos]
+}

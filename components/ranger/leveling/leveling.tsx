@@ -30,11 +30,10 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
   }
 
   const tryBuyLevel = () => {
-    
     const nextLevel = (ranger.level || 0) + 1
     const levelCost = determineApplicableRangerLevelUpCost(nextLevel, rules?.levelCosts?.nodes ?? [])
     const levelGrant = determineApplicableRangerLevelUpBenefit(nextLevel, rules?.levelGrants?.nodes ?? [])
-    
+
     if (!levelCost || !levelGrant) {
       console.error('couldnt find a matching level grant item or cost', {
         levelCost,
@@ -51,11 +50,11 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
           characterId: ranger.id,
           levelGrantId: levelGrant.id,
         })
-      } 
+      }
       // update instead
       else {
         const levelRef = ranger.memberLevelsByCharacterId.nodes.find(x => x.levelGrantId === levelGrant.id)
-        
+
         if (!levelRef) {
           console.error('cant find a matching level reference')
           throw new Error('cant find a matching level reference')
@@ -63,7 +62,7 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
 
         updateLevelRef({
           id: levelRef.id,
-          granted: levelRef.granted++
+          granted: levelRef.granted++,
         })
       }
 
@@ -132,7 +131,9 @@ export default function LevelUpRanger() {
   return (
     <div>
       <div className='space-y-1'>
-        <Card header={null} main={<LevelUpCardContent ranger={ranger.characterById as Character} />} />
+        <Card>
+          <LevelUpCardContent ranger={ranger.characterById as Character} />
+        </Card>
       </div>
     </div>
   )

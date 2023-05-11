@@ -1,10 +1,14 @@
 //every seed runs every time yarn seed:run is executed, so we need to delete the data in an order that won't throw errors
 exports.seed = async knex => {
+  await knex('ranger.features').del()
   await knex('ranger.member_spells').del()
   await knex('ranger.member_skills').del()
   await knex('ranger.member_items').del()
   await knex('ranger.member_stats').del()
+  await knex('ranger.member_levels').del()
+  await knex('ranger.member_injuries').del()
   await knex('ranger.member_heroic_actions').del()
+  await knex('ranger.character_bp_lookup').del()
   await knex('ranger.item_features').del()
   await knex('ranger.friend_level_grants').del()
   await knex('ranger.ranger_level_cost').del()
@@ -13,12 +17,11 @@ exports.seed = async knex => {
   await knex('ranger.characters').del()
   await knex('ranger.injuries').del()
   await knex('ranger.mercenaries').del()
-  await knex('ranger.features').del()
   await knex('ranger.items').del()
   await knex('ranger.spells').del()
   await knex('ranger.skills').del()
   await knex('ranger.heroic_actions').del()
   await knex('ranger.stats').del()
-  await knex('minions').del()
   await knex('wizards').del()
+  await knex('minions').del()
 }

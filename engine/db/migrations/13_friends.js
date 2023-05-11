@@ -6,7 +6,8 @@ exports.up = knex =>
       mercenary_id uuid REFERENCES ranger.mercenaries (id),
       name varchar(50) NOT NULL,
       progression_points smallint default 0,
-      bonus_skill uuid REFERENCES ranger.skills (id)
+      bonus_skill uuid REFERENCES ranger.skills (id),
+      avatar_url text
     );
   `)
 

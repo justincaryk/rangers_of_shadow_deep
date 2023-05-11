@@ -1,5 +1,10 @@
 import { Character } from '../graphql/generated/graphql'
 
+export enum MEMBER_TYPE_ENUM {
+  FRIEND = 'friend',
+  RANGER = 'ranger'
+}
+
 export enum RANGER_FIELD {
   CORE = 'core',
   STATS = 'stats',

@@ -4,8 +4,7 @@ exports.up = knex =>
       'SKILLS',
       'STATS',
       'RECRUITMENT_POINTS',
-      'HEROIC_ABILITY',
-      'FRIEND'
+      'HEROIC_ABILITY'
     );
 
     CREATE TABLE ranger.level_grants (
