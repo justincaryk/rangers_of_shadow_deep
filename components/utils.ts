@@ -11,11 +11,6 @@ export function objectKeys<Obj extends object>(obj: Obj): (keyof Obj)[] {
   return Object.keys(obj) as (keyof Obj)[]
 }
 
-export function useGetTrueAvailBp(minorBp: number) {
-  const [ totalBp ] = useAtom(useBuildPoints)
-  return Math.min(totalBp, minorBp)
-}
-
 export function getAdjustedRecruitmentPoints(players: PLAYER_COUNT, brp: number) {
   const adjustments = {
     [PLAYER_COUNT.ONE]: (brp: number) => brp,

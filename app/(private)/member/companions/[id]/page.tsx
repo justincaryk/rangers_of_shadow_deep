@@ -1,38 +1,34 @@
 'use client'
 
-import { useMemo, useEffect, useCallback } from 'react'
+import { useMemo, useEffect, useCallback, useState } from 'react'
 import { useAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
 
-import Card from '../../../../components/parts/card'
-import SmallButton from '../../../../components/parts/small-button'
-import Dropdown from '../../../../components/parts/dropdown'
-import MinorHeader from '../../../../components/parts/minor-header'
-import CompanionsList from '../../../../components/companions/companions-list'
-import SelectedCompanions from '../../../../components/companions/companions-selected'
+import Card from '../../../../../components/parts/card'
+import Dropdown from '../../../../../components/parts/dropdown'
+import MinorHeader from '../../../../../components/parts/minor-header'
+import CompanionsList from '../../../../../components/companions/companions-list'
+import SelectedCompanions from '../../../../../components/companions/companions-selected'
 
-import { useRecruitmentPointsBp } from '../../../../components/ranger/atoms/build-points'
+import { useRecruitmentPointsBp } from '../../../../../components/ranger/atoms/build-points'
 import {
   useAdjustedRecruitmentPoints,
   useSpentRecruitmentPoints,
-} from '../../../../components/companions/atoms/recruitment-points'
-import { useUpdatePlayerCount } from '../../../../components/companions/atoms/players'
-import { useCompanions } from '../../../../components/companions/atoms/companions'
+} from '../../../../../components/companions/atoms/recruitment-points'
+import { useUpdatePlayerCount } from '../../../../../components/companions/atoms/players'
+import { useCompanions } from '../../../../../components/companions/atoms/companions'
 
-import { PLAYER_COUNT } from '../../../../components/types'
-import { getAdjustedRecruitmentPoints, objectKeys, useGetTrueAvailBp } from '../../../../components/utils'
-
-import { DECREASE, INCREASE } from '../../../../components/rules/creation-rules'
+import { PLAYER_COUNT } from '../../../../../components/types'
+import { getAdjustedRecruitmentPoints, objectKeys } from '../../../../../components/utils'
 
 import {
   BASE_RECRUITMENT_POINTS,
   RECRUITMENT_POINTS_PER_BP,
-  MAX_BP_FOR_RP,
-} from '../../../../components/rules/creation-rules'
+} from '../../../../../components/rules/creation-rules'
 
 export default function Companions() {
   const [ bpSpentOnRp ] = useAtom(useRecruitmentPointsBp)
-  const trueAvailBp = useGetTrueAvailBp(MAX_BP_FOR_RP - bpSpentOnRp)
+  const [ isAdd, setIsAdd ] = useState(false)
 
   const [ spentRp ] = useAtom(useSpentRecruitmentPoints)
   const [ adjustedTotalRp, setAdjustedTotalBp ] = useAtom(useAdjustedRecruitmentPoints)
@@ -71,7 +67,7 @@ export default function Companions() {
   }, [])
 
   const spendBuildPoint = async () => {
-    if (trueAvailBp > 0) {
+    if (bpSpentOnRp > 0) {
       // await updateBpSpentOnRp(INCREASE)
     }
   }
@@ -88,30 +84,25 @@ export default function Companions() {
 
   return (
     <div className='space-y-4'>
-      <MinorHeader content='companions' subtext={'Available build points:'} subvalue={trueAvailBp} />
+      <MinorHeader content='companions' />
 
-      <Card
-        header={null}
-        main={
-          <div className='space-y-4'>
-            <div className='font-bold'>Allotted Build Points for Recruitment Points: {bpSpentOnRp}</div>
-            <div className='space-y-1 text-sm text-dirty-orange'>
-              <div>
-                Every <strong>1 BUILD POINT</strong> spent yields{' '}
-                <strong>{RECRUITMENT_POINTS_PER_BP} RECRUITMENT POINTS</strong>.
-              </div>
-            </div>
-            <div className='space-x-2'>
-              <SmallButton primary onClick={spendBuildPoint}>
-                Increase allotment
-              </SmallButton>
-              <SmallButton onClick={recoverBuildPoint}>Decrease allotment</SmallButton>
-            </div>
-          </div>
-        }
-      />
+      {/* NEW / SELECTED COMPANION CONTAINER */}
+      {/* 
+        FORM FIELDS: 
+          NAME
+          BONUS SKILL
+          PROGRESSION POINTS
+      */}
+      {/* 
+        COMPANION CARD
+          INCLUDE STAT OVERRIDE AND RENDER CURRENT PP
+      */}
 
-      <Card
+      {/* 
+        CREATE A NEW PAGE WHERE YOU CAN SET A RANGER FOR PLAY
+        AND MOVE THIS THERE
+       */}
+      {/* <Card
         header={null}
         main={
           <div className='space-y-4'>
@@ -130,10 +121,12 @@ export default function Companions() {
           </div>
         }
       />
+      */}
+      
+      {/* <SelectedCompanions /> */}
 
-      <SelectedCompanions />
-
-      <CompanionsList />
+      {/* // if addCompanion, show the companion options.
+      <CompanionsList /> */}
     </div>
   )
 }

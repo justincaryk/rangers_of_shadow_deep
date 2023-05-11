@@ -9,8 +9,8 @@ export enum PUBLIC_LINK_ROUTES {
 
 export enum PRIVATE_LINK_ROUTES {
   DASHBOARD = '/dashboard',
-  CREATE_RANGER = '/create/ranger/[id]',
-  CREATE_COMPANIONS = '/create/companions',
+  A_RANGER = '/member/ranger/[id]',
+  A_COMPANION = '/member/companion/[id]',
   ADMIN = '/admin',
 }
 

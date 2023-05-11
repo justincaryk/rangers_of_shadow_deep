@@ -14,8 +14,8 @@ async function redirects() {
       permanent: true,
     },
     {
-      source: '/create',
-      destination: '/create/ranger',
+      source: '/member',
+      destination: '/dashboard',
       permanent: true,
     },
   ]

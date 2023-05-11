@@ -79,6 +79,29 @@ export default gql`
           characterId
         }
       }
+      memberLevelsByCharacterId {
+        nodes {
+          id
+          granted
+          levelGrantByLevelGrantId {
+            id
+            grantType
+            name
+            description
+            featuresByLevelGrantId {
+              nodes {
+                id
+                levelGrantType
+                mechanicMod
+                skillId
+                statId
+                statSubtype
+                value
+              }
+            }
+          }
+        }
+      }
     }
   }
 `

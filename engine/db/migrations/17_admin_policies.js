@@ -67,7 +67,7 @@ exports.up = knex =>
       CREATE POLICY wiz_access_policy_st on ranger.stats
         TO role_wizard USING (true) WITH CHECK (true);
 
-      GRANT ALL on schema ranger to role_wizard;  
+      GRANT ALL on schema ranger to role_wizard;
       
       GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA ranger TO role_wizard;
       

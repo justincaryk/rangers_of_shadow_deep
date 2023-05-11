@@ -34,6 +34,15 @@ export default function InitCreate() {
       })
     }
   }
+  const createCompanion = () => {
+    if (currentUser) {
+      createRangerMutate({
+        name: `${currentUser?.username}'s New Ranger`,
+        userId: currentUser?.userId,
+      })
+    }
+  }
+
 
   const initHydrateRangerMutation = useCallback(() => {
     if (hydrationStatus !== 'idle') {
@@ -47,7 +56,7 @@ export default function InitCreate() {
     })
   }, [ rangerCreateResult, hydrationStatus, hydrateRangerMutate ])
 
-  // hydrate new ranger with defaults
+  // RANGER >> hydrate new ranger with defaults
   useEffect(() => {
     // if hydration is idle and we have a new character id => init hydration
     if (hydrationStatus === 'idle' && rangerCreateStatus === 'success') {
@@ -59,14 +68,17 @@ export default function InitCreate() {
     }
   }, [ rangerCreateStatus, hydrationStatus, characterHydrated, initHydrateRangerMutation ])
 
-  //  reroute when hydrated...
+  //  RANGER >> reroute when hydrated...
   useEffect(() => {
     if (characterHydrated) {
       const rangerId = rangerCreateResult?.createCharacter?.character?.id
-      const editUrl = PRIVATE_LINK_ROUTES.CREATE_RANGER.replace('[id]', rangerId)
+      const editUrl = PRIVATE_LINK_ROUTES.A_RANGER.replace('[id]', rangerId)
       router.push(editUrl)
     }
   }, [ router, rangerCreateResult, characterHydrated ])
+
+  // COMPANION >>
+  // COMPANION >>
 
   return (
     <div
@@ -78,9 +90,12 @@ export default function InitCreate() {
       <SmallButton onClick={createRanger} primary>
         Create Ranger
       </SmallButton>
-      {/* <SmallButton onClick={initHydrateRangerMutation} primary>HYDRATE Ranger</SmallButton> */}
 
-      <Link href={PRIVATE_LINK_ROUTES.CREATE_COMPANIONS}>
+      <SmallButton onClick={createCompanion} primary>
+        Create Companion
+      </SmallButton>
+
+      <Link href={PRIVATE_LINK_ROUTES.A_COMPANION}>
         <SmallButton primary>Create Companion</SmallButton>
       </Link>
     </div>

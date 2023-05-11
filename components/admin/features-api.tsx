@@ -22,7 +22,7 @@ export function useFeaturesApi() {
   const queryClient = useQueryClient()
 
   return {
-    updateMemberStatById: useMutation({
+    updateFeatureById: useMutation({
       mutationFn: (data: UpdateFeatureRefsByIdMutationVariables) =>
         graphQLClient.request<UpdateFeatureRefsByIdMutation>(UpdateFeatureRefsByIdRequest, data),
       onSuccess: () => {
