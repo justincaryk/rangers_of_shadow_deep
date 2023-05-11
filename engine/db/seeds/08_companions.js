@@ -1,10 +1,10 @@
 exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('ranger.companions')
+  return knex('ranger.mercenaries')
     .del()
     .then(function () {
       // Inserts seed entries
-      return knex('ranger.companions').insert([
+      return knex('ranger.mercenaries').insert([
         {
           move: 6,
           fight: 2,

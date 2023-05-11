@@ -99,7 +99,7 @@ exports.seed = function (knex) {
                 },
                 {
                     name: 'comp level up - health',
-                    primary_type: 'COMPANION_LEVEL_GRANT',
+                    primary_type: 'FRIEND_LEVEL_GRANT',
                     level_grant_type: 'STAT',
                     mechanic_mod: 'MODIFIER',
                     stat_subtype: 'BASE',
@@ -107,14 +107,14 @@ exports.seed = function (knex) {
                 },
                 {
                     name: 'comp level up - skill',
-                    primary_type: 'COMPANION_LEVEL_GRANT',
+                    primary_type: 'FRIEND_LEVEL_GRANT',
                     level_grant_type: 'SKILL',
                     mechanic_mod: 'MODIFIER',
                     value: 4,
                 },
                 {
                     name: 'comp level up - will',
-                    primary_type: 'COMPANION_LEVEL_GRANT',
+                    primary_type: 'FRIEND_LEVEL_GRANT',
                     level_grant_type: 'STAT',
                     stat_subtype: 'BASE',
                     mechanic_mod: 'MODIFIER',
@@ -122,14 +122,14 @@ exports.seed = function (knex) {
                 },
                 {
                     name: 'comp level up - heroic/spell ability',
-                    primary_type: 'COMPANION_LEVEL_GRANT',
+                    primary_type: 'FRIEND_LEVEL_GRANT',
                     level_grant_type: 'HEROIC_ACTION',
                     mechanic_mod: 'MODIFIER',
                     value: 1,
                 },
                 {
                     name: 'comp level up - choose fight or shoot (shoot)',
-                    primary_type: 'COMPANION_LEVEL_GRANT',
+                    primary_type: 'FRIEND_LEVEL_GRANT',
                     level_grant_type: 'STAT',
                     stat_subtype: 'BASE',
                     mechanic_mod: 'MODIFIER',
@@ -137,7 +137,7 @@ exports.seed = function (knex) {
                 },
                 {
                     name: 'comp level up - choose fight or shoot (fight)',
-                    primary_type: 'COMPANION_LEVEL_GRANT',
+                    primary_type: 'FRIEND_LEVEL_GRANT',
                     level_grant_type: 'STAT',
                     stat_subtype: 'BASE',
                     mechanic_mod: 'MODIFIER',
@@ -145,7 +145,7 @@ exports.seed = function (knex) {
                 },
                 {
                     name: 'comp level up - choose fight or shoot (choose)',
-                    primary_type: 'COMPANION_LEVEL_GRANT',
+                    primary_type: 'FRIEND_LEVEL_GRANT',
                     level_grant_type: 'STAT',
                     stat_subtype: 'BASE',
                     mechanic_mod: 'LIMIT',

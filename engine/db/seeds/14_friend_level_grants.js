@@ -1,10 +1,10 @@
 exports.seed = function (knex) {
   // Deletes ALL existing entries
-  return knex('ranger.companion_leveling')
+  return knex('ranger.friend_level_grants')
     .del()
     .then(function () {
       // Inserts seed entries
-      return knex('ranger.companion_leveling').insert([
+      return knex('ranger.friend_level_grants').insert([
         {
           pp_milestone_first: 10,
           pp_milestone_second: 60,

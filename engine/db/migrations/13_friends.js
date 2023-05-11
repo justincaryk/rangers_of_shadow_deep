@@ -1,9 +1,9 @@
 exports.up = knex =>
   knex.schema.raw(`
-    CREATE TABLE ranger.character_companions (
+    CREATE TABLE ranger.friends (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       user_id uuid REFERENCES public.minions (id),
-      companion_id uuid REFERENCES ranger.companions (id),
+      mercenary_id uuid REFERENCES ranger.mercenaries (id),
       name varchar(50) NOT NULL,
       progression_points smallint default 0,
       bonus_skill uuid REFERENCES ranger.skills (id)
@@ -11,5 +11,5 @@ exports.up = knex =>
   `)
 
 exports.down = knex => {
-  knex.schema.dropTable('ranger.character_companions')
+  knex.schema.dropTable('ranger.friends')
 }

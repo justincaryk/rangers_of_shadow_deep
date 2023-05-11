@@ -1,16 +1,16 @@
 exports.up = knex =>
   knex.schema.raw(`
       -- __________ RANGER __________
-      CREATE POLICY wiz_access_policy_cc on ranger.character_companions
+      CREATE POLICY wiz_access_policy_cc on ranger.friends
         TO role_wizard USING (true) WITH CHECK (true);
 
       CREATE POLICY wiz_access_policy_char on ranger.characters
         TO role_wizard USING (true) WITH CHECK (true);
 
-      CREATE POLICY wiz_access_policy_cl on ranger.companion_leveling
+      CREATE POLICY wiz_access_policy_cl on ranger.friend_level_grants
         TO role_wizard USING (true) WITH CHECK (true);
 
-      CREATE POLICY wiz_access_policy_comp on ranger.companions
+      CREATE POLICY wiz_access_policy_comp on ranger.mercenaries
         TO role_wizard USING (true) WITH CHECK (true);
 
       CREATE POLICY wiz_access_policy_feat on ranger.features

@@ -1,6 +1,6 @@
 exports.up = knex =>
   knex.schema.raw(`
-    CREATE TYPE primary_feature_type as enum('LEVEL_GRANT','COMPANION_LEVEL_GRANT','ITEM','INJURY');
+    CREATE TYPE primary_feature_type as enum('LEVEL_GRANT','FRIEND_LEVEL_GRANT','ITEM','INJURY');
     
     CREATE TYPE level_grant_subtype as enum(
       'SKILL',
@@ -25,7 +25,7 @@ exports.up = knex =>
         stat_id uuid REFERENCES ranger.stats (id),
         injury_id uuid REFERENCES ranger.injuries (id),
         level_grant_id uuid REFERENCES ranger.level_grants (id),
-        companion_leveling_id uuid REFERENCES ranger.companion_leveling (id),
+        friend_level_grants_id uuid REFERENCES ranger.friend_level_grants (id),
         value real -- allow decimals
     );
 

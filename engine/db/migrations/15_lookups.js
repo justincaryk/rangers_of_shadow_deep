@@ -7,46 +7,46 @@ exports.up = knex =>
       feature_id uuid REFERENCES ranger.features (id)
     );
 
-    -- characters/companions + heroic actions 
+    -- characters/friends + heroic actions 
     CREATE TABLE ranger.member_heroic_actions (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      companion_id uuid REFERENCES ranger.character_companions (id),
+      friend_id uuid REFERENCES ranger.friends (id),
       heroic_action_id uuid REFERENCES ranger.heroic_actions (id),
       uses smallint default 1 NOT NULL
     );
 
-    -- characters/companions + stats
+    -- characters/friends + stats
     CREATE TABLE ranger.member_stats (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      companion_id uuid REFERENCES ranger.character_companions (id),
+      friend_id uuid REFERENCES ranger.friends (id),
       stat_id uuid REFERENCES ranger.stats (id) NOT NULL,
       value smallint NOT NULL
     );
 
-    -- characters/companions + items
+    -- characters/friends + items
     CREATE TABLE ranger.member_items (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      companion_id uuid REFERENCES ranger.character_companions (id),
+      friend_id uuid REFERENCES ranger.friends (id),
       item_id uuid REFERENCES ranger.items (id) NOT NULL
     );
 
-    -- characters/companions + skills
+    -- characters/friends + skills
     CREATE TABLE ranger.member_skills (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      companion_id uuid REFERENCES ranger.character_companions (id),
+      friend_id uuid REFERENCES ranger.friends (id),
       skill_id uuid REFERENCES ranger.skills (id) not null,
       value smallint default 0 not null
     );
 
-    -- characters/companions + spells
+    -- characters/friends + spells
     CREATE TABLE ranger.member_spells (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      companion_id uuid REFERENCES ranger.character_companions (id),
+      friend_id uuid REFERENCES ranger.friends (id),
       spell_id uuid REFERENCES ranger.spells (id) NOT NULL,
       uses smallint default 1 NOT NULL
     );
@@ -65,26 +65,26 @@ exports.up = knex =>
     CREATE TABLE ranger.member_level (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      companion_id uuid REFERENCES ranger.character_companions (id),
+      friend_id uuid REFERENCES ranger.friends (id),
       level_grant_id uuid REFERENCES ranger.level_grants (id),
-      companion_leveling_id uuid REFERENCES ranger.companion_leveling (id),
+      friend_level_grants_id uuid REFERENCES ranger.friend_level_grants (id),
       granted smallint DEFAULT 1 NOT NULL,
       CONSTRAINT check_field_refs_match_type 
-	      CHECK ((companion_id IS NULL AND companion_leveling_id IS NULL) <> (character_id IS NULL AND level_grant_id IS NULL)),
+	      CHECK ((friend_id IS NULL AND friend_level_grants_id IS NULL) <> (character_id IS NULL AND level_grant_id IS NULL)),
 	    CONSTRAINT check_member_type_is_valid
-	      CHECK ((companion_id IS NULL) <> (character_id IS NULL)),
+	      CHECK ((friend_id IS NULL) <> (character_id IS NULL)),
 	    CONSTRAINT check_level_type_is_valid
-	      check ((companion_leveling_id IS NULL) <> (level_grant_id IS NULL));
+	      check ((friend_level_grants_id IS NULL) <> (level_grant_id IS NULL));
     );
     comment on constraint check_field_refs_match_type on ranger.member_level is 'Both a member ref and level grant ref are required';
-    comment on constraint check_member_type_is_valid on ranger.member_level is 'Cannot insert a character ref and companion ref';
-    comment on constraint check_field_refs_match_type on ranger.member_level is 'Cannot insert a character level grant ref and companion level grant ref';
+    comment on constraint check_member_type_is_valid on ranger.member_level is 'Cannot insert a character ref and friend ref';
+    comment on constraint check_field_refs_match_type on ranger.member_level is 'Cannot insert a character level grant ref and friend level grant ref';
 
     -- ranger + injuries
     CREATE TABLE ranger.member_injuries (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      companion_id uuid REFERENCES ranger.character_companions (id),
+      friend_id uuid REFERENCES ranger.friends (id),
       injury_id uuid REFERENCES ranger.injuries (id) NOT NULL,
       acquired smallint DEFAULT 1 NOT NULL
     );

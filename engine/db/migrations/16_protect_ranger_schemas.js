@@ -1,9 +1,9 @@
 exports.up = knex =>
   knex.schema.raw(`
-        ALTER TABLE ranger.character_companions ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE ranger.friends ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.characters ENABLE ROW LEVEL SECURITY;
-        ALTER TABLE ranger.companion_leveling ENABLE ROW LEVEL SECURITY;
-        ALTER TABLE ranger.companions ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE ranger.friend_level_grants ENABLE ROW LEVEL SECURITY;
+        ALTER TABLE ranger.mercenaries ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.features ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.heroic_actions ENABLE ROW LEVEL SECURITY;
         ALTER TABLE ranger.injuries ENABLE ROW LEVEL SECURITY;
