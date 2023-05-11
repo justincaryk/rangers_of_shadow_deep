@@ -16,6 +16,12 @@ export default gql`
         description
       }
     }
+    allCompanionLevelings {
+      nodes {
+        id
+        description
+      }
+    }
     allSkills {
       nodes {
         id

@@ -5,19 +5,20 @@ export default gql`
     allFeatures {
       nodes {
         id
+        name
+        levelGrantType
+        mechanicMod
+        primaryType
+        statSubtype
+        riderSubtype
         injuryId
         itemId
         levelGrantId
-        levelGrantType
-        mechanicMod
-        nodeId
-        primaryType
-        riderSubtype
         skillId
-        statSubtype
+        companionLevelingId
         statId
         value
-        name
+        nodeId
       }
     }
   }

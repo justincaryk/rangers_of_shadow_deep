@@ -7,10 +7,17 @@ export default gql`
     $skillId: UUID
     $statId: UUID
     $levelGrantId: UUID
+    $companionLevelingId: UUID
   ) {
     updateFeatureById(
       input: {
-        featurePatch: { injuryId: $injuryId, levelGrantId: $levelGrantId, skillId: $skillId, statId: $statId }
+        featurePatch: {
+          injuryId: $injuryId
+          levelGrantId: $levelGrantId
+          skillId: $skillId
+          statId: $statId
+          companionLevelingId: $companionLevelingId
+        }
         id: $id
       }
     ) {

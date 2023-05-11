@@ -25,6 +25,7 @@ exports.up = knex =>
         stat_id uuid REFERENCES ranger.stats (id),
         injury_id uuid REFERENCES ranger.injuries (id),
         level_grant_id uuid REFERENCES ranger.level_grants (id),
+        companion_leveling_id uuid REFERENCES ranger.companion_leveling (id),
         value real -- allow decimals
     );
 

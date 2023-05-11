@@ -16,10 +16,15 @@ const FeatureUpdateSchema = Yup.object().shape({
   levelGrantId: Yup.string().nullable(),
   skillId: Yup.string().nullable(),
   statId: Yup.string().nullable(),
+  companionLevelingId: Yup.string().nullable(),
 })
 
 export default function ManualReferencesForm() {
   const [ show, setShow ] = useState(true)
+  const [ showInjuries, setShowInjuries ] = useState(false)
+  const [ showItems, setShowItems ] = useState(false)
+  const [ showLevelUps, setShowLevelUps ] = useState(false)
+  const [ showCompanionLevelUps, setShowCompanionLevelUps ] = useState(false)
 
   const { data: features } = useFeaturesApi().getFeatures
   const { data: related } = useFeaturesApi().getFeatureRelatedData
@@ -37,8 +42,13 @@ export default function ManualReferencesForm() {
 
       {show && (
         <>
-          <div className='text-lg font-bold'>INJURIES</div>
-          {features?.allFeatures?.nodes
+          <div
+            className='text-lg font-bold italic uppercase text-blue-500 cursor-pointer'
+            onClick={() => setShowInjuries(!showInjuries)}
+          >
+            INJURIES
+          </div>
+          {showInjuries && features?.allFeatures?.nodes
             .filter(x => x.primaryType === PrimaryFeatureType.Injury)
             .map((feat: Feature) => {
               return (
@@ -53,11 +63,12 @@ export default function ManualReferencesForm() {
                   <Formik
                     initialValues={{
                       id: feat.id,
-                      itemId: feat.itemId,
-                      injuryId: feat.injuryId,
-                      levelGrantId: feat.levelGrantId,
-                      skillId: feat.skillId,
-                      statId: feat.statId,
+                      itemId: feat.itemId  ?? undefined,
+                      injuryId: feat.injuryId ?? undefined,
+                      levelGrantId: feat.levelGrantId  ?? undefined,
+                      skillId: feat.skillId  ?? undefined,
+                      statId: feat.statId  ?? undefined,
+                      companionLevelingId: feat.companionLevelingId ?? undefined,
                     }}
                     validationSchema={FeatureUpdateSchema}
                     onSubmit={handleSubmit}
@@ -72,7 +83,7 @@ export default function ManualReferencesForm() {
                         <div>item id: {feat.itemId ?? 'NULL'}</div>
                         {/* items dropdown */}
                         <Field className='w-full' name='itemId' as='select'>
-                          <option className='text-gray-500'>-- items --</option>
+                          <option className='text-gray-500' value={''}>-- items --</option>
                           {related?.allItems?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -82,7 +93,7 @@ export default function ManualReferencesForm() {
                         <div>injury id: {feat.injuryId ?? 'NULL'}</div>
                         {/* injuries dropdown */}
                         <Field className='w-full' name='injuryId' as='select'>
-                          <option className='text-gray-500'>-- injuries --</option>
+                          <option className='text-gray-500' value={''}>-- injuries --</option>
                           {related?.allInjuries?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -92,7 +103,7 @@ export default function ManualReferencesForm() {
                         <div>level grant id: {feat.levelGrantId ?? 'NULL'}</div>
                         {/* level grants dropdown */}
                         <Field className='w-full' name='levelGrantId' as='select'>
-                          <option className='text-gray-500'>-- level grants --</option>
+                          <option className='text-gray-500' value={''}>-- level grants --</option>
                           {related?.allLevelGrants?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -102,7 +113,7 @@ export default function ManualReferencesForm() {
                         <div>skill id: {feat.skillId ?? 'NULL'}</div>
                         {/* skills dropdown */}
                         <Field className='w-full' name='skillId' as='select'>
-                          <option className='text-gray-500'>-- skills --</option>
+                          <option className='text-gray-500' value={''}>-- skills --</option>
                           {related?.allSkills?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
@@ -112,7 +123,7 @@ export default function ManualReferencesForm() {
                         <div>stat id: {feat.statId ?? 'NULL'}</div>
                         {/* stats dropdown */}
                         <Field className='w-full' name='statId' as='select'>
-                          <option className='text-gray-500'>-- stats --</option>
+                          <option className='text-gray-500' value={''}>-- stats --</option>
                           {related?.allStats?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
@@ -134,8 +145,13 @@ export default function ManualReferencesForm() {
             <div className='font-semibold text-red-700'>NO MATCHING FEATURES OF THIS TYPE FOUND</div>
           )}
 
-          <div className='text-lg font-bold'>ITEMS</div>
-          {features?.allFeatures?.nodes
+          <div
+            className='text-lg font-bold italic uppercase text-blue-500 cursor-pointer'
+            onClick={() => setShowItems(!showItems)}
+          >
+            ITEMS
+          </div>
+          {showItems && features?.allFeatures?.nodes
             .filter(x => x.primaryType === PrimaryFeatureType.Item)
             .map((feat: Feature) => {
               return (
@@ -150,11 +166,12 @@ export default function ManualReferencesForm() {
                   <Formik
                     initialValues={{
                       id: feat.id,
-                      itemId: feat.itemId,
-                      injuryId: feat.injuryId,
-                      levelGrantId: feat.levelGrantId,
-                      skillId: feat.skillId,
-                      statId: feat.statId,
+                      itemId: feat.itemId ?? undefined,
+                      injuryId: feat.injuryId ?? undefined,
+                      levelGrantId: feat.levelGrantId ?? undefined,
+                      skillId: feat.skillId ?? undefined,
+                      statId: feat.statId ?? undefined,
+                      companionLevelingId: feat.companionLevelingId ?? undefined,
                     }}
                     validationSchema={FeatureUpdateSchema}
                     onSubmit={handleSubmit}
@@ -169,7 +186,7 @@ export default function ManualReferencesForm() {
                         <div>item id: {feat.itemId ?? 'NULL'}</div>
                         {/* items dropdown */}
                         <Field className='w-full' name='itemId' as='select'>
-                          <option className='text-gray-500'>-- items --</option>
+                          <option className='text-gray-500' value={''}>-- items --</option>
                           {related?.allItems?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -179,7 +196,7 @@ export default function ManualReferencesForm() {
                         <div>injury id: {feat.injuryId ?? 'NULL'}</div>
                         {/* injuries dropdown */}
                         <Field className='w-full' name='injuryId' as='select'>
-                          <option className='text-gray-500'>-- injuries --</option>
+                          <option className='text-gray-500' value={''}>-- injuries --</option>
                           {related?.allInjuries?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -189,7 +206,7 @@ export default function ManualReferencesForm() {
                         <div>level grant id: {feat.levelGrantId ?? 'NULL'}</div>
                         {/* level grants dropdown */}
                         <Field className='w-full' name='levelGrantId' as='select'>
-                          <option className='text-gray-500'>-- level grants --</option>
+                          <option className='text-gray-500' value={''}>-- level grants --</option>
                           {related?.allLevelGrants?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -199,7 +216,7 @@ export default function ManualReferencesForm() {
                         <div>skill id: {feat.skillId ?? 'NULL'}</div>
                         {/* skills dropdown */}
                         <Field className='w-full' name='skillId' as='select'>
-                          <option className='text-gray-500'>-- skills --</option>
+                          <option className='text-gray-500' value={''}>-- skills --</option>
                           {related?.allSkills?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
@@ -209,7 +226,7 @@ export default function ManualReferencesForm() {
                         <div>stat id: {feat.statId ?? 'NULL'}</div>
                         {/* stats dropdown */}
                         <Field className='w-full' name='statId' as='select'>
-                          <option className='text-gray-500'>-- stats --</option>
+                          <option className='text-gray-500' value={''}>-- stats --</option>
                           {related?.allStats?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
@@ -231,8 +248,13 @@ export default function ManualReferencesForm() {
             <div className='font-semibold text-red-700'>NO MATCHING FEATURES OF THIS TYPE FOUND</div>
           )}
 
-          <div className='text-lg font-bold'>RANGER LEVEL UPS</div>
-          {features?.allFeatures?.nodes
+          <div
+            className='text-lg font-bold italic uppercase text-blue-500 cursor-pointer'
+            onClick={() => setShowLevelUps(!showLevelUps)}
+          >
+            RANGER LEVEL UPS
+          </div>
+          {showLevelUps && features?.allFeatures?.nodes
             .filter(x => x.primaryType === PrimaryFeatureType.LevelGrant)
             .map((feat: Feature) => {
               return (
@@ -247,11 +269,12 @@ export default function ManualReferencesForm() {
                   <Formik
                     initialValues={{
                       id: feat.id,
-                      itemId: feat.itemId,
-                      injuryId: feat.injuryId,
-                      levelGrantId: feat.levelGrantId,
-                      skillId: feat.skillId,
-                      statId: feat.statId,
+                      itemId: feat.itemId ?? undefined,
+                      injuryId: feat.injuryId ?? undefined,
+                      levelGrantId: feat.levelGrantId ?? undefined,
+                      skillId: feat.skillId ?? undefined,
+                      statId: feat.statId ?? undefined,
+                      companionLevelingId: feat.companionLevelingId ?? undefined,
                     }}
                     validationSchema={FeatureUpdateSchema}
                     onSubmit={handleSubmit}
@@ -266,7 +289,7 @@ export default function ManualReferencesForm() {
                         <div>item id: {feat.itemId ?? 'NULL'}</div>
                         {/* items dropdown */}
                         <Field className='w-full' name='itemId' as='select'>
-                          <option className='text-gray-500'>-- items --</option>
+                          <option className='text-gray-500' value={''}>-- items --</option>
                           {related?.allItems?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -276,7 +299,7 @@ export default function ManualReferencesForm() {
                         <div>injury id: {feat.injuryId ?? 'NULL'}</div>
                         {/* injuries dropdown */}
                         <Field className='w-full' name='injuryId' as='select'>
-                          <option className='text-gray-500'>-- injuries --</option>
+                          <option className='text-gray-500' value={''}>-- injuries --</option>
                           {related?.allInjuries?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -286,7 +309,7 @@ export default function ManualReferencesForm() {
                         <div>level grant id: {feat.levelGrantId ?? 'NULL'}</div>
                         {/* level grants dropdown */}
                         <Field className='w-full' name='levelGrantId' as='select'>
-                          <option className='text-gray-500'>-- level grants --</option>
+                          <option className='text-gray-500' value={''}>-- level grants --</option>
                           {related?.allLevelGrants?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -296,7 +319,7 @@ export default function ManualReferencesForm() {
                         <div>skill id: {feat.skillId ?? 'NULL'}</div>
                         {/* skills dropdown */}
                         <Field className='w-full' name='skillId' as='select'>
-                          <option className='text-gray-500'>-- skills --</option>
+                          <option className='text-gray-500' value={''}>-- skills --</option>
                           {related?.allSkills?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
@@ -306,7 +329,7 @@ export default function ManualReferencesForm() {
                         <div>stat id: {feat.statId ?? 'NULL'}</div>
                         {/* stats dropdown */}
                         <Field className='w-full' name='statId' as='select'>
-                          <option className='text-gray-500'>-- stats --</option>
+                          <option className='text-gray-500' value={''}>-- stats --</option>
                           {related?.allStats?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
@@ -328,8 +351,13 @@ export default function ManualReferencesForm() {
             <div className='font-semibold text-red-700'>NO MATCHING FEATURES OF THIS TYPE FOUND</div>
           )}
 
-          <div className='text-lg font-bold'>COMPANION LEVEL UPS</div>
-          {features?.allFeatures?.nodes
+          <div
+            className='text-lg font-bold italic uppercase text-blue-500 cursor-pointer'
+            onClick={() => setShowCompanionLevelUps(!showCompanionLevelUps)}
+          >
+            COMPANION LEVEL UPS
+          </div>
+          {showCompanionLevelUps && features?.allFeatures?.nodes
             .filter(x => x.primaryType === PrimaryFeatureType.CompanionLevelGrant)
             .map((feat: Feature) => {
               return (
@@ -344,11 +372,12 @@ export default function ManualReferencesForm() {
                   <Formik
                     initialValues={{
                       id: feat.id,
-                      itemId: feat.itemId,
-                      injuryId: feat.injuryId,
-                      levelGrantId: feat.levelGrantId,
-                      skillId: feat.skillId,
-                      statId: feat.statId,
+                      itemId: feat.itemId ?? undefined,
+                      injuryId: feat.injuryId ?? undefined,
+                      levelGrantId: feat.levelGrantId ?? undefined,
+                      skillId: feat.skillId ?? undefined,
+                      statId: feat.statId ?? undefined,
+                      companionLevelingId: feat.companionLevelingId ?? undefined,
                     }}
                     validationSchema={FeatureUpdateSchema}
                     onSubmit={handleSubmit}
@@ -363,7 +392,7 @@ export default function ManualReferencesForm() {
                         <div>item id: {feat.itemId ?? 'NULL'}</div>
                         {/* items dropdown */}
                         <Field className='w-full' name='itemId' as='select'>
-                          <option className='text-gray-500'>-- items --</option>
+                          <option className='text-gray-500' value={''}>-- items --</option>
                           {related?.allItems?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -373,7 +402,7 @@ export default function ManualReferencesForm() {
                         <div>injury id: {feat.injuryId ?? 'NULL'}</div>
                         {/* injuries dropdown */}
                         <Field className='w-full' name='injuryId' as='select'>
-                          <option className='text-gray-500'>-- injuries --</option>
+                          <option className='text-gray-500' value={''}>-- injuries --</option>
                           {related?.allInjuries?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
@@ -383,17 +412,27 @@ export default function ManualReferencesForm() {
                         <div>level grant id: {feat.levelGrantId ?? 'NULL'}</div>
                         {/* level grants dropdown */}
                         <Field className='w-full' name='levelGrantId' as='select'>
-                          <option className='text-gray-500'>-- level grants --</option>
+                          <option className='text-gray-500' value={''}>-- level grants --</option>
                           {related?.allLevelGrants?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name} - {x.description}
                             </option>
                           ))}
                         </Field>
+                        <div>companion level up id: {feat.companionLevelingId ?? 'NULL'}</div>
+                        {/* companion level grants dropdown */}
+                        <Field className='w-full' name='companionLevelingId' as='select'>
+                          <option className='text-gray-500' value={''}>-- companion level grants --</option>
+                          {related?.allCompanionLevelings?.nodes.map(x => (
+                            <option key={x.id} value={x.id}>
+                              {x.description}
+                            </option>
+                          ))}
+                        </Field>
                         <div>skill id: {feat.skillId ?? 'NULL'}</div>
                         {/* skills dropdown */}
                         <Field className='w-full' name='skillId' as='select'>
-                          <option className='text-gray-500'>-- skills --</option>
+                          <option className='text-gray-500' value={''}>-- skills --</option>
                           {related?.allSkills?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
@@ -403,7 +442,7 @@ export default function ManualReferencesForm() {
                         <div>stat id: {feat.statId ?? 'NULL'}</div>
                         {/* stats dropdown */}
                         <Field className='w-full' name='statId' as='select'>
-                          <option className='text-gray-500'>-- stats --</option>
+                          <option className='text-gray-500' value={''}>-- stats --</option>
                           {related?.allStats?.nodes.map(x => (
                             <option key={x.id} value={x.id}>
                               {x.name}
