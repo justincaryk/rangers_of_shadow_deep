@@ -64,9 +64,13 @@ exports.up = knex =>
     -- ranger + level ups
     CREATE TABLE ranger.member_level (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
-      character_id uuid REFERENCES ranger.characters (id) NOT NULL,
-      level_grant_id uuid REFERENCES ranger.level_grants (id) NOT NULL,
-      granted smallint DEFAULT 1 NOT NULL
+      character_id uuid REFERENCES ranger.characters (id),
+      companion_id uuid REFERENCES ranger.character_companions (id),
+      level_grant_id uuid REFERENCES ranger.level_grants (id),
+      companion_leveling_id uuid REFERENCES ranger.companion_leveling (id),
+      granted smallint DEFAULT 1 NOT NULL,
+      CONSTRAINT check_member_ref_id check (companion_id is not null or character_id is not null),
+      CONSTRAINT check_level_grant_id_ref check (companion_leveling_id is not null or level_grant_id is not null),
     );
 
     -- ranger + injuries

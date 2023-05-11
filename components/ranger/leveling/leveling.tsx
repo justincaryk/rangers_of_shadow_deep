@@ -18,7 +18,7 @@ interface LevelUpCardProps {
 const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
   const { mutate: mutateRanger } = useRangerApi().updateRanger
   const { data: rules } = useLevelingApi().rangerRules
-  
+
   const handleSubmit = (data: LevelingFormFields) => {
     mutateRanger({
       id: ranger?.characterById?.id,
@@ -42,13 +42,13 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
         </div>
       </div>
       <ul className='text-dirty-orange list-disc px-6 text-xs'>
-          {rules?.levelGrants?.nodes.map(benefit => (
-            <li key={benefit.id}>
-              <strong className='capitalize'>{benefit.name}: </strong>
-              {benefit.description}
-            </li>
-          ))}
-        </ul>
+        {rules?.levelGrants?.nodes.map(benefit => (
+          <li key={benefit.id}>
+            <strong className='capitalize'>{benefit.name}: </strong>
+            {benefit.description}
+          </li>
+        ))}
+      </ul>
       <div className='space-y-1 text-sm text-dirty-orange'>
         <div>
           <Formik
