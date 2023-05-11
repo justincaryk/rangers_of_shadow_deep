@@ -1,7 +1,6 @@
-import { FocusEvent } from 'react'
 import { Field, Form, Formik } from 'formik'
 import Card from '../../parts/card'
-import Input, { baseInputClasses } from '../../parts/input'
+import { baseInputClasses } from '../../parts/input'
 import SmallButton from '../../parts/small-button'
 
 import { useRangerApi } from '../ranger-api'
