@@ -1,10 +1,12 @@
 'use client'
 
 import { atom } from 'jotai'
+import { UserRole } from '../../../graphql/generated/graphql'
 
 export interface CurrentUser {
   userId: string
   username: string
+  userRole: UserRole
   jwt: string
 }
 

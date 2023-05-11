@@ -1,7 +1,7 @@
 exports.up = knex =>
   knex.schema.raw(`
-    CREATE TYPE item_class as enum('weapon', 'armor', 'equipment', 'wondrous');
-    CREATE TYPE item_rarity as enum('magic', 'mundane');
+    CREATE TYPE item_class as enum('WEAPON', 'ARMOR', 'EQUIPMENT', 'WONDROUS');
+    CREATE TYPE item_rarity as enum('MAGIC', 'MUNDANE');
 
     CREATE TABLE ranger.items (
         id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
@@ -10,7 +10,7 @@ exports.up = knex =>
         slot_cost smallint default 1,
         entity_limit smallint,
         class item_class NOT NULL,
-        rarity item_rarity default 'mundane' NOT NULL
+        rarity item_rarity default 'MUNDANE' NOT NULL
     );
 
     CREATE POLICY items_policy ON ranger.items 

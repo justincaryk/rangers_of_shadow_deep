@@ -22,7 +22,7 @@ exports.up = knex =>
         INSERT INTO ranger.member_stats (stat_id, value, character_id) 
           (SELECT id, ranger_default,$1
             FROM ranger.stats 
-            WHERE stat_type = 'base');
+            WHERE stat_type = 'BASE');
         
         INSERT INTO ranger.character_bp_lookup (character_id) 
           values ($1);

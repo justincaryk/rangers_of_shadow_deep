@@ -38,6 +38,7 @@ export default function SigninForm() {
         setCurrentUser({
           userId: parsed.user_id,
           username: parsed.username,
+          userRole: parsed.user_role,
           jwt: data.signin?.jwtToken,
         })
 

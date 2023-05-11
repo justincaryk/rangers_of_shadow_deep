@@ -1,9 +1,102 @@
+const { BaseStats } = require('../../constants')
+
 exports.seed = function (knex) {
-  // Deletes ALL existing entries
-  return knex('ranger.features')
-    .del()
-    .then(function () {
-      // Inserts seed entries
-      return knex('ranger.features') //.insert([])
-    })
+    // Deletes ALL existing entries
+    return knex('ranger.features')
+        .del()
+        .then(function () {
+            // Inserts seed entries
+            return knex('ranger.features').insert([
+                {
+                    name: 'level up - skill bonus limit per skill',
+                    primary_type: 'LEVEL_GRANT',
+                    level_grant_type: 'SKILL',
+                    mechanic_mod: 'LIMIT',
+                    value: 2,
+                },
+                {
+                    name: 'level up - skill bonus',
+                    primary_type: 'LEVEL_GRANT',
+                    level_grant_type: 'SKILL',
+                    mechanic_mod: 'MODIFIER',
+                    value: 5,
+                },
+                {
+                    name: 'level up - heroic action / spell increase',
+                    primary_type: 'LEVEL_GRANT',
+                    level_grant_type: 'HEROIC_ACTION',
+                    mechanic_mod: 'MODIFIER',
+                    value: 1,
+                },
+                {
+                    name: 'level up - stat increase',
+                    primary_type: 'LEVEL_GRANT',
+                    level_grant_type: 'STAT',
+                    mechanic_mod: 'MODIFIER',
+                    value: 1,
+                },
+                {
+                    name: 'level up - recruitment bonus',
+                    primary_type: 'LEVEL_GRANT',
+                    level_grant_type: 'RECRUITMENT_POINT',
+                    mechanic_mod: 'MODIFIER',
+                    value: 10,
+                },
+                {
+                    name: 'toes -> move',
+                    primary_type: 'INJURY',
+                    mechanic_mod: 'MODIFIER',
+                    value: -0.5,
+                },
+                {
+                    name: 'never strong -> health',
+                    primary_type: 'INJURY',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'MODIFIER',
+                    value: -1,
+                },
+                {
+                    name: 'lost finger -> shoot',
+                    primary_type: 'INJURY',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'MODIFIER',
+                    value: -1,
+                },
+                {
+                    name: 'scars -> will',
+                    primary_type: 'INJURY',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'MODIFIER',
+                    value: -1,
+                },
+                {
+                    name: 'leg -> move',
+                    primary_type: 'INJURY',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'MODIFIER',
+                    value: -1,
+                },
+                {
+                    name: 'jaw -> leadership',
+                    primary_type: 'INJURY',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'MODIFIER',
+                    value: -3,
+                },
+                {
+                    name: 'eye -> shoot def',
+                    primary_type: 'INJURY',
+                    stat_subtype: 'EXTENDED',
+                    mechanic_mod: 'MODIFIER',
+                    value: -1,
+                },
+                {
+                    name: 'arm -> fight',
+                    primary_type: 'INJURY',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'MODIFIER',
+                    value: -1,
+                },
+            ])
+        })
 }

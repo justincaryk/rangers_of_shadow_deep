@@ -6,32 +6,57 @@ import { Bars3Icon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Image from 'next/image'
 import { NAV_TEXT_STYLE } from '../utils'
-import { PRIVATE_LINK_ROUTES, PUBLIC_LINK_ROUTES } from './routes'
+import { PRIVATE_LINK_ROUTES, PUBLIC_LINK_ROUTES, PrivateRouteType } from './routes'
 import { AUTH_TOKEN } from '../auth/types'
+import { UserRole } from '../../graphql/generated/graphql'
+import { useAtom } from 'jotai'
+import { useCurrentUser } from '../auth/atoms/current-user'
 
-export const PRIVATE_LINKS = [
+export const PRIVATE_ROUTES: PrivateRouteType[] = [
   {
     link: PRIVATE_LINK_ROUTES.DASHBOARD,
     text: 'Dashboard',
     hasNav: false,
     home: true,
+    permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
     link: PRIVATE_LINK_ROUTES.CREATE_RANGER,
     text: 'Ranger',
     hasNav: false,
+    permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
     link: PRIVATE_LINK_ROUTES.CREATE_COMPANIONS,
     text: 'Companions',
     hasNav: true,
+    permission: [ UserRole.Minion, UserRole.Wizard ],
   },
+  {
+    link: PRIVATE_LINK_ROUTES.ADMIN,
+    text: 'Area 51',
+    hasNav: true,
+    permission: [ UserRole.Wizard ],
+  }
 ]
 
 export default function PrivateNavigation() {
   const signout = () => {
     localStorage.setItem(AUTH_TOKEN, '')
     window.location.href = PUBLIC_LINK_ROUTES.SIGN_IN
+  }
+
+  const [ user ] = useAtom(useCurrentUser)
+
+  const userMissingPermission = (route: PrivateRouteType) => {
+    if (!user) {
+      return true
+    }
+    if (route.permission.includes(user.userRole)) {
+      return true
+    }
+
+    return false
   }
 
   return (
@@ -41,7 +66,7 @@ export default function PrivateNavigation() {
           <div className='flex items-center justify-between md:justify-start md:space-x-10'>
             <div className='flex justify-start lg:w-0 lg:flex-1'>
               <span className='sr-only'>Rangers of Shadow Deep Companion App</span>
-              {PRIVATE_LINKS.filter(x => x.home).map(x => (
+              {PRIVATE_ROUTES.filter(x => x.home).map(x => (
                 <Link href={x.link} key={x.text}>
                   <Image
                     width={200}
@@ -60,7 +85,7 @@ export default function PrivateNavigation() {
               </Popover.Button>
             </div>
             <Popover.Group as='nav' className='hidden space-x-10 md:flex'>
-              {PRIVATE_LINKS.filter(x => x.hasNav).map(x => (
+              {PRIVATE_ROUTES.filter(x => x.hasNav && userMissingPermission(x)).map(x => (
                 <Link href={x.link} key={x.text} className={NAV_TEXT_STYLE}>
                   {x.text}
                 </Link>

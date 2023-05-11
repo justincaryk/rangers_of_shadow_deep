@@ -44,13 +44,13 @@ exports.up = knex =>
         
         CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
         
-        CREATE TYPE user_role as enum('wizard', 'minion');
+        CREATE TYPE user_role as enum('WIZARD', 'MINION');
 
         CREATE TABLE public.minions (
             id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
             PASSWORD text,
             user_name varchar(50) NOT NULL,
-            user_role user_role DEFAULT 'minion',
+            user_role user_role DEFAULT 'MINION',
             CONSTRAINT core_user_name_key UNIQUE (user_name)
         );
                 
@@ -107,37 +107,49 @@ exports.up = knex =>
             ROLE text, --db role of the user
             exp integer, --expiry date as the unix epoch
             user_id uuid, --db identifier of the user
-            username text --username used to sign in, user's email in our case
+            username text, --username used to sign in, user's email in our case
+            user_role user_role --user role as referenceable enum
         );
         
         CREATE OR REPLACE FUNCTION public.signin (username text, PASSWORD text)
-        RETURNS public.jwt_token AS $$
+            RETURNS public.jwt_token
+            AS $$
         DECLARE
-        account public.minions;
-        wiz_acc public.wizards;
-        ROLE text;
+            account public.minions;
+            wiz_acc public.wizards;
+            ROLE text;
         BEGIN
-        SELECT * FROM public.minions AS a
-            WHERE a.user_name = $1 INTO account;
-        SELECT * FROM public.wizards AS b
-            WHERE account.id = user_id INTO wiz_acc;
-        
-        IF wiz_acc.user_id = account.id THEN 
-            ROLE = 'role_wizard';
-        ELSE
-            ROLE = 'role_minion';
-        END IF;
-        
-        IF account.password = crypt($2, account.password) THEN
-            RETURN (ROLE, extract(epoch FROM now() + interval '365 days'),
-            account.id,
-            account.user_name)::public.jwt_token;
-        ELSE
-            RETURN NULL;
-        END IF;
+            SELECT
+                *
+            FROM
+                public.minions AS a
+            WHERE
+                a.user_name = $1 INTO account;
+            SELECT
+                *
+            FROM
+                public.wizards AS b
+            WHERE
+                account.id = user_id INTO wiz_acc;
+            IF wiz_acc.user_id = account.id THEN
+                ROLE = 'role_wizard';
+            ELSE
+                ROLE = 'role_minion';
+            END IF;
+            IF account.password = crypt($2, account.password) THEN
+                RETURN (ROLE,
+                    extract(epoch FROM now() + interval '365 days'),
+                    account.id,
+                    account.user_name,
+                    account.user_role)::public.jwt_token;
+            ELSE
+                RETURN NULL;
+            END IF;
         END;
         $$
-        LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
+        LANGUAGE plpgsql
+        VOLATILE
+        SECURITY DEFINER;
                 
         GRANT EXECUTE ON FUNCTION public.signin (username text, PASSWORD text)
         TO anonymous_user;

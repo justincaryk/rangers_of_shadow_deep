@@ -29,6 +29,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
         setCurrentUser({
           userId: parsed.user_id,
           username: parsed.username,
+          userRole: parsed.user_role,
           jwt: JWT,
         })
       }

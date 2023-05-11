@@ -1,15 +1,18 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { PUBLIC_LINK_ROUTES } from './routes'
+import { UserRole } from '../../graphql/generated/graphql'
+import { PUBLIC_LINK_ROUTES, PublicRouteType } from './routes'
 
-export const PUBLIC_LINKS = [
+ const PUBLIC_ROUTES: PublicRouteType[] = [
   {
     link: PUBLIC_LINK_ROUTES.SIGN_UP,
     text: 'Signup',
+    hasNav: true,
   },
   {
     link: PUBLIC_LINK_ROUTES.SIGN_IN,
     text: 'Signin',
+    hasNav: true,
   },
 ]
 export default function PublicNavigation() {
@@ -26,7 +29,7 @@ export default function PublicNavigation() {
             alt=''
           />
         </div>
-        {PUBLIC_LINKS.map(x => (
+        {PUBLIC_ROUTES.map(x => (
           <div key={x.text}>
             <Link href={x.link}>
               <button className='flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700'>

@@ -1,11 +1,11 @@
 exports.up = knex =>
   knex.schema.raw(`
     CREATE TYPE ranger_grant_type as enum(
-      'skills',
-      'stats',
-      'recruitment_points',
-      'heroic_ability',
-      'companion'
+      'SKILLS',
+      'STATS',
+      'RECRUITMENT_POINTS',
+      'HEROIC_ABILITY',
+      'COMPANION'
     );
 
     CREATE TABLE ranger.level_grants (
