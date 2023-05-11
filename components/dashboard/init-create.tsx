@@ -1,13 +1,16 @@
 import classnames from 'classnames'
-import { useAtom } from 'jotai'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
-import { useCurrentUser } from '../auth/atoms/current-user'
 import { PRIVATE_LINK_ROUTES } from '../nav/routes'
 import SmallButton from '../parts/small-button'
 import { sectionBaseStyles } from '../parts/styles'
 
+// pkg hooks
+import { useCallback, useEffect, useState } from 'react'
+import { useAtom } from 'jotai'
+import { useRouter } from 'next/navigation'
+
+// custom hooks
+import { useCurrentUser } from '../auth/atoms/current-user'
+import { useCompanionsApi } from '../companions/companions-api'
 import { useRangerApi } from '../ranger/ranger-api'
 
 export default function InitCreate() {
@@ -23,9 +26,14 @@ export default function InitCreate() {
 
   const { mutate: hydrateRangerMutate, status: hydrationStatus } = useRangerApi().hydrateRanger
 
+  const {
+    mutate: createFriendMutate,
+    data: friendCreateResult,
+    status: friendCreateStatus,
+  } = useCompanionsApi().createFriend
+
   const [ currentUser ] = useAtom(useCurrentUser)
 
-  // create ranger record
   const createRanger = () => {
     if (currentUser) {
       createRangerMutate({
@@ -34,15 +42,15 @@ export default function InitCreate() {
       })
     }
   }
-  const createCompanion = () => {
+
+  const createFriend = () => {
     if (currentUser) {
-      createRangerMutate({
-        name: `${currentUser?.username}'s New Ranger`,
+      createFriendMutate({
+        name: `${currentUser?.username}'s New Companion`,
         userId: currentUser?.userId,
       })
     }
   }
-
 
   const initHydrateRangerMutation = useCallback(() => {
     if (hydrationStatus !== 'idle') {
@@ -72,13 +80,19 @@ export default function InitCreate() {
   useEffect(() => {
     if (characterHydrated) {
       const rangerId = rangerCreateResult?.createCharacter?.character?.id
-      const editUrl = PRIVATE_LINK_ROUTES.A_RANGER.replace('[id]', rangerId)
-      router.push(editUrl)
+      const hydratedUrl = PRIVATE_LINK_ROUTES.A_RANGER.replace('[id]', rangerId)
+      router.push(hydratedUrl)
     }
   }, [ router, rangerCreateResult, characterHydrated ])
 
-  // COMPANION >>
-  // COMPANION >>
+  // COMPANION >> reroute when created
+  useEffect(() => {
+    if (friendCreateResult?.createFriend?.friend?.id && friendCreateStatus === 'success') {
+      const friendId = friendCreateResult.createFriend.friend.id
+      const hydratedUrl = PRIVATE_LINK_ROUTES.A_COMPANION.replace('[id]', friendId)
+      router.push(hydratedUrl)
+    }
+  }, [ router, friendCreateResult, friendCreateStatus ])
 
   return (
     <div
@@ -91,13 +105,9 @@ export default function InitCreate() {
         Create Ranger
       </SmallButton>
 
-      <SmallButton onClick={createCompanion} primary>
+      <SmallButton onClick={createFriend} primary>
         Create Companion
       </SmallButton>
-
-      <Link href={PRIVATE_LINK_ROUTES.A_COMPANION}>
-        <SmallButton primary>Create Companion</SmallButton>
-      </Link>
     </div>
   )
 }

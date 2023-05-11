@@ -2,20 +2,20 @@ import { gql } from 'graphql-request'
 
 export default gql`
   mutation AddMemberLevel(
-    $companionId: UUID
+    $friendId: UUID
     $characterId: UUID
     $granted: Int
     $levelGrantId: UUID
-    $companionLevelingId: UUID
+    $friendLevelGrantId: UUID
   ) {
     createMemberLevel(
       input: {
         memberLevel: {
           characterId: $characterId
           levelGrantId: $levelGrantId
-          companionId: $companionId
+          friendId: $friendId
           granted: $granted
-          companionLevelingId: $companionLevelingId
+          friendLevelGrantsId: $friendLevelGrantId
         }
       }
     ) {

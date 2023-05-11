@@ -1,13 +1,13 @@
 import { gql } from 'graphql-request'
 
 export default gql`
-  query CharCompanions {
-    allCharacterCompanions {
+  query Friends {
+    allFriends {
       nodes {
         id
         name
         progressionPoints
-        companionId
+        mercenaryId
         bonusSkill
         skillByBonusSkill {
           name

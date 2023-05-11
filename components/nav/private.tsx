@@ -21,14 +21,32 @@ export const PRIVATE_ROUTES: PrivateRouteType[] = [
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.CREATE_RANGER,
-    text: 'Ranger',
-    hasNav: false,
+    link: PRIVATE_LINK_ROUTES.HEROIC_ACTIONS,
+    text: 'Heroic Actions',
+    hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.CREATE_COMPANIONS,
-    text: 'Companions',
+    link: PRIVATE_LINK_ROUTES.SPELLS,
+    text: 'Spells',
+    hasNav: true,
+    permission: [ UserRole.Minion, UserRole.Wizard ],
+  },
+  {
+    link: PRIVATE_LINK_ROUTES.EQUIPMENT,
+    text: 'Equipment',
+    hasNav: true,
+    permission: [ UserRole.Minion, UserRole.Wizard ],
+  },
+  {
+    link: PRIVATE_LINK_ROUTES.INJURIES,
+    text: 'Injuries',
+    hasNav: true,
+    permission: [ UserRole.Minion, UserRole.Wizard ],
+  },
+  {
+    link: PRIVATE_LINK_ROUTES.PROGRESSION,
+    text: 'Progression',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
@@ -36,10 +54,16 @@ export const PRIVATE_ROUTES: PrivateRouteType[] = [
     link: PRIVATE_LINK_ROUTES.ADMIN,
     text: 'Area 51',
     hasNav: true,
-    permission: [ UserRole.Wizard ],
+    permission: [ UserRole.Minion, UserRole.Wizard ],
   }
+
 ]
 
+// EQUIPMENT = '/game-rules/equipment',
+//   SPELLS = '/game-rules/spells',
+//   HEROIC_ACTIONS = '/game-rules/heroic-actions',
+//   INJURIES = '/game-rules/injuries',
+//   PROGRESSION = '/game-rules/progression',
 export default function PrivateNavigation() {
   const signout = () => {
     localStorage.setItem(AUTH_TOKEN, '')

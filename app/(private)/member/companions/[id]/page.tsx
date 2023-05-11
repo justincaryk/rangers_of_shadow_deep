@@ -7,7 +7,7 @@ import { useResetAtom } from 'jotai/utils'
 import Card from '../../../../../components/parts/card'
 import Dropdown from '../../../../../components/parts/dropdown'
 import MinorHeader from '../../../../../components/parts/minor-header'
-import CompanionsList from '../../../../../components/companions/companions-list'
+import CompanionsList from '../../../../../components/companions/mercenaries'
 import SelectedCompanions from '../../../../../components/companions/companions-selected'
 
 import { useRecruitmentPointsBp } from '../../../../../components/ranger/atoms/build-points'

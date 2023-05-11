@@ -11,6 +11,12 @@ export enum PRIVATE_LINK_ROUTES {
   DASHBOARD = '/dashboard',
   A_RANGER = '/member/ranger/[id]',
   A_COMPANION = '/member/companion/[id]',
+  COMPANIONS = '/game-rules/companions',
+  EQUIPMENT = '/game-rules/equipment',
+  SPELLS = '/game-rules/spells',
+  HEROIC_ACTIONS = '/game-rules/heroic-actions',
+  INJURIES = '/game-rules/injuries',
+  PROGRESSION = '/game-rules/progression',
   ADMIN = '/admin',
 }
 

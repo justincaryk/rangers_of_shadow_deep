@@ -5,7 +5,7 @@ import { sectionBaseStyles } from '../../../components/parts/styles'
 
 import InitCreate from '../../../components/dashboard/init-create'
 import MyRangers from '../../../components/ranger/all-rangers'
-import MyCompanions from '../../../components/characters/my-companions'
+import CompanionsList from '../../../components/companions/mercenaries'
 import MinorHeader from '../../../components/parts/minor-header'
 import { UserIcon, UserGroupIcon } from '@heroicons/react/24/solid'
 
@@ -30,7 +30,7 @@ export default function Dashboard() {
         })}
       >
         <MinorHeader content='Companions' icon={<UserGroupIcon className='text-emerald-900' />} />
-        <MyCompanions />
+        <CompanionsList />
       </div>
     </div>
   )

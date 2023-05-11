@@ -62,7 +62,7 @@ exports.up = knex =>
     );
 
     -- ranger + level ups
-    CREATE TABLE ranger.member_level (
+    CREATE TABLE ranger.member_levels (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
       friend_id uuid REFERENCES ranger.friends (id),
@@ -74,11 +74,11 @@ exports.up = knex =>
 	    CONSTRAINT check_member_type_is_valid
 	      CHECK ((friend_id IS NULL) <> (character_id IS NULL)),
 	    CONSTRAINT check_level_type_is_valid
-	      check ((friend_level_grants_id IS NULL) <> (level_grant_id IS NULL));
+	      check ((friend_level_grants_id IS NULL) <> (level_grant_id IS NULL))
     );
-    comment on constraint check_field_refs_match_type on ranger.member_level is 'Both a member ref and level grant ref are required';
-    comment on constraint check_member_type_is_valid on ranger.member_level is 'Cannot insert a character ref and friend ref';
-    comment on constraint check_field_refs_match_type on ranger.member_level is 'Cannot insert a character level grant ref and friend level grant ref';
+    comment on constraint check_field_refs_match_type on ranger.member_levels is 'Both a member ref and level grant ref are required';
+    comment on constraint check_member_type_is_valid on ranger.member_levels is 'Cannot insert a character ref and friend ref';
+    comment on constraint check_field_refs_match_type on ranger.member_levels is 'Cannot insert a character level grant ref and friend level grant ref';
 
     -- ranger + injuries
     CREATE TABLE ranger.member_injuries (

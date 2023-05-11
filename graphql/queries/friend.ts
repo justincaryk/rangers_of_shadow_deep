@@ -1,12 +1,12 @@
 import { gql } from 'graphql-request'
 
 export default gql`
-  query CharCompanion($id: UUID!) {
-    characterCompanionById(id: $id) {
+  query Friend($id: UUID!) {
+    friendById(id: $id) {
       id
       name
       progressionPoints
-      companionId
+      mercenaryId
       bonusSkill
       skillByBonusSkill {
         name

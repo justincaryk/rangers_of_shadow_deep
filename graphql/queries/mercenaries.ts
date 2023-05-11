@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
 export default gql`
-  query Companions {
-    allCompanions {
+  query Mercenaries {
+    allMercenaries {
       nodes {
         id
         name

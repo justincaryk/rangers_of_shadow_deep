@@ -16,7 +16,7 @@ export default gql`
         description
       }
     }
-    allCompanionLevelings {
+    allFriendLevelGrants {
       nodes {
         id
         description

@@ -1,77 +1,78 @@
 import {
-  CharCompanionQuery,
-  CompanionsQuery,
-  CreateCharacterCompanionMutation,
-  CreateCharacterCompanionMutationVariables,
-  DeleteCharCompanionMutation,
-  DeleteCharCompanionMutationVariables,
-  UpdateCharCompanionMutation,
-  UpdateCharCompanionMutationVariables,
+  FriendQuery,
+  CreateFriendMutation,
+  CreateFriendMutationVariables,
+  DeleteFriendMutation,
+  DeleteFriendMutationVariables,
+  UpdateFriendMutation,
+  UpdateFriendMutationVariables,
+  MercenariesQuery,
+  FriendsQuery,
 } from '../../graphql/generated/graphql'
 import useGraphQL from '../graphql/useGraphQL'
 
-import GetAllCompanionsRequest from '../../graphql/queries/companions'
-import GetAllCharCompanionsRequest from '../../graphql/queries/char-companions'
-import GetCharCompanionRequest from '../../graphql/queries/char-companion'
-import CreateCharCompanionRequest from '../../graphql/mutations/char-companion-create'
-import UpdateCharCompanionRequest from '../../graphql/mutations/char-companion-update'
-import DeleteCharCompanionRequest from '../../graphql/mutations/char-companion-delete'
+import GetMercenariessRequest from '../../graphql/queries/mercenaries'
+import GetFriendsRequest from '../../graphql/queries/friends'
+import GetFriendRequest from '../../graphql/queries/friend'
+import CreateFriendRequest from '../../graphql/mutations/friend-create'
+import UpdateFriendRequest from '../../graphql/mutations/friend-update'
+import DeleteFriendRequest from '../../graphql/mutations/friend-delete'
 
 import { useParams } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export enum COMPANION_QUERY_KEYS {
-  CHAR_COMPANION = 'char_companion',
-  CHAR_COMPANIONS = 'char_companions',
-  ALL_COMPANIONS = 'all_companions',
+  FRIEND = 'friend',
+  FRIENDS = 'friends',
+  MERCENARIES = 'mercenaries',
 }
 
-export function useRangerApi() {
+export function useCompanionsApi() {
   const { graphQLClient } = useGraphQL()
   const queryClient = useQueryClient()
   const params = useParams()
 
   return {
-    getAllCompanions: useQuery({
-      queryKey: [ COMPANION_QUERY_KEYS.ALL_COMPANIONS ],
-      queryFn: async () => graphQLClient.request<CompanionsQuery>(GetAllCompanionsRequest),
+    getMercenaries: useQuery({
+      queryKey: [ COMPANION_QUERY_KEYS.MERCENARIES ],
+      queryFn: async () => graphQLClient.request<MercenariesQuery>(GetMercenariessRequest),
     }),
-    getAllCharCompanions: useQuery({
-      queryKey: [ COMPANION_QUERY_KEYS.ALL_COMPANIONS ],
-      queryFn: async () => graphQLClient.request<CompanionsQuery>(GetAllCharCompanionsRequest),
+    getFriends: useQuery({
+      queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ],
+      queryFn: async () => graphQLClient.request<FriendsQuery>(GetFriendsRequest),
     }),
-    getCharCompanion: useQuery({
-      queryKey: [ COMPANION_QUERY_KEYS.CHAR_COMPANION ],
+    getFriend: useQuery({
+      queryKey: [ COMPANION_QUERY_KEYS.FRIEND ],
       queryFn: async () => {
         return params?.id
-          ? graphQLClient.request<CharCompanionQuery>(GetCharCompanionRequest, {
+          ? graphQLClient.request<FriendQuery>(GetFriendRequest, {
               id: params?.id,
             })
           : null
       },
     }),
-    createCharCompanion: useMutation({
-      mutationFn: (data: CreateCharacterCompanionMutationVariables) =>
-        graphQLClient.request<CreateCharacterCompanionMutation>(CreateCharCompanionRequest, data),
+    createFriend: useMutation({
+      mutationFn: (data: CreateFriendMutationVariables) =>
+        graphQLClient.request<CreateFriendMutation>(CreateFriendRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: [ COMPANION_QUERY_KEYS.CHAR_COMPANIONS ],
+          queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ],
         })
       },
     }),
-    updateCharCompanion: useMutation({
-      mutationFn: (data: UpdateCharCompanionMutationVariables) =>
-        graphQLClient.request<UpdateCharCompanionMutation>(UpdateCharCompanionRequest, data),
+    updateFriend: useMutation({
+      mutationFn: (data: UpdateFriendMutationVariables) =>
+        graphQLClient.request<UpdateFriendMutation>(UpdateFriendRequest, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.ALL_COMPANIONS ] })
+        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ] })
       },
     }),
-    deleteCharCompanion: useMutation({
-      mutationFn: (data: DeleteCharCompanionMutationVariables) =>
-        graphQLClient.request<DeleteCharCompanionMutation>(DeleteCharCompanionRequest, data),
+    deleteFriend: useMutation({
+      mutationFn: (data: DeleteFriendMutationVariables) =>
+        graphQLClient.request<DeleteFriendMutation>(DeleteFriendRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: [ COMPANION_QUERY_KEYS.CHAR_COMPANIONS ],
+          queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ],
         })
       },
     }),
