@@ -1,13 +1,13 @@
-'use client'
-
 import classnames from 'classnames'
+import { UserIcon, UserGroupIcon } from '@heroicons/react/24/solid'
+
 import { sectionBaseStyles } from '../../../components/parts/styles'
 
 import InitCreate from '../../../components/dashboard/init-create'
-import MyRangers from '../../../components/ranger/all-rangers'
-import CompanionsList from '../../../components/companions/mercenaries'
+import RangerCards from '../../../components/ranger/ranger-cards'
+import FriendsCards from '../../../components/companions/friends-cards'
+
 import MinorHeader from '../../../components/parts/minor-header'
-import { UserIcon, UserGroupIcon } from '@heroicons/react/24/solid'
 
 export default function Dashboard() {
   return (
@@ -20,7 +20,7 @@ export default function Dashboard() {
         })}
       >
         <MinorHeader content='Rangers' icon={<UserIcon className='text-emerald-900' />} />
-        <MyRangers />
+        <RangerCards />
       </div>
 
       <div
@@ -30,7 +30,7 @@ export default function Dashboard() {
         })}
       >
         <MinorHeader content='Companions' icon={<UserGroupIcon className='text-emerald-900' />} />
-        <CompanionsList />
+        <FriendsCards />
       </div>
     </div>
   )

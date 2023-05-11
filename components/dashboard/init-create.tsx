@@ -1,3 +1,5 @@
+'use client'
+
 import classnames from 'classnames'
 import { PRIVATE_LINK_ROUTES } from '../nav/routes'
 import SmallButton from '../parts/small-button'
