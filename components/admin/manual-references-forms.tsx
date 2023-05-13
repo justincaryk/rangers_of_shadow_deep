@@ -16,7 +16,7 @@ const FeatureUpdateSchema = Yup.object().shape({
   levelGrantId: Yup.string().nullable(),
   skillId: Yup.string().nullable(),
   statId: Yup.string().nullable(),
-  companionLevelingId: Yup.string().nullable(),
+  friendLevelGrantsId: Yup.string().nullable(),
 })
 
 export default function ManualReferencesForm() {
@@ -72,7 +72,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        companionLevelingId: feat.companionLevelingId ?? undefined,
+                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -186,7 +186,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        companionLevelingId: feat.companionLevelingId ?? undefined,
+                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -300,7 +300,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        companionLevelingId: feat.companionLevelingId ?? undefined,
+                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -395,7 +395,7 @@ export default function ManualReferencesForm() {
           </div>
           {showCompanionLevelUps &&
             features?.allFeatures?.nodes
-              .filter(x => x.primaryType === PrimaryFeatureType.CompanionLevelGrant)
+              .filter(x => x.primaryType === PrimaryFeatureType.FriendLevelGrant)
               .map((feat: Feature) => {
                 return (
                   <div key={feat.id} className='border rounded space-y-2 bg-slate-400 p-6 bg-opacity-50'>
@@ -414,7 +414,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        companionLevelingId: feat.companionLevelingId ?? undefined,
+                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -462,13 +462,13 @@ export default function ManualReferencesForm() {
                               </option>
                             ))}
                           </Field>
-                          <div>companion level up id: {feat.companionLevelingId ?? 'NULL'}</div>
+                          <div>companion level up id: {feat.friendLevelGrantsId ?? 'NULL'}</div>
                           {/* companion level grants dropdown */}
-                          <Field className='w-full' name='companionLevelingId' as='select'>
+                          <Field className='w-full' name='friendLevelGrantsId' as='select'>
                             <option className='text-gray-500' value={''}>
                               -- companion level grants --
                             </option>
-                            {related?.allCompanionLevelings?.nodes.map(x => (
+                            {related?.allFriendLevelGrants?.nodes.map(x => (
                               <option key={x.id} value={x.id}>
                                 {x.description}
                               </option>
@@ -509,7 +509,7 @@ export default function ManualReferencesForm() {
                   </div>
                 )
               })}
-          {!features?.allFeatures?.nodes.filter(x => x.primaryType === PrimaryFeatureType.CompanionLevelGrant)
+          {!features?.allFeatures?.nodes.filter(x => x.primaryType === PrimaryFeatureType.FriendLevelGrant)
             ?.length && <div className='font-semibold text-red-700'>NO MATCHING FEATURES OF THIS TYPE FOUND</div>}
         </>
       )}

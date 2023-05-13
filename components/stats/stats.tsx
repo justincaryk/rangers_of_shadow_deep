@@ -116,7 +116,7 @@ export default function Stats() {
 
   return (
     <div>
-      <div className='mt-2' onClick={() => toggleShow(!show)}>
+      <div className='mt-2 cursor-pointer' onClick={() => toggleShow(!show)}>
         <div className='w-6 float-right'>
           <ShowHide isShow={show} />
         </div>

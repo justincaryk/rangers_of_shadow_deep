@@ -8,6 +8,7 @@ export default gql`
         name
         subtype
         description
+        notes
         cost
         armor
         fight

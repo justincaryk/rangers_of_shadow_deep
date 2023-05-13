@@ -64,7 +64,10 @@ export function useCompanionsApi() {
       mutationFn: (data: UpdateFriendMutationVariables) =>
         graphQLClient.request<UpdateFriendMutation>(UpdateFriendRequest, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ] })
+        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIEND ] })
+        queryClient.invalidateQueries({
+          queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ],
+        })
       },
     }),
     deleteFriend: useMutation({

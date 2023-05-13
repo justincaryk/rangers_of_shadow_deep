@@ -5,8 +5,8 @@ import SmallButton from '../../parts/small-button'
 
 import { useRangerApi } from '../ranger-api'
 import { useLevelingApi } from './leveling-api'
-import { LevelingFormFields, RangerLevelingFieldsSchema } from '../core-character'
-import { Character } from '../../../graphql/generated/graphql'
+import { RangerLevelingFieldsSchema } from '../core-character'
+import { Character, CharacterPatch } from '../../../graphql/generated/graphql'
 import Loader from '../../loader'
 import { determineApplicableRangerLevelUpBenefit, determineApplicableRangerLevelUpCost } from './leveling-utils'
 
@@ -20,7 +20,7 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
   const { mutate: createLevelRef } = useLevelingApi().createLevelRef
   const { mutate: updateLevelRef } = useLevelingApi().updateLevelRef
 
-  const handleSubmit = (data: LevelingFormFields) => {
+  const handleSubmit = (data: CharacterPatch) => {
     mutateRanger({
       id: ranger.id,
       patch: {

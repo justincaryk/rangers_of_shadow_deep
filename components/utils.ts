@@ -1,7 +1,7 @@
 'use client'
 
-import { useAtom } from 'jotai'
-import { useBuildPoints } from './ranger/atoms/build-points'
+import { Mercenary } from './companions/types'
+import { Skill } from './skills/types'
 import { PLAYER_COUNT } from './types'
 
 export const NAV_TEXT_STYLE =
@@ -41,7 +41,40 @@ export const parseJwt = (token: string) => {
 
 export const capitalize = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>
 
+export const capitalizeEach = <T extends string>(s: T) => s.split(' ').map(x => capitalize(x)).join(' ') as Capitalize<typeof s>
+
 export const getLetterAt = (pos: number) => {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('')
   return alphabet[pos]
+}
+
+export const parseSkillsFromMercNotes = ({ notes }: Mercenary, skills: Skill[]) => {
+  let mercStats: any = {}
+
+  if (!notes) {
+    return mercStats
+  }
+
+  const notesSplit = notes.split(',')
+  const probStatsAsStrings = notesSplit.filter(maybeStatString => maybeStatString.includes(' +'))
+
+  if (!probStatsAsStrings.length) {
+    return mercStats
+  }
+
+  const convertedToObjectArray = probStatsAsStrings.map(x => {
+    const split = x.split(' +')
+    return {
+      statKey: split[0].toLowerCase(),
+      value: Number(split[1])
+    }
+  })
+
+  convertedToObjectArray.forEach(x => {
+    if (x.statKey) {
+      mercStats[x.statKey] = x.value
+    }
+  })
+
+  return mercStats
 }

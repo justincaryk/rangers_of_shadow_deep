@@ -1,8 +1,5 @@
 'use client'
 
-import classnames from 'classnames'
-import { sectionBaseStyles } from '../../../../../components/parts/styles'
-
 import Personal from '../../../../../components/ranger/core-character'
 import Stats from '../../../../../components/stats/stats'
 import HeroicActions from '../../../../../components/heroic-actions/heroic-actions'
@@ -11,6 +8,7 @@ import Equipment from '../../../../../components/equipment/equipment'
 import Skills from '../../../../../components/skills/skills'
 import { useSyncRangerBp } from '../../../../../components/ranger/atoms/build-points'
 import RecruitmentPoints from '../../../../../components/ranger/recruitment'
+import StackSection from '../../../../../components/parts/stack-section'
 
 export default function Ranger() {
   // ensure this hook is invoked to keep available build points
@@ -19,27 +17,27 @@ export default function Ranger() {
 
   return (
     <div className='space-y-4 w-full'>
-      <div className={classnames(sectionBaseStyles)}>
+      <StackSection>
         <Personal />
-      </div>
-      <div className={classnames(sectionBaseStyles)}>
+      </StackSection>
+      <StackSection>
         <Stats />
-      </div>
-      <div className={classnames(sectionBaseStyles)}>
+      </StackSection>
+      <StackSection>
         <HeroicActions />
-      </div>
-      <div className={classnames(sectionBaseStyles)}>
+      </StackSection>
+      <StackSection>
         <Spells />
-      </div>
-      <div className={classnames(sectionBaseStyles)}>
+      </StackSection>
+      <StackSection>
         <Skills />
-      </div>
-      <div className={classnames(sectionBaseStyles)}>
+      </StackSection>
+      <StackSection>
         <Equipment />
-      </div>
-      <div className={classnames(sectionBaseStyles)}>
+      </StackSection>
+      <StackSection>
         <RecruitmentPoints />
-      </div>
+      </StackSection>
     </div>
   )
 }

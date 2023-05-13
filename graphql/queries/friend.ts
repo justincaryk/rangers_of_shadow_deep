@@ -11,6 +11,20 @@ export default gql`
       skillByBonusSkill {
         name
         id
+        description
+      }
+      mercenaryByMercenaryId {
+        id
+        description
+        cost
+        name
+        subtype
+        notes
+        move
+        fight
+        shoot
+        armor
+        will
       }
     }
   }

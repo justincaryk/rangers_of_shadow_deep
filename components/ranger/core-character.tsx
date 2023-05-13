@@ -15,23 +15,16 @@ import LevelUpRanger from './leveling/leveling'
 import { useBuildPoints } from './atoms/build-points'
 import { useRangerApi } from './ranger-api'
 import BuildPointsAssignment from './build-points/build-points-assignment'
+import { CharacterPatch } from '../../graphql/generated/graphql'
 
-export const RangerPersonalFieldsSchema = Yup.object().shape({
+export const MemberCoreFieldsSchema = Yup.object().shape({
   name: Yup.string().required('Required'),
 })
-type PersonalFormFields = {
-  name: string
-}
+
 export const RangerLevelingFieldsSchema = Yup.object().shape({
   level: Yup.number().required('Required'),
   xp: Yup.number().required('Required'),
 })
-
-export type LevelingFormFields = {
-  level: number
-  xp: number
-}
-export const RangerCoreFieldsSchema = RangerPersonalFieldsSchema && RangerLevelingFieldsSchema
 
 export default function CoreCharacter() {
   const [ showLevelUp, setShowLevelUp ] = useState(false)
@@ -41,7 +34,7 @@ export default function CoreCharacter() {
   const { data: ranger, status } = useRangerApi().getRangerById
   const { mutate } = useRangerApi().updateRanger
 
-  const handleSubmit = (data: PersonalFormFields) => {
+  const handleSubmit = (data: CharacterPatch) => {
     mutate({
       id: ranger?.characterById?.id,
       patch: {
@@ -61,7 +54,7 @@ export default function CoreCharacter() {
         initialValues={{
           name: ranger?.characterById?.name ?? '',
         }}
-        validationSchema={RangerPersonalFieldsSchema}
+        validationSchema={MemberCoreFieldsSchema}
         onSubmit={handleSubmit}
       >
         {({ submitForm }) => (
