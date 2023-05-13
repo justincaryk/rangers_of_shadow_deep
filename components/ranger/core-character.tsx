@@ -10,7 +10,7 @@ import MinorHeader from '../parts/minor-header'
 import { baseInputClasses } from '../parts/input'
 
 import Loader from '../loader'
-import LevelUpRanger from './leveling/leveling'
+import LevelUpRanger from '../leveling/ranger-leveling'
 
 import { useBuildPoints } from './atoms/build-points'
 import { useRangerApi } from './ranger-api'

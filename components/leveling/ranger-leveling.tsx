@@ -1,14 +1,16 @@
 import { Field, Form, Formik } from 'formik'
-import Card from '../../parts/card'
-import { baseInputClasses } from '../../parts/input'
-import SmallButton from '../../parts/small-button'
+import Card from '../parts/card'
+import { baseInputClasses } from '../parts/input'
+import SmallButton from '../parts/small-button'
+import Loader from '../loader'
 
-import { useRangerApi } from '../ranger-api'
+import { useRangerApi } from '../ranger/ranger-api'
 import { useLevelingApi } from './leveling-api'
-import { RangerLevelingFieldsSchema } from '../core-character'
-import { Character, CharacterPatch } from '../../../graphql/generated/graphql'
-import Loader from '../../loader'
+
+import { Character, CharacterPatch } from '../../graphql/generated/graphql'
 import { determineApplicableRangerLevelUpBenefit, determineApplicableRangerLevelUpCost } from './leveling-utils'
+import { RangerLevelingFieldsSchema } from '../ranger/core-character'
+
 
 interface LevelUpCardProps {
   ranger: Character

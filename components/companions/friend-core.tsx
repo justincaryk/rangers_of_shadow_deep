@@ -10,6 +10,7 @@ import Loader from '../loader'
 import MercenaryCard from './mercenary-card'
 import { capitalizeEach } from '../utils'
 import Card from '../parts/card'
+import FriendLeveling from '../leveling/friend-leveling'
 
 export default function FriendCore() {
   const [ showLevelUp, setShowLevelUp ] = useState(false)
@@ -71,7 +72,7 @@ export default function FriendCore() {
           {showLevelUp ? 'Done managing levels and xp' : 'Manage Levels and XP!'}
         </div>
 
-        {showLevelUp && <div>{/* <LevelUpFriend /> */}</div>}
+        {showLevelUp && <FriendLeveling />}
 
         {friend?.friendById?.bonusSkill && (
           <div>
