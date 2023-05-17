@@ -17,7 +17,11 @@ export type LevelGrant = Omit<
 
 export type RangerLevelCost = Omit<Codegen_RangerLevelCost, '__typename' | 'nodeId'>
 
-export type FriendLevelGrantFlat = Omit<
+export type FriendLevelGrant = Omit<
   Codegen_FriendLevelGrant,
-  'nodeId' | '__typename' | 'memberLevelsByFriendLevelGrantsId' | 'featuresByFriendLevelGrantsId'
+  'nodeId' | '__typename' | 'memberLevelsByFriendLevelGrantId' | 'featuresByFriendLevelGrantId'
 >
+
+export type FriendLevelGrantUnwound = FriendLevelGrant & {
+  unwoundCost: number
+}

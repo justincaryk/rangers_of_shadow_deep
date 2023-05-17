@@ -14,7 +14,7 @@ export default gql`
         injuryId
         itemId
         levelGrantId
-        friendLevelGrantsId
+        friendLevelGrantId
         skillId
         statId
         value

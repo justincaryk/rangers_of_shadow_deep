@@ -41,7 +41,11 @@ export const parseJwt = (token: string) => {
 
 export const capitalize = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>
 
-export const capitalizeEach = <T extends string>(s: T) => s.split(' ').map(x => capitalize(x)).join(' ') as Capitalize<typeof s>
+export const capitalizeEach = <T extends string>(s: T) =>
+  s
+    .split(' ')
+    .map(x => capitalize(x))
+    .join(' ') as Capitalize<typeof s>
 
 export const getLetterAt = (pos: number) => {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('')
@@ -66,7 +70,7 @@ export const parseSkillsFromMercNotes = ({ notes }: Mercenary, skills: Skill[]) 
     const split = x.split(' +')
     return {
       statKey: split[0].toLowerCase(),
-      value: Number(split[1])
+      value: Number(split[1]),
     }
   })
 

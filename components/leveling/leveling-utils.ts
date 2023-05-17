@@ -34,7 +34,14 @@ export const determineApplicableRangerLevelUpCost = (newLevel: number, levelCost
 
   for (const levelCost of levelCosts) {
     if (newLevel >= levelCost.levelMin && newLevel <= levelCost.levelMax) {
-        return levelCost
+      return levelCost
     }
   }
+}
+
+export function roundDownToNearestTen(number: number): number {
+  const numString = number.toString()
+  const len = numString.length
+  const roundedDownStr = `${numString[0]}0${len === 3 ? '0' : ''}`
+  return Math.min(Number(roundedDownStr), 100)
 }

@@ -67,14 +67,14 @@ exports.up = knex =>
       character_id uuid REFERENCES ranger.characters (id),
       friend_id uuid REFERENCES ranger.friends (id),
       level_grant_id uuid REFERENCES ranger.level_grants (id),
-      friend_level_grants_id uuid REFERENCES ranger.friend_level_grants (id),
-      granted smallint DEFAULT 1 NOT NULL,
+      friend_level_grant_id uuid REFERENCES ranger.friend_level_grants (id),
+      times_granted smallint DEFAULT 1 NOT NULL,
       CONSTRAINT check_field_refs_match_type 
-	      CHECK ((friend_id IS NULL AND friend_level_grants_id IS NULL) <> (character_id IS NULL AND level_grant_id IS NULL)),
+	      CHECK ((friend_id IS NULL AND friend_level_grant_id IS NULL) <> (character_id IS NULL AND level_grant_id IS NULL)),
 	    CONSTRAINT check_member_type_is_valid
 	      CHECK ((friend_id IS NULL) <> (character_id IS NULL)),
 	    CONSTRAINT check_level_type_is_valid
-	      check ((friend_level_grants_id IS NULL) <> (level_grant_id IS NULL))
+	      check ((friend_level_grant_id IS NULL) <> (level_grant_id IS NULL))
     );
     comment on constraint check_field_refs_match_type on ranger.member_levels is 'Both a member ref and level grant ref are required';
     comment on constraint check_member_type_is_valid on ranger.member_levels is 'Cannot insert a character ref and friend ref';

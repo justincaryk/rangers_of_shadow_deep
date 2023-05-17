@@ -8,7 +8,7 @@ export default gql`
         description
         ppMilestoneFirst
         ppMilestoneSecond
-        featuresByFriendLevelGrantsId {
+        featuresByFriendLevelGrantId {
           nodes {
             id
             mechanicMod

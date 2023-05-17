@@ -82,7 +82,8 @@ export default gql`
       memberLevelsByCharacterId {
         nodes {
           id
-          granted
+          timesGranted
+          timesUsed
           levelGrantByLevelGrantId {
             id
             grantType

@@ -26,6 +26,17 @@ export default gql`
         armor
         will
       }
+      memberLevelsByFriendId {
+        totalCount
+        nodes {
+          id
+          friendId
+          friendLevelGrantId
+          levelGrantId
+          timesGranted
+          timesUsed
+        }
+      }
     }
   }
 `

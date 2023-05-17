@@ -16,6 +16,7 @@ import UpdateMemberLevelRequest from '../../graphql/mutations/member-level-updat
 import FriendLevelRulesRequest from '../../graphql/queries/friend-level-grants'
 
 import { RANGER_QUERY_KEYS } from '../ranger/ranger-api'
+import { COMPANION_QUERY_KEYS } from '../companions/companions-api'
 
 enum LEVEL_RULES {
   RANGER_RULES = 'ranger_rules',
@@ -36,6 +37,7 @@ export function useLevelingApi() {
         graphQLClient.request<AddMemberLevelMutation>(AddMemberLevelRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
+        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIEND ] })
       },
     }),
     updateLevelRef: useMutation({
@@ -43,6 +45,7 @@ export function useLevelingApi() {
         graphQLClient.request<UpdateMemberLevelMutation>(UpdateMemberLevelRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
+        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIEND ] })
       },
     }),
     friendRules: useQuery({

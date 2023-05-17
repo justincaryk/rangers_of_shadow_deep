@@ -11,7 +11,6 @@ import { Character, CharacterPatch } from '../../graphql/generated/graphql'
 import { determineApplicableRangerLevelUpBenefit, determineApplicableRangerLevelUpCost } from './leveling-utils'
 import { RangerLevelingFieldsSchema } from '../ranger/core-character'
 
-
 interface LevelUpCardProps {
   ranger: Character
 }
@@ -64,7 +63,7 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
 
         updateLevelRef({
           id: levelRef.id,
-          granted: levelRef.granted++,
+          timesGranted: levelRef.timesGranted++,
         })
       }
 

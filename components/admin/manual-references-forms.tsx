@@ -16,7 +16,7 @@ const FeatureUpdateSchema = Yup.object().shape({
   levelGrantId: Yup.string().nullable(),
   skillId: Yup.string().nullable(),
   statId: Yup.string().nullable(),
-  friendLevelGrantsId: Yup.string().nullable(),
+  friendLevelGrantId: Yup.string().nullable(),
 })
 
 export default function ManualReferencesForm() {
@@ -72,7 +72,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
+                        friendLevelGrantId: feat.friendLevelGrantId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -186,7 +186,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
+                        friendLevelGrantId: feat.friendLevelGrantId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -300,7 +300,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
+                        friendLevelGrantId: feat.friendLevelGrantId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -414,7 +414,7 @@ export default function ManualReferencesForm() {
                         levelGrantId: feat.levelGrantId ?? undefined,
                         skillId: feat.skillId ?? undefined,
                         statId: feat.statId ?? undefined,
-                        friendLevelGrantsId: feat.friendLevelGrantsId ?? undefined,
+                        friendLevelGrantId: feat.friendLevelGrantId ?? undefined,
                       }}
                       validationSchema={FeatureUpdateSchema}
                       onSubmit={handleSubmit}
@@ -462,9 +462,9 @@ export default function ManualReferencesForm() {
                               </option>
                             ))}
                           </Field>
-                          <div>companion level up id: {feat.friendLevelGrantsId ?? 'NULL'}</div>
+                          <div>companion level up id: {feat.friendLevelGrantId ?? 'NULL'}</div>
                           {/* companion level grants dropdown */}
-                          <Field className='w-full' name='friendLevelGrantsId' as='select'>
+                          <Field className='w-full' name='friendLevelGrantId' as='select'>
                             <option className='text-gray-500' value={''}>
                               -- companion level grants --
                             </option>

@@ -5,7 +5,7 @@ import { MEMBER_TYPE_ENUM } from '../types'
 import { useRangerApi } from './ranger-api'
 
 export default function RangerCards() {
-  const { data, status } = useRangerApi().getAllRangers
+  const { data } = useRangerApi().getAllRangers
 
   return (
     <>
