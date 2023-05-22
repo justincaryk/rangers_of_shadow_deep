@@ -1,4 +1,4 @@
-import { LevelGrantSubtype } from '../../graphql/generated/graphql'
+import { LevelGrantSubtype, MechanicModType } from '../../graphql/generated/graphql'
 import { LevelGrant, RangerLevelCost } from './types'
 import { RangerLevelingFields } from '../ranger/types'
 
@@ -54,7 +54,9 @@ type MechanicBenefit = {
   value: number
 }
 export function getMechanicBenefitForRanger(level: LevelGrant) {
-  const { levelGrantType, value } = level.featuresByLevelGrantId.nodes[0]
+  const { levelGrantType, value } =
+    level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Modifier) ?? {}
+
   const mechanicBenefit = {
     field: null,
     value,
@@ -67,8 +69,7 @@ export function getMechanicBenefitForRanger(level: LevelGrant) {
   if (levelGrantType === LevelGrantSubtype.RecruitmentPoint) {
     mechanicBenefit.field = 'totalRecruitmentPoints'
   }
-  // this one needs more work because it has a limit.
-  // it might be best to handle this directly within the skills section
+
   if (levelGrantType === LevelGrantSubtype.Skill) {
     mechanicBenefit.field = 'totalSkillPoints'
   }
