@@ -143,20 +143,11 @@ const LevelUpCardContent = ({ friend }: LevelUpCardProps) => {
           type='button'
           className={classnames({
             'bg-lime-500': levelUpAvail,
+            'cursor-not-allowed': !levelUpAvail,
           })}
         >
           Unlock progression reward
         </SmallButton>
-      </div>
-      <div>
-        {friend.memberLevelsByFriendId?.nodes.map(x => (
-          <div key={x.id} className='flex gap-x-4'>
-            <div>granted: {x.timesGranted}</div>
-            <div>grantId: {x.friendLevelGrantId}</div>
-            <div>bene: {levelsUnwound.find(y => y.id === x.friendLevelGrantId)?.description}</div>
-            <div></div>
-          </div>
-        ))}
       </div>
       <table className='table-auto text-xs border-collapse'>
         <thead>

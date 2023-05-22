@@ -1,4 +1,6 @@
+import { LevelGrantSubtype } from '../../graphql/generated/graphql'
 import { LevelGrant, RangerLevelCost } from './types'
+import { RangerLevelingFields } from '../ranger/types'
 
 export const determineApplicableRangerLevelUpBenefit = (
   newLevel: number,
@@ -7,21 +9,21 @@ export const determineApplicableRangerLevelUpBenefit = (
   if (isNaN(newLevel) || !levelGrants.length) {
     throw new Error('missing args.')
   }
+  const numOfOptions = levelGrants.length
+  const levelCyclesReduced = newLevel / numOfOptions
+  const levelCyclesReducedFloor = Math.floor(levelCyclesReduced)
+  const timesLevelsCycled =
+    levelCyclesReduced === levelCyclesReducedFloor ? levelCyclesReduced - 1 : levelCyclesReducedFloor
+  const levelsToDiscard = numOfOptions * timesLevelsCycled
+  const reducedTargetLevel = newLevel - levelsToDiscard
 
   let grantedBenefit = null
-  function checkLog(num: number) {
-    return Math.log(num) / Math.LN10
-  }
-  const numOfBenefitOptions = checkLog(levelGrants.length)
-  let currenModToEval = 0
 
-  while (!grantedBenefit && currenModToEval < newLevel) {
-    for (const levelGrant of levelGrants) {
-      if (currenModToEval + levelGrant.firstLevelGranted === newLevel) {
-        grantedBenefit = levelGrant
-      }
+  for (const levelGrant of levelGrants) {
+    if (reducedTargetLevel === levelGrant.firstLevelGranted) {
+      grantedBenefit = levelGrant
+      break
     }
-    currenModToEval += numOfBenefitOptions
   }
 
   return grantedBenefit
@@ -37,6 +39,7 @@ export const determineApplicableRangerLevelUpCost = (newLevel: number, levelCost
       return levelCost
     }
   }
+  return null
 }
 
 export function roundDownToNearestTen(number: number): number {
@@ -44,4 +47,34 @@ export function roundDownToNearestTen(number: number): number {
   const len = numString.length
   const roundedDownStr = `${numString[0]}0${len === 3 ? '0' : ''}`
   return Math.min(Number(roundedDownStr), 100)
+}
+
+type MechanicBenefit = {
+  field: keyof RangerLevelingFields | null
+  value: number
+}
+export function getMechanicBenefitForRanger(level: LevelGrant) {
+  const { levelGrantType, value } = level.featuresByLevelGrantId.nodes[0]
+  const mechanicBenefit = {
+    field: null,
+    value,
+  } as MechanicBenefit
+
+  if (levelGrantType === LevelGrantSubtype.HeroicAction) {
+    mechanicBenefit.field = 'totalHeroicActions'
+  }
+
+  if (levelGrantType === LevelGrantSubtype.RecruitmentPoint) {
+    mechanicBenefit.field = 'totalRecruitmentPoints'
+  }
+  // this one needs more work because it has a limit.
+  // it might be best to handle this directly within the skills section
+  if (levelGrantType === LevelGrantSubtype.Skill) {
+    mechanicBenefit.field = 'totalSkillPoints'
+  }
+  if (levelGrantType === LevelGrantSubtype.Stat) {
+    mechanicBenefit.field = 'totalStatPoints'
+  }
+
+  return mechanicBenefit
 }

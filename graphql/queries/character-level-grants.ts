@@ -10,7 +10,7 @@ export default gql`
         levelMax
       }
     }
-    levelGrants: allLevelGrants(orderBy: NATURAL) {
+    levelGrants: allLevelGrants(orderBy: FIRST_LEVEL_GRANTED_ASC) {
       nodes {
         id
         name
@@ -18,6 +18,15 @@ export default gql`
         grantType
         firstLevelGranted
         nodeId
+        featuresByLevelGrantId {
+          nodes {
+            id
+            levelGrantType
+            mechanicMod
+            primaryType
+            value
+          }
+        }
       }
     }
   }

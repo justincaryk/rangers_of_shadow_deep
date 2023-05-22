@@ -84,24 +84,15 @@ export default gql`
           id
           timesGranted
           timesUsed
+          levelGrantId
           levelGrantByLevelGrantId {
             id
             grantType
             name
             description
-            featuresByLevelGrantId {
-              nodes {
-                id
-                levelGrantType
-                mechanicMod
-                skillId
-                statId
-                statSubtype
-                value
-              }
-            }
           }
         }
+        totalCount
       }
     }
   }

@@ -1,8 +1,8 @@
 'use client'
 
 import { Field, Form, Formik } from 'formik'
-import { Feature } from './types'
-import { useFeaturesApi } from './features-api'
+import { Feature } from '../features/types'
+import { useFeaturesApi } from '../features/features-api'
 import SmallButton from '../parts/small-button'
 
 import * as Yup from 'yup'
