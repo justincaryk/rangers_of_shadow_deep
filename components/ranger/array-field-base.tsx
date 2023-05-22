@@ -94,6 +94,23 @@ export default function ArrayFieldBase({ type, data }: Props) {
     submitting,
   ])
 
+  const heroicBpRemaining = useMemo(() => {
+    const spellsBought =
+      ranger?.characterById?.memberSpellsByCharacterId.nodes.reduce((prev, curr) => {
+        return prev + curr.uses
+      }, 0) ?? 0
+    const heroicActionsBought =
+      ranger?.characterById?.memberHeroicActionsByCharacterId.nodes.reduce((prev, curr) => {
+        return prev + curr.uses
+      }, 0) ?? 0
+
+    console.log('x: ', {
+      spellsBought,
+      heroicActionsBought,
+    })
+    return heroicBp - spellsBought - heroicActionsBought
+  }, [ heroicBp, ranger?.characterById ])
+
   const rangerLookupRefData = useMemo(() => {
     const base = ranger?.characterById
     const lookupKey = RANGER_LOOKUP_FIELD_HASH[type]
@@ -211,15 +228,19 @@ export default function ArrayFieldBase({ type, data }: Props) {
         <MinorHeader
           content={headerContent}
           icon={SectionIcon(type)}
-          subtext={'Available build points:'}
-          subvalue={heroicBp}
+          {...(heroicBpRemaining !== 0
+            ? {
+                subtext: 'Available build points:',
+                subvalue: heroicBpRemaining,
+              }
+            : {})}
         />
       </div>
       {show && (
         <div className='space-y-4'>
           {data.map(item => {
             const lookupFieldData = lookupRangerFieldById(item)
-            const canIncrement = lookupFieldData.rangerLookupRef && lookupFieldData.rangerLookupRef.uses < heroicBp
+            const canIncrement = heroicBpRemaining > 0
             const canDecrement = lookupFieldData.rangerLookupRef && lookupFieldData.rangerLookupRef.uses > 0
             return (
               <Card
@@ -263,12 +284,19 @@ export default function ArrayFieldBase({ type, data }: Props) {
                           </div>
                         )}
                       </div>
-                      <SmallButton
-                        onClick={() => updateLearnedStatus(lookupFieldData)}
-                        primary={!lookupFieldData.known}
-                      >
-                        {lookupFieldData.known ? 'UNLEARN' : 'LEARN'}
-                      </SmallButton>
+                      {lookupFieldData.known ? (
+                        <SmallButton onClick={() => updateLearnedStatus(lookupFieldData)} disabled={!canDecrement}>
+                          unlearn
+                        </SmallButton>
+                      ) : (
+                        <SmallButton
+                          onClick={() => updateLearnedStatus(lookupFieldData)}
+                          disabled={!canIncrement}
+                          primary
+                        >
+                          learn
+                        </SmallButton>
+                      )}
                     </div>
                   </div>
                 }

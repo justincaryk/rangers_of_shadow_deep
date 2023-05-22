@@ -29,8 +29,25 @@ export default gql`
         nodes {
           __typename
           id
-          characterId
           itemId
+          itemByItemId {
+            id
+            name
+            description
+            entityLimit
+            slotCost
+            featuresByItemId {
+              nodes {
+                id
+                primaryType
+                riderSubtype
+                statId
+                value
+                mechanicMod
+              }
+            }
+            nodeId
+          }
           nodeId
         }
         totalCount

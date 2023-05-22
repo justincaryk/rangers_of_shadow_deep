@@ -43,7 +43,7 @@ export default function CoreCharacter() {
     })
   }
 
-  if (status === 'loading') {
+  if (status !== 'success') {
     return <Loader />
   }
 

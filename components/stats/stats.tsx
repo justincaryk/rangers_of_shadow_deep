@@ -123,8 +123,12 @@ export default function Stats() {
         <MinorHeader
           content='stats'
           icon={<AdjustmentsHorizontalIcon className='text-rose-600' />}
-          subtext='Available points:'
-          subvalue={availablePoints}
+          {...(availablePoints !== 0
+            ? {
+                subtext: 'Available points:',
+                subvalue: availablePoints,
+              }
+            : {})}
         />
       </div>
       {show && (

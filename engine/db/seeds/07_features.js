@@ -7,6 +7,7 @@ exports.seed = function (knex) {
         .then(function () {
             // Inserts seed entries
             return knex('ranger.features').insert([
+                // ranger level up
                 {
                     name: 'level up - skill bonus limit per skill',
                     primary_type: 'LEVEL_GRANT',
@@ -42,6 +43,7 @@ exports.seed = function (knex) {
                     mechanic_mod: 'MODIFIER',
                     value: 10,
                 },
+                // injuries
                 {
                     name: 'toes -> move',
                     primary_type: 'INJURY',
@@ -97,6 +99,7 @@ exports.seed = function (knex) {
                     mechanic_mod: 'MODIFIER',
                     value: -1,
                 },
+                // companion level up features
                 {
                     name: 'comp level up - health',
                     primary_type: 'FRIEND_LEVEL_GRANT',
@@ -146,6 +149,39 @@ exports.seed = function (knex) {
                 {
                     name: 'comp level up - choose fight or shoot (choose)',
                     primary_type: 'FRIEND_LEVEL_GRANT',
+                    level_grant_type: 'STAT',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'LIMIT',
+                    value: 1,
+                },
+                // equipment
+                {
+                    name: 'equip > 2 hand weapon > +2 dmg',
+                    primary_type: 'ITEM',
+                    level_grant_type: 'STAT',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'LIMIT',
+                    value: 1,
+                },
+                {
+                    name: 'item > light armor > armor +1',
+                    primary_type: 'ITEM',
+                    level_grant_type: 'STAT',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'LIMIT',
+                    value: 1,
+                },
+                {
+                    name: 'item > heavy armor > armor +2',
+                    primary_type: 'ITEM',
+                    level_grant_type: 'STAT',
+                    stat_subtype: 'BASE',
+                    mechanic_mod: 'LIMIT',
+                    value: 1,
+                },
+                {
+                    name: 'item > heavy armor > move -1',
+                    primary_type: 'ITEM',
                     level_grant_type: 'STAT',
                     stat_subtype: 'BASE',
                     mechanic_mod: 'LIMIT',

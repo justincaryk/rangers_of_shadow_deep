@@ -134,8 +134,10 @@ export default function Skills() {
         <MinorHeader
           content='skills'
           icon={<FireIcon className='text-orange-400' />}
-          subtext={'Available points:'}
-          subvalue={budgetedSkillsCount - purchasedSkillsCount}
+          {...(budgetedSkillsCount - purchasedSkillsCount !== 0 ? {
+            subtext: 'Available points:',
+            subvalue: budgetedSkillsCount - purchasedSkillsCount,
+          } : {})}
         />
       </div>
       {show && (
