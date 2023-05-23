@@ -59,11 +59,9 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
     }
   }, [ ranger.xp, ranger.level, rules, rulesStatus ])
 
-  
   const canBuyLevel = useMemo(() => {
     return nextLevel.availableForPurchase && createLevelStatus === 'idle' && updateLevelStatus === 'idle'
   }, [ nextLevel, createLevelStatus, updateLevelStatus ])
-
 
   const tryBuyLevel = () => {
     if (!canBuyLevel || !rules?.levelGrants?.nodes.length) {

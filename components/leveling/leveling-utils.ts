@@ -1,6 +1,7 @@
 import { MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
 import { LevelGrant, RangerLevelCost } from './types'
 import { RangerLevelingFields } from '../ranger/types'
+import { Feature } from '../features/types'
 
 export const determineApplicableRangerLevelUpBenefit = (
   newLevel: number,
@@ -55,15 +56,16 @@ type MechanicBenefit = {
   value: number
 }
 export function getMechanicBenefitForRanger(level: LevelGrant) {
-  const { mechanicClass, value } =
-    level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Modifier) ?? {}
+  // const { mechanicClass, value } =
+  const { mechanicClass, value } = level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Modifier) ?? {} as Feature
 
+  
   const mechanicBenefit = {
     field: null,
     value,
   } as MechanicBenefit
 
-  if (mechanicClass === MechanicClassType.HeroicAction) {
+  if (mechanicClass === MechanicClassType.HeroicAbility) {
     mechanicBenefit.field = 'totalHeroicActions'
   }
 

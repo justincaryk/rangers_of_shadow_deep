@@ -1,15 +1,6 @@
 exports.up = knex =>
   knex.schema.raw(`
     CREATE TYPE primary_feature_type as enum('LEVEL_GRANT','FRIEND_LEVEL_GRANT','ITEM','INJURY', 'MERCENARY');
-    
-    CREATE TYPE mechanic_class_type as enum(
-      'SKILL',
-      'HEROIC_ACTION',
-      'STAT',
-      'RECRUITMENT_POINT',
-      'SPELL',
-      'ITEM'
-    );
 
     CREATE TYPE mechanic_mod_type as enum('RIDER', 'MODIFIER', 'LIMIT', 'PICK');
     CREATE TYPE rider_subtype as enum('EXCLUDES', 'REQUIRES');

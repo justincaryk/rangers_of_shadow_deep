@@ -32,7 +32,7 @@ exports.seed = function (knex) {
                 {
                     name: 'level up - heroic action / spell increase',
                     primary_type: 'LEVEL_GRANT',
-                    mechanic_class: 'HEROIC_ACTION',
+                    mechanic_class: 'HEROIC_ABILITY',
                     mechanic_mod: 'MODIFIER',
                     value: 1,
                 },

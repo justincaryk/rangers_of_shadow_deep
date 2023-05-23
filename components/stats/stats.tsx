@@ -12,24 +12,24 @@ import { useMemo, useState } from 'react'
 // types
 import { DECREASE, INCREASE } from '../rules/creation-rules'
 import { BASE_STATS_ENUM } from '../types'
-import { StatType } from '../../graphql/generated/graphql'
+import { MechanicClassType, StatType } from '../../graphql/generated/graphql'
 import { Stat } from './types'
 
 // hooks
-import { useAtom } from 'jotai'
-import { useStatsBp } from '../ranger/atoms/build-points'
 import { useStatsApi } from './stats-api'
 import { useRangerApi } from '../ranger/ranger-api'
+import { useAtom } from 'jotai'
+import { useStatsBp } from '../ranger/atoms/build-points'
 
 export default function Stats() {
   const [ show, toggleShow ] = useState(false)
-  const [ statsBp ] = useAtom(useStatsBp)
+  const [ bpSpent ] = useAtom(useStatsBp)
   const { data: stats } = useStatsApi().getStats
   const { data: ranger } = useRangerApi().getRangerById
 
   const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStatById
 
-  const spent = useMemo(() => {
+  const totalSpentOnStats = useMemo(() => {
     // on character create, a lookup record is generated with the default stat value for each stat.
     // so to determine how many are spent
     // we need to find the diff between the default point total and the rangers point total
@@ -42,14 +42,53 @@ export default function Stats() {
   }, [ ranger, stats ])
 
   const availablePoints = useMemo(() => {
-    return statsBp - spent
-  }, [ statsBp, spent ])
+    const availablePointsLocal = {
+      remainingFromBp: 0,
+      remainingFromLvl: 0,
+      statLvlGrantCount: 0,
+      total: 0,
+    }
+
+    if (ranger) {
+      const bpAllottedForStats = ranger?.characterById?.characterBpLookupsByCharacterId?.nodes?.[0]?.bpSpentOnStats ?? 0
+      const statLevelUps =
+        ranger?.characterById?.memberLevelsByCharacterId.nodes.reduce((prev, curr) => {
+          if (curr.levelGrantByLevelGrantId?.grantType === MechanicClassType.Stat) {
+            return prev + curr.timesGranted
+          }
+          return prev
+        }, 0) ?? 0
+
+      let spentDecremented = totalSpentOnStats
+      let pointsFromBpLeft = bpAllottedForStats
+      let pointsFromLvlLeft = statLevelUps
+
+      if (totalSpentOnStats > bpAllottedForStats) {
+        spentDecremented = spentDecremented - bpAllottedForStats
+        pointsFromBpLeft = 0
+      } else {
+        spentDecremented = 0
+        pointsFromBpLeft = bpAllottedForStats - totalSpentOnStats
+      }
+
+      if (spentDecremented > 0) {
+        pointsFromLvlLeft = pointsFromLvlLeft - spentDecremented
+      }
+
+      availablePointsLocal.statLvlGrantCount = statLevelUps
+      availablePointsLocal.remainingFromBp = pointsFromBpLeft
+      availablePointsLocal.remainingFromLvl = pointsFromLvlLeft
+      availablePointsLocal.total = pointsFromBpLeft + pointsFromLvlLeft
+    }
+
+    return availablePointsLocal
+  }, [ totalSpentOnStats, ranger ])
 
   // how many build points available for stats
 
   const checkCanIncrease = (stat: Stat) => {
-    // make sure we have build points available
-    if (statsBp === 0 || availablePoints === 0) {
+    // make sure we have points from some source available
+    if (availablePoints?.total === 0) {
       return false
     }
 
@@ -58,8 +97,24 @@ export default function Stats() {
       return false
     }
 
-    // only 1 upgrade allowed per stat at creation
-    if (getCurrentStatValue(stat.id) === stat.rangerDefault) {
+    const currentStatValue = getCurrentStatValue(stat.id)
+
+    if (typeof currentStatValue !== 'number') {
+      return false
+    }
+
+    const timesUpgraded = currentStatValue - stat.rangerDefault!
+
+    // only allow 1 upgrade per stat at create
+    if (timesUpgraded === 0 && availablePoints.remainingFromBp > 0) {
+      return true
+    }
+
+    const spentBpAtCreate = bpSpent > 0
+    const timesUpgradedOnLevels = spentBpAtCreate ? timesUpgraded - 1 : timesUpgraded
+    
+    // only 1 upgrade per stat level up
+    if (timesUpgradedOnLevels < availablePoints?.remainingFromLvl && availablePoints.remainingFromBp === 0) {
       return true
     }
 
@@ -122,12 +177,25 @@ export default function Stats() {
         <MinorHeader
           content='stats'
           icon={<AdjustmentsHorizontalIcon className='text-rose-600' />}
-          {...(availablePoints !== 0
-            ? {
-                subtext: 'Available points:',
-                subvalue: availablePoints,
-              }
-            : {})}
+          // {...(availablePoints.remainingFromBp !== 0
+          //   ? {
+          //       subtext: 'Available points (from build):',
+          //       subvalue: availablePoints.remainingFromBp,
+          //     }
+          //   : {})}
+          subtext='Available points (from build):'
+          subvalue={availablePoints?.remainingFromBp}
+        />
+        <MinorHeader
+          content=''
+          // {...(availablePoints.remainingFromLvl !== 0
+          //   ? {
+          //       subtext: 'Available points (from build):',
+          //       subvalue: availablePoints.remainingFromLvl,
+          //     }
+          //   : {})}
+          subtext='Available points (from leveling):'
+          subvalue={availablePoints?.remainingFromLvl}
         />
       </div>
       {show && (

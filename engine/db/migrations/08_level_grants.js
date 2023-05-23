@@ -1,18 +1,20 @@
 exports.up = knex =>
   knex.schema.raw(`
-    CREATE TYPE ranger_grant_type as enum(
-      'SKILLS',
-      'STATS',
-      'RECRUITMENT_POINTS',
-      'HEROIC_ABILITY',
-      'ITEM'
+    CREATE TYPE mechanic_class_type as enum(
+      'SKILL',
+      'HEROIC_ACTION',
+      'STAT',
+      'RECRUITMENT_POINT',
+      'SPELL',
+      'ITEM',
+      'HEROIC_ABILITY'
     );
 
     CREATE TABLE ranger.level_grants (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       name varchar(50) NOT NULL,
       description text NOT NULL,
-      grant_type ranger_grant_type NOT NULL,
+      grant_type mechanic_class_type NOT NULL,
       first_level_granted smallint default 1 NOT NULL
     );
     
