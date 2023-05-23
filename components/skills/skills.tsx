@@ -6,7 +6,7 @@ import classnames from 'classnames'
 import { useAtom } from 'jotai'
 import { useMemo, useState, useEffect } from 'react'
 
-import { MemberSkill } from './types'
+import { MemberSkill, Skill } from './types'
 
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
@@ -15,15 +15,18 @@ import ShowHide from '../parts/show-hide'
 
 import { useSkillsBp } from '../ranger/atoms/build-points'
 
-import { DECREASE, INCREASE, SKILL_POINTS_PER_BP } from '../rules/creation-rules'
+import { DECREASE, INCREASE, MAX_SKILLS_FOR_BP_SPENT, SKILL_POINTS_PER_BP } from '../rules/creation-rules'
 import { useRangerApi } from '../ranger/ranger-api'
 import { useSkillsApi } from './skills-api'
+import { MechanicClassType, MechanicModType, PrimaryFeatureType } from '../../graphql/generated/graphql'
+import { useFeaturesApi } from '../features/features-api'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
   const [ skillsBp ] = useAtom(useSkillsBp)
 
   const { data: skills } = useSkillsApi().getSkills
+  const { data: features } = useFeaturesApi().getFeatures
   const {
     mutate: mutateUpdateSkill,
     status: updateSkillMutateStatus,
@@ -38,10 +41,6 @@ export default function Skills() {
   }, [ updateSkillMutateStatus, resetUpdateSkillMutation ])
 
   const { data: ranger } = useRangerApi().getRangerById
-  
-  const budgetedSkillsCount = useMemo(() => {
-    return ranger?.characterById?.totalSkillPoints ?? 0
-  }, [ ranger ])
 
   const purchasedSkillsCount = useMemo(() => {
     return (
@@ -51,10 +50,77 @@ export default function Skills() {
     )
   }, [ ranger ])
 
-  const remainingSkillPoints = useMemo(() => {
-    return budgetedSkillsCount - purchasedSkillsCount
-  }, [ budgetedSkillsCount, purchasedSkillsCount ])
+  const increaseLimitForSkillLevelUp = useMemo(() => {
+    return (
+      features?.allFeatures?.nodes.find(
+        feat =>
+          feat.primaryType === PrimaryFeatureType.LevelGrant &&
+          feat.mechanicClass === MechanicClassType.Skill &&
+          feat.mechanicMod === MechanicModType.Limit
+      )?.value ?? 1
+    )
+  }, [ features ])
 
+  const availablePoints = useMemo(() => {
+    const availablePointsLocal = {
+      remainingFromBp: 0,
+      remainingFromLvl: 0,
+      skillLvlGrantCount: 0,
+      totalSkillsIncreased: 0,
+      total: 0,
+    }
+
+    if (ranger) {
+      const bpAllottedForSkills =
+        ranger?.characterById?.characterBpLookupsByCharacterId?.nodes?.[0]?.bpSpentOnSkills ?? 0
+      const skillLevelUps =
+        ranger?.characterById?.memberLevelsByCharacterId.nodes.reduce((prev, curr) => {
+          if (curr.levelGrantByLevelGrantId?.grantType === MechanicClassType.Skill) {
+            return prev + curr.timesGranted
+          }
+          return prev
+        }, 0) ?? 0
+        console.log('skill level ups: ', skillLevelUps)
+      const totalSkillsIncreased =
+        ranger?.characterById?.memberSkillsByCharacterId.nodes.reduce((prev, curr) => {
+          if (curr.value > 0) {
+            return prev + 1
+          }
+          return prev
+        }, 0) ?? 0
+
+      const skillLevelUpMod = features?.allFeatures?.nodes.find(feat => {
+        return (
+          feat.primaryType === PrimaryFeatureType.LevelGrant &&
+          feat.mechanicClass === MechanicClassType.Skill &&
+          feat.mechanicMod === MechanicModType.Modifier
+        )
+      })
+      let spentDecremented = purchasedSkillsCount
+      let pointsFromBpLeft = bpAllottedForSkills * SKILL_POINTS_PER_BP
+      let pointsFromLvlLeft = skillLevelUps * (skillLevelUpMod?.value ?? 1)
+
+      if (purchasedSkillsCount > pointsFromBpLeft) {
+        spentDecremented = spentDecremented - pointsFromBpLeft
+        pointsFromBpLeft = 0
+      } else {
+        spentDecremented = 0
+        pointsFromBpLeft = pointsFromBpLeft - purchasedSkillsCount
+      }
+
+      if (spentDecremented > 0) {
+        pointsFromLvlLeft = pointsFromLvlLeft - spentDecremented
+      }
+
+      availablePointsLocal.totalSkillsIncreased = totalSkillsIncreased
+      availablePointsLocal.skillLvlGrantCount = skillLevelUps
+      availablePointsLocal.remainingFromBp = pointsFromBpLeft
+      availablePointsLocal.remainingFromLvl = pointsFromLvlLeft
+      availablePointsLocal.total = pointsFromBpLeft + pointsFromLvlLeft
+    }
+
+    return availablePointsLocal
+  }, [ purchasedSkillsCount, ranger, features ])
 
   const getRangerSkillBySkillId = (skillId: string): MemberSkill | null => {
     const { nodes: rangerSkills } = ranger?.characterById?.memberSkillsByCharacterId ?? { nodes: [] }
@@ -62,16 +128,66 @@ export default function Skills() {
     return rangerSkill ?? null
   }
 
-  const checkCanIncrease = (rangerSkill?: MemberSkill | null) => {
+  const checkCanIncrease = (rangerSkill: MemberSkill, skill: Skill) => {
     // must spend a build point and have some points remining to increase a skill
-    if (budgetedSkillsCount === 0 || remainingSkillPoints === 0) {
+    if (availablePoints.total === 0) {
       return false
     }
 
-    if (rangerSkill && skillsBp > rangerSkill.value)
-      if (skillsBp > rangerSkill.value) {
+    // deplete BP first
+    const hasPointsToSpendFromBp = availablePoints.remainingFromBp > 0
+
+    if (hasPointsToSpendFromBp) {
+      // rules in english:
+      //  1. max of 8 different skills per bp spent
+      //  2. max skill value is 1 per bp spent
+      //  3. must have skill points for spending
+      const maxSkillValAtCreate = skillsBp
+      const maxSkillsPermittedAtCreate = skillsBp * MAX_SKILLS_FOR_BP_SPENT
+      const canIncreaseSkills = maxSkillsPermittedAtCreate >= availablePoints.totalSkillsIncreased
+      const canIncreaseThisSkill = rangerSkill.value < maxSkillValAtCreate
+
+      if (canIncreaseSkills && canIncreaseThisSkill) {
         return true
       }
+      return false
+    }
+
+    // 2 points per skill per skill level up
+    const hasPointsToSpendFromLvlUp = availablePoints.remainingFromLvl > 0
+
+    let skillValCounter = skillsBp * MAX_SKILLS_FOR_BP_SPENT
+    const modifier = skillsBp
+    const rangerSkillsHash: any = {}
+
+    for (const rs of ranger?.characterById?.memberSkillsByCharacterId.nodes!) {
+      if (skillValCounter > 0 && rs.value > 0) {
+        skillValCounter = rs.value >= modifier ? skillValCounter - modifier : skillValCounter - rs.value
+        const adjustedVal = rs.value >= modifier ? rs.value - modifier : 0
+        rangerSkillsHash[rs.id] = {
+          adjustedVal,
+          ...rs,
+        }
+      } else {
+        rangerSkillsHash[rs.id] = {
+          adjustedVal: rs.value,
+          ...rs,
+        }
+      }
+    }
+
+    if (hasPointsToSpendFromLvlUp) {
+      // rules in english:
+      //  1. max of 5 different skills per level up
+      //  2. max skill value is 2 per skill type level up
+      //  3. must have skill points for spending
+      const maxVal = availablePoints.skillLvlGrantCount * increaseLimitForSkillLevelUp
+      console.log('maxVal', maxVal)
+      if (rangerSkillsHash[rangerSkill.id].adjustedVal < maxVal) {
+        return true
+      }
+      return false
+    }
 
     return false
   }
@@ -86,10 +202,13 @@ export default function Skills() {
   }
 
   const updateSkill = (rangerSkill: MemberSkill | null, modifier: number) => {
-    if (updateSkillMutateStatus != 'idle' || !rangerSkill) {
+    const skill = skills?.allSkills?.nodes.find(skill => skill.id === rangerSkill?.skillId)
+
+    if (updateSkillMutateStatus != 'idle' || !rangerSkill || !skill) {
       return null
     }
-    if (modifier === INCREASE && !checkCanIncrease(rangerSkill)) {
+
+    if (modifier === INCREASE && !checkCanIncrease(rangerSkill, skill)) {
       return null
     }
     if (modifier === DECREASE && !checkCanDecrease(rangerSkill)) {
@@ -111,18 +230,34 @@ export default function Skills() {
         <MinorHeader
           content='skills'
           icon={<FireIcon className='text-orange-400' />}
-          {...(budgetedSkillsCount - purchasedSkillsCount !== 0 ? {
-            subtext: 'Available points:',
-            subvalue: budgetedSkillsCount - purchasedSkillsCount,
-          } : {})}
+          // {...(budgetedSkillsCount - purchasedSkillsCount !== 0
+          //   ? {
+          //       subtext: 'Available points:',
+          //       subvalue: budgetedSkillsCount - purchasedSkillsCount,
+          //     }
+          //   : {})}
+          subtext='Available points (from build):'
+          subvalue={availablePoints?.remainingFromBp}
+        />
+        <MinorHeader
+          content=''
+          // icon={<FireIcon className='text-orange-400' />}
+          // {...(budgetedSkillsCount - purchasedSkillsCount !== 0
+          //   ? {
+          //       subtext: 'Available points:',
+          //       subvalue: budgetedSkillsCount - purchasedSkillsCount,
+          //     }
+          //   : {})}
+          subtext='Available points (from leveling):'
+          subvalue={availablePoints?.remainingFromLvl}
         />
       </div>
       {show && (
         <div className='space-y-4'>
           {skills?.allSkills?.nodes.map(skill => {
             const rangerSkill = getRangerSkillBySkillId(skill.id)
-            const canIncrement = checkCanIncrease(rangerSkill)
-            const canDecrement = checkCanDecrease(rangerSkill)
+            const canIncrement = checkCanIncrease(rangerSkill!, skill)
+            const canDecrement = checkCanDecrease(rangerSkill!)
 
             return (
               <div key={skill.name}>

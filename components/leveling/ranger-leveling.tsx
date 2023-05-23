@@ -68,7 +68,7 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
       return null
     }
     // is this the first time the feature is granted? -> create
-    if (ranger.level < rules.levelGrants.nodes.length) {
+    if (ranger.level < rules.levelGrants.nodes.filter(x => x.firstLevelGranted > 0).length) {
       createLevelRef({
         characterId: ranger.id,
         levelGrantId: nextLevel.level?.id,

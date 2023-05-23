@@ -22,14 +22,16 @@ export default function BuildPointsAssignment() {
   return (
     <Card>
       <table className='table-auto border-collapse'>
-        {Object.values(BP_ASSIGNABLE_ATTRS_KEYS).map(attr => (
-          <AssignmentSection
-            key={attr}
-            ranger={ranger.characterById as Character}
-            bpLookupRecord={bpLookupRecord}
-            attributeKey={attr}
-          />
-        ))}
+        <tbody>
+          {Object.values(BP_ASSIGNABLE_ATTRS_KEYS).map(attr => (
+            <AssignmentSection
+              key={attr}
+              ranger={ranger.characterById as Character}
+              bpLookupRecord={bpLookupRecord}
+              attributeKey={attr}
+            />
+          ))}
+        </tbody>
       </table>
     </Card>
   )
