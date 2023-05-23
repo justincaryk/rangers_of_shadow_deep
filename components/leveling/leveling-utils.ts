@@ -1,4 +1,4 @@
-import { LevelGrantSubtype, MechanicModType } from '../../graphql/generated/graphql'
+import { MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
 import { LevelGrant, RangerLevelCost } from './types'
 import { RangerLevelingFields } from '../ranger/types'
 
@@ -9,7 +9,8 @@ export const determineApplicableRangerLevelUpBenefit = (
   if (isNaN(newLevel) || !levelGrants.length) {
     throw new Error('missing args.')
   }
-  const numOfOptions = levelGrants.length
+  const levelsWithoutCreateGrants = levelGrants.filter(x => x.firstLevelGranted > 0)
+  const numOfOptions = levelsWithoutCreateGrants.length
   const levelCyclesReduced = newLevel / numOfOptions
   const levelCyclesReducedFloor = Math.floor(levelCyclesReduced)
   const timesLevelsCycled =
@@ -19,7 +20,7 @@ export const determineApplicableRangerLevelUpBenefit = (
 
   let grantedBenefit = null
 
-  for (const levelGrant of levelGrants) {
+  for (const levelGrant of levelsWithoutCreateGrants) {
     if (reducedTargetLevel === levelGrant.firstLevelGranted) {
       grantedBenefit = levelGrant
       break
@@ -54,7 +55,7 @@ type MechanicBenefit = {
   value: number
 }
 export function getMechanicBenefitForRanger(level: LevelGrant) {
-  const { levelGrantType, value } =
+  const { mechanicClass, value } =
     level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Modifier) ?? {}
 
   const mechanicBenefit = {
@@ -62,18 +63,18 @@ export function getMechanicBenefitForRanger(level: LevelGrant) {
     value,
   } as MechanicBenefit
 
-  if (levelGrantType === LevelGrantSubtype.HeroicAction) {
+  if (mechanicClass === MechanicClassType.HeroicAction) {
     mechanicBenefit.field = 'totalHeroicActions'
   }
 
-  if (levelGrantType === LevelGrantSubtype.RecruitmentPoint) {
+  if (mechanicClass === MechanicClassType.RecruitmentPoint) {
     mechanicBenefit.field = 'totalRecruitmentPoints'
   }
 
-  if (levelGrantType === LevelGrantSubtype.Skill) {
+  if (mechanicClass === MechanicClassType.Skill) {
     mechanicBenefit.field = 'totalSkillPoints'
   }
-  if (levelGrantType === LevelGrantSubtype.Stat) {
+  if (mechanicClass === MechanicClassType.Stat) {
     mechanicBenefit.field = 'totalStatPoints'
   }
 

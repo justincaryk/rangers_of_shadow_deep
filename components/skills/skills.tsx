@@ -38,7 +38,7 @@ export default function Skills() {
   }, [ updateSkillMutateStatus, resetUpdateSkillMutation ])
 
   const { data: ranger } = useRangerApi().getRangerById
-  const { mutate: mutateSpendBp } = useRangerApi().updateRanger
+  
   const budgetedSkillsCount = useMemo(() => {
     return ranger?.characterById?.totalSkillPoints ?? 0
   }, [ ranger ])
@@ -55,29 +55,6 @@ export default function Skills() {
     return budgetedSkillsCount - purchasedSkillsCount
   }, [ budgetedSkillsCount, purchasedSkillsCount ])
 
-  const spendBpForSkillPoints = () => {
-    if (skillsBp > 0) {
-      mutateSpendBp({
-        id: ranger?.characterById?.id,
-        patch: {
-          totalSkillPoints: budgetedSkillsCount + SKILL_POINTS_PER_BP,
-        },
-      })
-    }
-  }
-
-  const recoverBuildPoint = () => {
-    const pointBalance = budgetedSkillsCount - purchasedSkillsCount
-
-    if (pointBalance >= SKILL_POINTS_PER_BP) {
-      mutateSpendBp({
-        id: ranger?.characterById?.id,
-        patch: {
-          totalSkillPoints: budgetedSkillsCount - SKILL_POINTS_PER_BP,
-        },
-      })
-    }
-  }
 
   const getRangerSkillBySkillId = (skillId: string): MemberSkill | null => {
     const { nodes: rangerSkills } = ranger?.characterById?.memberSkillsByCharacterId ?? { nodes: [] }

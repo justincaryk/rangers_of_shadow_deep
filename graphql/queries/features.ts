@@ -6,19 +6,23 @@ export default gql`
       nodes {
         id
         name
-        levelGrantType
-        mechanicMod
         primaryType
+        mechanicClass
+        mechanicMod
         statSubtype
         riderSubtype
+        value
+        statId
+        skillId
+        requiresItemId
+        excludesItemId
+        featureId
+        friendLevelGrantId
         injuryId
         itemId
         levelGrantId
-        friendLevelGrantId
-        skillId
-        statId
-        value
-        nodeId
+        mercenaryId
+        pickIds
       }
     }
   }

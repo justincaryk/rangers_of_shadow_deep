@@ -41,5 +41,12 @@ export default gql`
         description
       }
     }
+    allMercenaries {
+      nodes {
+        id
+        name
+        description
+      }
+    }
   }
 `

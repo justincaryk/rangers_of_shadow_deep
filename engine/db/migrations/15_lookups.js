@@ -16,28 +16,31 @@ exports.up = knex =>
       uses smallint default 1 NOT NULL
     );
 
-    -- characters/friends + stats
+    -- characters/friends/mercs + stats
     CREATE TABLE ranger.member_stats (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
       friend_id uuid REFERENCES ranger.friends (id),
+      mercenary_id uuid REFERENCES ranger.mercenaries (id),
       stat_id uuid REFERENCES ranger.stats (id) NOT NULL,
       value smallint NOT NULL
     );
 
-    -- characters/friends + items
+    -- characters/friends/mercs + items
     CREATE TABLE ranger.member_items (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
       friend_id uuid REFERENCES ranger.friends (id),
+      mercenary_id uuid REFERENCES ranger.mercenaries (id),
       item_id uuid REFERENCES ranger.items (id) NOT NULL
     );
 
-    -- characters/friends + skills
+    -- characters/friends/companions + skills
     CREATE TABLE ranger.member_skills (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
       friend_id uuid REFERENCES ranger.friends (id),
+      mercenary_id uuid REFERENCES ranger.mercenaries (id),
       skill_id uuid REFERENCES ranger.skills (id) not null,
       value smallint default 0 not null
     );
@@ -69,6 +72,7 @@ exports.up = knex =>
       level_grant_id uuid REFERENCES ranger.level_grants (id),
       friend_level_grant_id uuid REFERENCES ranger.friend_level_grants (id),
       times_granted smallint DEFAULT 1 NOT NULL,
+      times_used smallint DEFAULT 1 NOT NULL,
       CONSTRAINT check_field_refs_match_type 
 	      CHECK ((friend_id IS NULL AND friend_level_grant_id IS NULL) <> (character_id IS NULL AND level_grant_id IS NULL)),
 	    CONSTRAINT check_member_type_is_valid

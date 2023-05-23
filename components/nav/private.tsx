@@ -84,7 +84,7 @@ export default function PrivateNavigation() {
   }
 
   return (
-    <div className='w-full bg-stone px-6 py-2 relative'>
+    <div className='w-full bg-stone px-6 py-2 relative z-20'>
       <Popover className='relative'>
         <div className=''>
           <div className='flex items-center justify-between md:justify-start md:space-x-10'>

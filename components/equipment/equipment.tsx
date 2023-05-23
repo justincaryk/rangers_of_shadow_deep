@@ -4,7 +4,7 @@ import classnames from 'classnames'
 import { useMemo, useState } from 'react'
 
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
-import { Item, ItemRarity } from '../../graphql/generated/graphql'
+import { Item } from '../../graphql/generated/graphql'
 
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
@@ -16,7 +16,6 @@ import { MAX_STARTING_ITEM_SLOTS } from '../rules/creation-rules'
 import { useEquipmentApi } from './equipment-api'
 import { useRangerApi } from '../ranger/ranger-api'
 import Card from '../parts/card'
-import SmallButton from '../parts/small-button'
 import Checkbox from '../parts/checkbox'
 
 export default function Equipment() {
@@ -27,8 +26,8 @@ export default function Equipment() {
   const { data: ranger } = useRangerApi().getRangerById
   const { data: equipment } = useEquipmentApi().getEquipment
 
-  const { mutate: addRangerItem } = useEquipmentApi().addEquipmentToRanger
-  const { mutate: removeRangerItem } = useEquipmentApi().deleteRangerEquipment
+  const { mutate: addRangerItem } = useEquipmentApi().createMemberItem
+  const { mutate: removeRangerItem } = useEquipmentApi().deleteMemberItem
 
   const inventorySlots = useMemo(() => {
     if (ranger?.characterById?.memberItemsByCharacterId.nodes.length) {

@@ -6,6 +6,14 @@ exports.seed = function (knex) {
       // Inserts seed entries
       return knex('ranger.items').insert([
         {
+          name: 'dagger',
+          description:
+            'This is a knife that is not balanced for throwing. Daggers have a -1 damage modifier. The first dagger or throwing knife carried by a ranger does not take up an item slot.',
+          class: 'WEAPON',
+          rarity: 'MUNDANE',
+          slot_cost: 1,
+        },
+        {
           name: 'bow',
           description:
             'The favoured missile weapon of rangers, bows may be loaded and fired in a single action. For game purposes the maximum range of a bow is 24”. Bows have no damage modifier. A figure must also carry a quiver, or some type of magic ammunition, to use a bow.',

@@ -16,6 +16,36 @@ export default gql`
         move
         shoot
         will
+        memberItemsByMercenaryId {
+          nodes {
+            id
+            itemId
+            itemByItemId {
+              name
+              description
+            }
+          }
+        }
+        memberSkillsByMercenaryId {
+          nodes {
+            id
+            skillId
+            value
+            skillBySkillId {
+              name
+            }
+          }
+        }
+        memberStatsByMercenaryId {
+          nodes {
+            id
+            statId
+            value
+            statByStatId {
+              name
+            }
+          }
+        }
       }
     }
   }

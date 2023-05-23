@@ -21,10 +21,11 @@ export default gql`
         featuresByLevelGrantId {
           nodes {
             id
-            levelGrantType
             mechanicMod
             primaryType
             value
+            mechanicClass
+            pickIds
           }
         }
       }

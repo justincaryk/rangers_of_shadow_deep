@@ -18,7 +18,7 @@ Codegen_LevelGrant,
 | 'nodeId'
 > {
   featuresByLevelGrantId: Omit<FeaturesConnection, '__typename' | 'edges' | 'pageInfo' | 'totalCount' | 'nodes'> & {
-    nodes: Pick<Feature, 'id' | 'levelGrantType' | 'mechanicMod' | 'primaryType' | 'value'>[]
+    nodes: Pick<Feature, 'id' | 'mechanicMod' | 'mechanicClass' | 'primaryType' | 'value'>[]
   }
 }
 

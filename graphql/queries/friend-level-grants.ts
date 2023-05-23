@@ -11,11 +11,12 @@ export default gql`
         featuresByFriendLevelGrantId {
           nodes {
             id
+            mechanicClass
             mechanicMod
-            levelGrantType
-            statId
             value
+            statId
             skillId
+            pickIds
           }
         }
       }

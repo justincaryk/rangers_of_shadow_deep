@@ -10,7 +10,7 @@ import ShowHide from '../parts/show-hide'
 import { useMemo, useState } from 'react'
 
 // types
-import { BASE_STATS, DECREASE, INCREASE } from '../rules/creation-rules'
+import { DECREASE, INCREASE } from '../rules/creation-rules'
 import { BASE_STATS_ENUM } from '../types'
 import { StatType } from '../../graphql/generated/graphql'
 import { Stat } from './types'
@@ -28,7 +28,6 @@ export default function Stats() {
   const { data: ranger } = useRangerApi().getRangerById
 
   const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStatById
-  const { mutate: mutateRanger } = useRangerApi().updateRanger
 
   const spent = useMemo(() => {
     // on character create, a lookup record is generated with the default stat value for each stat.

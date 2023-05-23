@@ -104,10 +104,6 @@ export default function ArrayFieldBase({ type, data }: Props) {
         return prev + curr.uses
       }, 0) ?? 0
 
-    console.log('x: ', {
-      spellsBought,
-      heroicActionsBought,
-    })
     return heroicBp - spellsBought - heroicActionsBought
   }, [ heroicBp, ranger?.characterById ])
 

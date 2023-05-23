@@ -17,7 +17,7 @@ import { PUBLIC_LINK_ROUTES, PublicRouteType } from './routes'
 ]
 export default function PublicNavigation() {
   return (
-    <div className='w-full bg-stone px-4 relative'>
+    <div className='w-full bg-stone px-4 relative z-20'>
       <div className='flex items-center justify-between md:justify-start md:space-x-10'>
         <div className='flex justify-start lg:w-0 lg:flex-1'>
           <span className='sr-only'>Rangers of Shadow Deep Companion App</span>

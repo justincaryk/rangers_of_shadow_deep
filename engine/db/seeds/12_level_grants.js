@@ -6,6 +6,13 @@ exports.seed = function (knex) {
       // Inserts seed entries
       return knex('ranger.level_grants').insert([
         {
+          name: 'free dagger or knife',
+          description:
+            'The ranger may pick one dagger or throwing knife and it doesn\t count against the number of inventory slots.',
+          grant_type: 'ITEM',
+          first_level_granted: 0,
+        },
+        {
           name: 'improve skills',
           description:
             'The ranger increases his Skills by a total of +5. The maximum he may spend on any one Skill is +2. So, a ranger could increase five Skills by +1 each; one by +2 and three by +1, or two by +2 and one by +1.',
