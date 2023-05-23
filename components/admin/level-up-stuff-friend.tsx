@@ -96,7 +96,7 @@ export default function LevelUpStuffFriend() {
 
                       <div>mercenary id: {feat.mercenaryId ?? 'NULL'}</div>
                       {/* mercenaries dropdown */}
-                      <Field className='w-full' name='skillId' as='select'>
+                      <Field className='w-full' name='mercenaryId' as='select'>
                         <option className='text-gray-500' value={''}>
                           -- mercenaries --
                         </option>

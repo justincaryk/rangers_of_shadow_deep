@@ -252,6 +252,13 @@ exports.seed = function (knex) {
                     value: 2,
                 },
                 {
+                    name: 'companion > conjurer > pick > staff or hand weapon',
+                    primary_type: 'MERCENARY',
+                    mechanic_class: 'ITEM',
+                    mechanic_mod: 'PICK',
+                    value: 1,
+                },
+                {
                     name: 'companion > archer > pick >crossbow or longbow',
                     primary_type: 'MERCENARY',
                     mechanic_class: 'ITEM',
