@@ -9,8 +9,8 @@ export enum PUBLIC_LINK_ROUTES {
 
 export enum PRIVATE_LINK_ROUTES {
   DASHBOARD = '/dashboard',
-  A_RANGER = '/member/ranger/[id]',
-  A_COMPANION = '/member/companion/[id]',
+  A_RANGER = '/build/ranger/[id]',
+  A_COMPANION = '/build/companion/[id]',
   COMPANIONS = '/game-rules/companions',
   EQUIPMENT = '/game-rules/equipment',
   SPELLS = '/game-rules/spells',

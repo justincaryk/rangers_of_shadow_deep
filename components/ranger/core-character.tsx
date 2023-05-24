@@ -83,9 +83,7 @@ export default function CoreCharacter() {
           <LevelUpRanger />
         </div>
       )}
-      <div className='font-bold '>
-        Total BP Remaining: {totalBuildPoints}
-      </div>
+      <div className='font-bold '>Total BP Remaining: {totalBuildPoints}</div>
       <div className={'cursor-pointer text-blue-500'} onClick={() => setShowBuildPoints(!showBuildPoints)}>
         {showBuildPoints ? 'Done assigning build points' : 'Assign build points!'}
       </div>

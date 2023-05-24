@@ -57,9 +57,9 @@ type MechanicBenefit = {
 }
 export function getMechanicBenefitForRanger(level: LevelGrant) {
   // const { mechanicClass, value } =
-  const { mechanicClass, value } = level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Modifier) ?? {} as Feature
+  const { mechanicClass, value } =
+    level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Modifier) ?? ({} as Feature)
 
-  
   const mechanicBenefit = {
     field: null,
     value,

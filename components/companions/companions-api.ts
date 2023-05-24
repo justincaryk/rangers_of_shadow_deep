@@ -1,5 +1,4 @@
 import {
-  FriendQuery,
   CreateFriendMutation,
   CreateFriendMutationVariables,
   DeleteFriendMutation,
@@ -8,12 +7,15 @@ import {
   UpdateFriendMutationVariables,
   MercenariesQuery,
   FriendsQuery,
+  FriendFullQuery,
+  FriendSummaryQuery,
 } from '../../graphql/generated/graphql'
 import useGraphQL from '../graphql/useGraphQL'
 
 import GetMercenariessRequest from '../../graphql/queries/mercenaries'
 import GetFriendsRequest from '../../graphql/queries/friends'
-import GetFriendRequest from '../../graphql/queries/friend'
+import GetFriendFullRequest from '../../graphql/queries/friend-full'
+import GetFriendSummaryRequest from '../../graphql/queries/friend-summary'
 import CreateFriendRequest from '../../graphql/mutations/friend-create'
 import UpdateFriendRequest from '../../graphql/mutations/friend-update'
 import DeleteFriendRequest from '../../graphql/mutations/friend-delete'
@@ -22,7 +24,8 @@ import { useParams } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export enum COMPANION_QUERY_KEYS {
-  FRIEND = 'friend',
+  FRIEND_FULL = 'friend-full',
+  FRIEND_SUMMARY = 'friend-summary',
   FRIENDS = 'friends',
   MERCENARIES = 'mercenaries',
 }
@@ -41,11 +44,21 @@ export function useCompanionsApi() {
       queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ],
       queryFn: async () => graphQLClient.request<FriendsQuery>(GetFriendsRequest),
     }),
-    getFriend: useQuery({
-      queryKey: [ COMPANION_QUERY_KEYS.FRIEND ],
+    getFriendFull: useQuery({
+      queryKey: [ COMPANION_QUERY_KEYS.FRIEND_FULL ],
       queryFn: async () => {
         return params?.id
-          ? graphQLClient.request<FriendQuery>(GetFriendRequest, {
+          ? graphQLClient.request<FriendFullQuery>(GetFriendFullRequest, {
+              id: params?.id,
+            })
+          : null
+      },
+    }),
+    getFriendSummary: useQuery({
+      queryKey: [ COMPANION_QUERY_KEYS.FRIEND_SUMMARY ],
+      queryFn: async () => {
+        return params?.id
+          ? graphQLClient.request<FriendSummaryQuery>(GetFriendSummaryRequest, {
               id: params?.id,
             })
           : null
@@ -64,7 +77,8 @@ export function useCompanionsApi() {
       mutationFn: (data: UpdateFriendMutationVariables) =>
         graphQLClient.request<UpdateFriendMutation>(UpdateFriendRequest, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIEND ] })
+        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIEND_FULL ] })
+        queryClient.invalidateQueries({ queryKey: [ COMPANION_QUERY_KEYS.FRIEND_SUMMARY ] })
         queryClient.invalidateQueries({
           queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ],
         })

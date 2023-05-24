@@ -221,7 +221,7 @@ export const companions: Companion[] = [
     },
     name: 'rogue',
     description:
-      'Rogues aren\'t the best fighters, but they are highly skilled individuals, who can be invaluable if you need a lock picked or a trap disarmed.',
+      "Rogues aren't the best fighters, but they are highly skilled individuals, who can be invaluable if you need a lock picked or a trap disarmed.",
     subtype: 'rogue',
     cost: 20,
   },

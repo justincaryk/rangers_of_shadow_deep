@@ -26,7 +26,7 @@ interface MemberCardProps {
 }
 
 type MemberHash = {
-  [K in typeof MEMBER_TYPE_ENUM[keyof typeof MEMBER_TYPE_ENUM]]: {
+  [K in (typeof MEMBER_TYPE_ENUM)[keyof typeof MEMBER_TYPE_ENUM]]: {
     delete: UseMutateFunction<any, unknown, Exact<{ id: any }>, unknown>
     memberUrl: string
   }
@@ -36,16 +36,19 @@ export default function MemberCard({ member, memberType, cardIndex }: MemberCard
   const { mutate: deleteRanger } = useRangerApi().deleteRanger
   const { mutate: deleteFriend } = useCompanionsApi().deleteFriend
 
-  const memberHash: MemberHash = useMemo(() => ({
-    [MEMBER_TYPE_ENUM.RANGER]: {
-      delete: deleteRanger,
-      memberUrl: PRIVATE_LINK_ROUTES.A_RANGER.replace('[id]', member.id),
-    },
-    [MEMBER_TYPE_ENUM.FRIEND]: {
-      delete: deleteFriend,
-      memberUrl: PRIVATE_LINK_ROUTES.A_COMPANION.replace('[id]', member.id),
-    },
-  }), [ member, deleteFriend, deleteRanger ])
+  const memberHash: MemberHash = useMemo(
+    () => ({
+      [MEMBER_TYPE_ENUM.RANGER]: {
+        delete: deleteRanger,
+        memberUrl: PRIVATE_LINK_ROUTES.A_RANGER.replace('[id]', member.id),
+      },
+      [MEMBER_TYPE_ENUM.FRIEND]: {
+        delete: deleteFriend,
+        memberUrl: PRIVATE_LINK_ROUTES.A_COMPANION.replace('[id]', member.id),
+      },
+    }),
+    [ member, deleteFriend, deleteRanger ]
+  )
 
   const deleteMember = () => {
     memberHash[memberType].delete({ id: member.id })

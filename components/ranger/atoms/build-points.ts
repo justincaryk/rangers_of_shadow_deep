@@ -35,7 +35,8 @@ export function useSyncRangerBp() {
     if (data?.characterById) {
       let totalBp = BASE_BUILD_POINTS
 
-      const { bpSpentOnHeroicActions, bpSpentOnRp, bpSpentOnSkills, bpSpentOnStats } = data.characterById.characterBpLookupsByCharacterId.nodes[0]
+      const { bpSpentOnHeroicActions, bpSpentOnRp, bpSpentOnSkills, bpSpentOnStats } =
+        data.characterById.characterBpLookupsByCharacterId.nodes[0]
 
       // only deduct what is allowed at create
       const heroicBpSpent = Math.min(bpSpentOnHeroicActions, MAX_BP_FOR_HEROIC_SPELLS)

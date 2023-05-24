@@ -20,7 +20,9 @@ import MinorHeader from '../../../../../components/parts/minor-header'
 import FriendCore from '../../../../../components/companions/friend-core'
 import MercTypeSelect from '../../../../../components/companions/merc-type-select'
 import FriendBonusSkill from '../../../../../components/companions/friend-bonus-skill'
-
+import FriendBonusSpell from '../../../../../components/companions/friend-bonus-spell'
+import FriendBonusItem from '../../../../../components/companions/friend-bonus-item'
+import FriendPickContainer from '../../../../../components/companions/friend-pick-container'
 
 export default function Friend() {
   // const [ bpSpentOnRp ] = useAtom(useRecruitmentPointsBp)
@@ -127,6 +129,8 @@ export default function Friend() {
       <StackSection>
         <FriendBonusSkill />
       </StackSection>
+
+      <FriendPickContainer />
     </div>
   )
 }

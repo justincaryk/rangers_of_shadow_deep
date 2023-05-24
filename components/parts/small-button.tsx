@@ -17,7 +17,8 @@ export default function SmallButton({ onClick, primary, disabled, className, chi
       true,
   }
   const baseHoverStyles = {
-    'hover:${btnBgColor}-700 hover:shadow-lg focus:${btnBgColor}-700 focus:shadow-lg focus:outline-none focus:ring-0 active:${btnBgColor}-800 active:shadow-lg': !disabled
+    'hover:${btnBgColor}-700 hover:shadow-lg focus:${btnBgColor}-700 focus:shadow-lg focus:outline-none focus:ring-0 active:${btnBgColor}-800 active:shadow-lg':
+      !disabled,
   }
   return (
     <button

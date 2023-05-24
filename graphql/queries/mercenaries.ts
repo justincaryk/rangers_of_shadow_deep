@@ -2,7 +2,7 @@ import { gql } from 'graphql-request'
 
 export default gql`
   query Mercenaries {
-    allMercenaries {
+    allMercenaries(orderBy: NAME_ASC) {
       nodes {
         id
         name
@@ -44,6 +44,15 @@ export default gql`
             statByStatId {
               name
             }
+          }
+        }
+        featuresByMercenaryId(condition: { primaryType: MERCENARY }) {
+          nodes {
+            primaryType
+            mechanicClass
+            mechanicMod
+            pickIds
+            value
           }
         }
       }

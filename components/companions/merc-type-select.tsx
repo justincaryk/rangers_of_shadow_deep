@@ -11,7 +11,7 @@ import { Mercenary } from './types'
 export default function MercTypeSelect() {
   const [ show, toggleShow ] = useState(false)
 
-  const { data: friend } = useCompanionsApi().getFriend
+  const { data: friend } = useCompanionsApi().getFriendSummary
   const { mutate: assignMutate, status, reset } = useCompanionsApi().updateFriend
 
   useEffect(() => {

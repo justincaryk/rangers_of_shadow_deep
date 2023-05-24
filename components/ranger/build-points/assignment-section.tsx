@@ -42,7 +42,7 @@ export default function AssignmentSection({ ranger, bpLookupRecord, attributeKey
 
   const handleAllotBp = (modifier: number) => {
     if (rangerLoadingStatus === 'loading' && bpLookupLoadingStatus === 'loading') {
-      return null;
+      return null
     }
     if (modifier === INCREASE && !canIncrement) {
       return null

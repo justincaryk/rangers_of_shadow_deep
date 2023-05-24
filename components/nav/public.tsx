@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { UserRole } from '../../graphql/generated/graphql'
 import { PUBLIC_LINK_ROUTES, PublicRouteType } from './routes'
 
- const PUBLIC_ROUTES: PublicRouteType[] = [
+const PUBLIC_ROUTES: PublicRouteType[] = [
   {
     link: PUBLIC_LINK_ROUTES.SIGN_UP,
     text: 'Signup',

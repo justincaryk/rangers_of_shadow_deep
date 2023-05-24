@@ -13,18 +13,20 @@ import Loader from '../loader'
 import { useLevelingApi } from './leveling-api'
 import { useCompanionsApi } from '../companions/companions-api'
 
-import { FriendPatch, Friend } from '../../graphql/generated/graphql'
-import { FriendLevelGrant, FriendLevelGrantUnwound } from './types'
+import { FriendPatch } from '../../graphql/generated/graphql'
+import { FriendLevelGrant, FriendLevelGrantUnwound, MemberLevel } from './types'
+import { FriendSummary } from '../companions/types'
 
 export const FriendLevelingFieldsSchema = Yup.object().shape({
   progressionPoints: Yup.number().required('Required'),
 })
 
 interface LevelUpCardProps {
-  friend: Friend
+  friend: FriendSummary
+  memberLevels: MemberLevel[]
 }
 
-const LevelUpCardContent = ({ friend }: LevelUpCardProps) => {
+const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
   const { mutate: mutateFriend } = useCompanionsApi().updateFriend
   const { data: levelsData } = useLevelingApi().friendRules
   const { mutate: createLevelRef } = useLevelingApi().createLevelRef
@@ -76,7 +78,7 @@ const LevelUpCardContent = ({ friend }: LevelUpCardProps) => {
   }, [ levelsData ])
 
   const levelUpAvail = useMemo(() => {
-    const levelsGranted = friend.memberLevelsByFriendId?.nodes.reduce((prev, curr) => {
+    const levelsGranted = memberLevels.reduce((prev, curr) => {
       return prev + curr.timesGranted
     }, 0)
     const maxLevelsToBeGranted = levelsData?.allFriendLevelGrants?.nodes.reduce((prev, curr) => {
@@ -87,7 +89,7 @@ const LevelUpCardContent = ({ friend }: LevelUpCardProps) => {
     const hasRequisitePoints = Math.floor((friend.progressionPoints ?? 0) / 10) > levelsGranted
 
     return !isMaxRank && hasRequisitePoints
-  }, [ friend, levelsData ])
+  }, [ friend, levelsData, memberLevels ])
 
   const tryBuyLevel = () => {
     if (!levelUpAvail || !levelsUnwound.length) {
@@ -96,11 +98,9 @@ const LevelUpCardContent = ({ friend }: LevelUpCardProps) => {
     const uniqueLevelRecordsExpected = levelsData?.allFriendLevelGrants?.nodes?.length ?? 0
 
     // the friend doesn't have level loopup records for each unique level up type
-    if (friend.memberLevelsByFriendId.nodes.length < uniqueLevelRecordsExpected) {
+    if (memberLevels.length < uniqueLevelRecordsExpected) {
       for (const level of levelsUnwound) {
-        const purchased = friend.memberLevelsByFriendId.nodes.find(
-          levelBought => levelBought.friendLevelGrantId === level.id
-        )
+        const purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
         if (!purchased) {
           return createLevelRef({
             friendId: friend.id,
@@ -113,9 +113,7 @@ const LevelUpCardContent = ({ friend }: LevelUpCardProps) => {
     // the friend has already hydrated records with unique benefits, now we just need to update the count
     else {
       for (const level of levelsUnwound) {
-        let purchased = friend.memberLevelsByFriendId.nodes.find(
-          levelBought => levelBought.friendLevelGrantId === level.id
-        )
+        let purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
         if (!purchased) {
           console.warn('rut roh. cant find the right level')
           return
@@ -191,9 +189,10 @@ const LevelUpCardContent = ({ friend }: LevelUpCardProps) => {
 }
 
 export default function FriendLeveling() {
-  const { data: friend } = useCompanionsApi().getFriend
+  const { data: friend } = useCompanionsApi().getFriendSummary
+  const { data: memberLevels, status: memberLevelsStatus } = useLevelingApi().getMemberLevels
 
-  if (!friend?.friendById) {
+  if (!friend?.friendById || memberLevelsStatus !== 'success') {
     return <Loader />
   }
 
@@ -201,7 +200,7 @@ export default function FriendLeveling() {
     <div>
       <div className='space-y-1'>
         <Card>
-          <LevelUpCardContent friend={friend.friendById as Friend} />
+          <LevelUpCardContent friend={friend.friendById} memberLevels={memberLevels?.allMemberLevels?.nodes ?? []} />
         </Card>
       </div>
     </div>

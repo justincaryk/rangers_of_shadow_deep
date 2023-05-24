@@ -49,7 +49,7 @@ export const ATTR_TO_BP_LOOKUP_KEY_HASH: BpLookupHash = {
     characterVarKey: 'totalSkillPoints',
     maxAllowed: MAX_BP_FOR_SKILLS,
     attributeTextShort: 'Skills',
-    createConversionHelper: (current, modifier) => current + (modifier * SKILL_POINTS_PER_BP),
+    createConversionHelper: (current, modifier) => current + modifier * SKILL_POINTS_PER_BP,
   },
   [BP_ASSIGNABLE_ATTRS_KEYS.HEROIC]: {
     bpMutateVarKey: 'heroic',
@@ -64,6 +64,6 @@ export const ATTR_TO_BP_LOOKUP_KEY_HASH: BpLookupHash = {
     characterVarKey: 'totalRecruitmentPoints',
     maxAllowed: MAX_BP_FOR_RP,
     attributeTextShort: 'Recruitment Points',
-    createConversionHelper: (current, modifier) => current + (modifier * RECRUITMENT_POINTS_PER_BP),
+    createConversionHelper: (current, modifier) => current + modifier * RECRUITMENT_POINTS_PER_BP,
   },
 }

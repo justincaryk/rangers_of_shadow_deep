@@ -26,7 +26,9 @@ export default function Skills() {
   const [ skillsBp ] = useAtom(useSkillsBp)
 
   const { data: skills } = useSkillsApi().getSkills
+  const { data: memberSkills } = useSkillsApi().getMemberSkills
   const { data: features } = useFeaturesApi().getFeatures
+  const { data: ranger } = useRangerApi().getRangerById
   const {
     mutate: mutateUpdateSkill,
     status: updateSkillMutateStatus,
@@ -40,15 +42,13 @@ export default function Skills() {
     }
   }, [ updateSkillMutateStatus, resetUpdateSkillMutation ])
 
-  const { data: ranger } = useRangerApi().getRangerById
-
   const purchasedSkillsCount = useMemo(() => {
     return (
-      ranger?.characterById?.memberSkillsByCharacterId.nodes.reduce((acc, rangerSkill) => {
+      memberSkills?.allMemberSkills?.nodes.reduce((acc, rangerSkill) => {
         return acc + rangerSkill.value
       }, 0) ?? 0
     )
-  }, [ ranger ])
+  }, [ memberSkills ])
 
   const increaseLimitForSkillLevelUp = useMemo(() => {
     return (
@@ -80,9 +80,9 @@ export default function Skills() {
           }
           return prev
         }, 0) ?? 0
-        console.log('skill level ups: ', skillLevelUps)
+      console.log('skill level ups: ', skillLevelUps)
       const totalSkillsIncreased =
-        ranger?.characterById?.memberSkillsByCharacterId.nodes.reduce((prev, curr) => {
+        memberSkills?.allMemberSkills?.nodes.reduce((prev, curr) => {
           if (curr.value > 0) {
             return prev + 1
           }
@@ -120,15 +120,15 @@ export default function Skills() {
     }
 
     return availablePointsLocal
-  }, [ purchasedSkillsCount, ranger, features ])
+  }, [ purchasedSkillsCount, ranger, features, memberSkills ])
 
   const getRangerSkillBySkillId = (skillId: string): MemberSkill | null => {
-    const { nodes: rangerSkills } = ranger?.characterById?.memberSkillsByCharacterId ?? { nodes: [] }
+    const { nodes: rangerSkills } = memberSkills?.allMemberSkills ?? { nodes: [] }
     const rangerSkill = rangerSkills.find(rs => rs.skillId === skillId)
     return rangerSkill ?? null
   }
 
-  const checkCanIncrease = (rangerSkill: MemberSkill, skill: Skill) => {
+  const checkCanIncrease = (rangerSkill: MemberSkill) => {
     // must spend a build point and have some points remining to increase a skill
     if (availablePoints.total === 0) {
       return false
@@ -160,7 +160,7 @@ export default function Skills() {
     const modifier = skillsBp
     const rangerSkillsHash: any = {}
 
-    for (const rs of ranger?.characterById?.memberSkillsByCharacterId.nodes!) {
+    for (const rs of memberSkills?.allMemberSkills?.nodes!) {
       if (skillValCounter > 0 && rs.value > 0) {
         skillValCounter = rs.value >= modifier ? skillValCounter - modifier : skillValCounter - rs.value
         const adjustedVal = rs.value >= modifier ? rs.value - modifier : 0
@@ -208,7 +208,7 @@ export default function Skills() {
       return null
     }
 
-    if (modifier === INCREASE && !checkCanIncrease(rangerSkill, skill)) {
+    if (modifier === INCREASE && !checkCanIncrease(rangerSkill)) {
       return null
     }
     if (modifier === DECREASE && !checkCanDecrease(rangerSkill)) {
@@ -256,7 +256,7 @@ export default function Skills() {
         <div className='space-y-4'>
           {skills?.allSkills?.nodes.map(skill => {
             const rangerSkill = getRangerSkillBySkillId(skill.id)
-            const canIncrement = checkCanIncrease(rangerSkill!, skill)
+            const canIncrement = checkCanIncrease(rangerSkill!)
             const canDecrement = checkCanDecrease(rangerSkill!)
 
             return (

@@ -11,7 +11,7 @@ export default function MercenariesList(props: Mercenaries) {
 
   return (
     <div className='space-y-4'>
-      {mercs?.allMercenaries?.nodes.map((merc: Mercenary) => (
+      {mercs?.allMercenaries?.nodes.map(merc => (
         <MercenaryCard key={merc.id} mercenary={merc} {...props} />
       ))}
     </div>

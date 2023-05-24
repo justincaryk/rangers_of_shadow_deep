@@ -75,15 +75,15 @@ export default function Equipment() {
         />
       </div>
 
-      {ranger?.characterById?.memberItemsByCharacterId.nodes.length && (
+      {ranger?.characterById?.memberItemsByCharacterId?.nodes?.length! > 0 && (
         <div>
           <div className='font-bold'>Carried:</div>
           <ul className='list-disc ml-6'>
-          {ranger?.characterById?.memberItemsByCharacterId.nodes.map(item => (
-            <li key={item.id} className='capitalize'>
-              {item.itemByItemId?.name}
-            </li>
-          ))}
+            {ranger?.characterById?.memberItemsByCharacterId.nodes.map(item => (
+              <li key={item.id} className='capitalize'>
+                {item.itemByItemId?.name}
+              </li>
+            ))}
           </ul>
         </div>
       )}

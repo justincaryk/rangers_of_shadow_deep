@@ -79,7 +79,6 @@ export default function MercenaryStuff() {
         itemId: item.value,
       })
     }
-
   }
 
   const handleSubmit = (data: MercenarySchemaType) => {
@@ -88,7 +87,7 @@ export default function MercenaryStuff() {
     if (!merc) {
       return
     }
-    
+
     removeAllItems(merc as Mercenary)
     addNewItems(data)
   }

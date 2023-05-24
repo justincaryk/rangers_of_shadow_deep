@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import * as Yup from 'yup'
 import { Field, Form, Formik } from 'formik'
 
@@ -18,6 +18,7 @@ import { FriendPatch } from '../../graphql/generated/graphql'
 import { INITIAL_RECRUIT_SKILL_BUMP } from '../rules/creation-rules'
 
 import { capitalizeEach } from '../utils'
+import classnames from 'classnames'
 
 const FriendSkillSchema = Yup.object().shape({
   bonusSkill: Yup.string().nullable(),
@@ -27,7 +28,9 @@ export default function FriendBonusSkill() {
   const [ show, toggleShow ] = useState(false)
 
   const { data: skills } = useSkillsApi().getSkills
-  const { data: friend } = useCompanionsApi().getFriend
+  const { data: mercenaries } = useCompanionsApi().getMercenaries
+  const { data: memberSkills } = useSkillsApi().getMemberSkills
+  const { data: friend } = useCompanionsApi().getFriendSummary
   const { mutate: mutateFriend, status, reset } = useCompanionsApi().updateFriend
 
   useEffect(() => {
@@ -46,29 +49,59 @@ export default function FriendBonusSkill() {
     })
   }
 
+  const isMercenaryTypeSelected = useMemo(() => {
+    return friend?.friendById?.mercenaryId
+  }, [ friend ])
+
+  const skillsOptions = useMemo(() => {
+    return skills?.allSkills?.nodes.filter(skill => {
+      const friendMercType = mercenaries?.allMercenaries?.nodes.find(
+        merc => merc.id === friend?.friendById?.mercenaryId
+      )
+      const friendHasThis = friendMercType?.memberSkillsByMercenaryId.nodes.find(
+        mercSkill => mercSkill.skillId === skill.id
+      )
+      return !friendHasThis
+    })
+  }, [ friend, mercenaries, skills ])
+
   return (
     <div className='space-y-6'>
-      <div className='mt-2 cursor-pointer' onClick={() => toggleShow(!show)}>
+      <div
+        className={classnames({
+          'mt-2': true,
+          'cursor-pointer': isMercenaryTypeSelected,
+          'cursor-not-allowed': !isMercenaryTypeSelected,
+        })}
+        onClick={() => {
+          if (isMercenaryTypeSelected) {
+            toggleShow(!show)
+          }
+        }}
+      >
         <div className='w-6 float-right'>
           <ShowHide isShow={show} />
         </div>
         <MinorHeader content='bonus skill select' icon={<FireIcon className='text-orange-400' />} />
       </div>
+      <Card className='bg-black/50'>
+        <div className='space-y-1 text-sm text-white'>
+          <div>
+            Whenever a specific companion is selected for the first time, the player should assign it{' '}
+            <strong>+{INITIAL_RECRUIT_SKILL_BUMP}</strong> to any one skill.
+          </div>
+          <div>
+            This may <strong>not</strong> be a skill the companion already possessed, but otherwise can be anything from
+            the skills list.
+          </div>
+          {!isMercenaryTypeSelected ? (
+            <div className='font-bold text-lg'>Please choose a companion type first!</div>
+          ) : null}
+        </div>
+      </Card>
       {show && (
         <Card>
           <div className='space-y-4'>
-            <Card className='bg-black/50'>
-              <div className='space-y-1 text-sm text-white'>
-                <div>
-                  Whenever a specific companion is selected for the first time, the player should assign it{' '}
-                  <strong>+{INITIAL_RECRUIT_SKILL_BUMP}</strong> to any one skill.
-                </div>
-                <div>
-                  This may <strong>not</strong> be a skill the companion already possessed, but otherwise can be
-                  anything from the skills list.
-                </div>
-              </div>
-            </Card>
             <Formik
               initialValues={{
                 bonusSkill: friend?.friendById?.bonusSkill ?? '',
@@ -82,7 +115,7 @@ export default function FriendBonusSkill() {
                     <option className='text-gray-500' value={''}>
                       -- SKILLS --
                     </option>
-                    {skills?.allSkills?.nodes.map(x => (
+                    {skillsOptions?.map(x => (
                       <option key={x.id} value={x.id}>
                         {capitalizeEach(x.name)}
                       </option>
@@ -91,7 +124,7 @@ export default function FriendBonusSkill() {
                   {values.bonusSkill ? (
                     <div className='space-y-4'>
                       <div className='font-bold'>
-                        {skills?.allSkills?.nodes.find(skill => skill.id === values.bonusSkill)?.description ?? null}
+                        {skillsOptions?.find(skill => skill.id === values.bonusSkill)?.description ?? null}
                       </div>
                       <SmallButton primary>Save</SmallButton>
                     </div>

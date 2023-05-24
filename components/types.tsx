@@ -2,7 +2,7 @@ import { Character } from '../graphql/generated/graphql'
 
 export enum MEMBER_TYPE_ENUM {
   FRIEND = 'friend',
-  RANGER = 'ranger'
+  RANGER = 'ranger',
 }
 
 export enum RANGER_FIELD {
@@ -40,25 +40,6 @@ export const RANGER_LOOKUP_FIELD_HASH_KEYS: { [x: string]: RangerLookupFieldHash
   SPELLS: 'spells',
   SKILLS: 'skills',
   STATS: 'stats',
-}
-
-type CharacterByIdLookupFields = Pick<
-  Character,
-  | 'memberHeroicActionsByCharacterId'
-  | 'memberItemsByCharacterId'
-  | 'memberSkillsByCharacterId'
-  | 'memberSpellsByCharacterId'
-  | 'memberStatsByCharacterId'
->
-
-type LookupFieldMap = {
-  [key: string]: keyof CharacterByIdLookupFields
-}
-export const RANGER_LOOKUP_FIELD_HASH: LookupFieldMap = {
-  [RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS]: 'memberHeroicActionsByCharacterId',
-  [RANGER_LOOKUP_FIELD_HASH_KEYS.SPELLS]: 'memberSpellsByCharacterId',
-  [RANGER_LOOKUP_FIELD_HASH_KEYS.SKILLS]: 'memberSkillsByCharacterId',
-  [RANGER_LOOKUP_FIELD_HASH_KEYS.STATS]: 'memberStatsByCharacterId',
 }
 
 export enum PLAYER_COUNT {

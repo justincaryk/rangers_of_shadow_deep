@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Field, Form, Formik } from 'formik'
 import { useCompanionsApi } from './companions-api'
 import { MemberCoreFieldsSchema } from '../ranger/core-character'
@@ -11,10 +11,13 @@ import MercenaryCard from './mercenary-card'
 import { capitalizeEach } from '../utils'
 import Card from '../parts/card'
 import FriendLeveling from '../leveling/friend-leveling'
+import { useSkillsApi } from '../skills/skills-api'
 
 export default function FriendCore() {
   const [ showLevelUp, setShowLevelUp ] = useState(false)
-  const { data: friend, status } = useCompanionsApi().getFriend
+  const { data: friend, status } = useCompanionsApi().getFriendSummary
+  const { data: mercenaries } = useCompanionsApi().getMercenaries
+  const { data: skills } = useSkillsApi().getSkills
   const { mutate: updateFriend } = useCompanionsApi().updateFriend
 
   const handleSubmit = (data: FriendPatch) => {
@@ -36,6 +39,16 @@ export default function FriendCore() {
       },
     })
   }
+
+  const mercSelectedType = useMemo(() => {
+    if (friend?.friendById?.mercenaryId) {
+      return mercenaries?.allMercenaries?.nodes.find(merc => friend.friendById?.mercenaryId === merc.id)
+    }
+  }, [ mercenaries, friend?.friendById?.mercenaryId ])
+
+  const bonusSkillFromRef = useMemo(() => {
+    return skills?.allSkills?.nodes.find(skill => skill.id === friend?.friendById?.bonusSkill)
+  }, [ friend?.friendById?.bonusSkill, skills ])
 
   if (status === 'loading') {
     return <Loader />
@@ -74,19 +87,17 @@ export default function FriendCore() {
 
         {showLevelUp && <FriendLeveling />}
 
-        {friend?.friendById?.bonusSkill && (
+        {bonusSkillFromRef && (
           <div>
             <div className='flex gap-x-3'>
               <div className='font-bold'>+3 Bonus Skill:</div>
-              <div>{capitalizeEach(friend?.friendById?.skillByBonusSkill?.name ?? '')}</div>
+              <div>{capitalizeEach(bonusSkillFromRef?.name ?? '')}</div>
             </div>
-            <div className='italic'>{friend?.friendById?.skillByBonusSkill?.description}</div>
+            <div className='italic'>{bonusSkillFromRef?.description}</div>
           </div>
         )}
 
-        {friend?.friendById?.mercenaryByMercenaryId && (
-          <MercenaryCard mercenary={friend.friendById.mercenaryByMercenaryId} onMercRemove={handleRemoveMercType} />
-        )}
+        {mercSelectedType && <MercenaryCard mercenary={mercSelectedType} onMercRemove={handleRemoveMercType} />}
       </div>
     </Card>
   )

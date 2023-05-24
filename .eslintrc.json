@@ -1,7 +1,5 @@
 {
-  "plugins": [
-    "eslint-plugin-react-hooks"
-  ],
+  "plugins": ["eslint-plugin-react-hooks"],
   "extends": ["next/core-web-vitals", "plugin:react-hooks/recommended"],
   "rules": {
     "arrow-parens": ["warn", "as-needed"],

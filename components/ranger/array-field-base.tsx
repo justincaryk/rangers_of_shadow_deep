@@ -9,9 +9,11 @@ import Card from '../parts/card'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
 import SmallButton from '../parts/small-button'
+import Increment from '../parts/increment'
+import Decrement from '../parts/decrement'
 
 // types
-import { RANGER_LOOKUP_FIELD_HASH_KEYS, RangerLookupFieldHashKeyStrings, RANGER_LOOKUP_FIELD_HASH } from '../types'
+import { RANGER_LOOKUP_FIELD_HASH_KEYS, RangerLookupFieldHashKeyStrings } from '../types'
 import { HeroicAction, MemberHeroicAction } from '../heroic-actions/types'
 import { Spell, MemberSpell } from '../spells/types'
 
@@ -20,8 +22,7 @@ import { useHeroicActionBp } from './atoms/build-points'
 import { useRangerApi } from './ranger-api'
 import { useHeroicActionApi } from '../heroic-actions/heroic-actions-api'
 import { useSpellsApi } from '../spells/spells-api'
-import Increment from '../parts/increment'
-import Decrement from '../parts/decrement'
+
 import { DECREASE, INCREASE } from '../rules/creation-rules'
 
 const SectionIcon = (type: RangerLookupFieldHashKeyStrings) => {
@@ -47,6 +48,8 @@ export default function ArrayFieldBase({ type, data }: Props) {
 
   const [ heroicBp ] = useAtom(useHeroicActionBp)
   const { data: ranger } = useRangerApi().getRangerById
+  const { data: memberSpells } = useSpellsApi().getMemberSpells
+  const { data: memberHeroicActions } = useHeroicActionApi().getMemberHeroicActions
 
   const { mutate: mutateActionLearn, status: statusActionLearn } = useHeroicActionApi().learnHeroicAction
   const { mutate: mutateActionUnlearn, status: statusActionUnlearn } = useHeroicActionApi().unlearnHeroicAction
@@ -96,23 +99,24 @@ export default function ArrayFieldBase({ type, data }: Props) {
 
   const heroicBpRemaining = useMemo(() => {
     const spellsBought =
-      ranger?.characterById?.memberSpellsByCharacterId.nodes.reduce((prev, curr) => {
+      memberSpells?.allMemberSpells?.nodes.reduce((prev, curr) => {
         return prev + curr.uses
       }, 0) ?? 0
     const heroicActionsBought =
-      ranger?.characterById?.memberHeroicActionsByCharacterId.nodes.reduce((prev, curr) => {
+      memberHeroicActions?.allMemberHeroicActions?.nodes.reduce((prev, curr) => {
         return prev + curr.uses
       }, 0) ?? 0
 
     return heroicBp - spellsBought - heroicActionsBought
-  }, [ heroicBp, ranger?.characterById ])
+  }, [ heroicBp, memberHeroicActions, memberSpells ])
 
   const rangerLookupRefData = useMemo(() => {
-    const base = ranger?.characterById
-    const lookupKey = RANGER_LOOKUP_FIELD_HASH[type]
+    let base = null
+    if (type === 'heroic_actions') base = memberHeroicActions?.allMemberHeroicActions
+    if (type === 'spells') base = memberSpells?.allMemberSpells
 
-    return base?.[lookupKey]?.nodes ?? []
-  }, [ ranger, type ]) as MemberHeroicAction[] | MemberSpell[]
+    return base?.nodes ?? []
+  }, [ memberHeroicActions, memberSpells, type ]) as MemberHeroicAction[] | MemberSpell[]
 
   const headerContent = useMemo(() => {
     if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS) {

@@ -55,8 +55,7 @@ export const PRIVATE_ROUTES: PrivateRouteType[] = [
     text: 'Area 51',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
-  }
-
+  },
 ]
 
 // EQUIPMENT = '/game-rules/equipment',

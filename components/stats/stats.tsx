@@ -112,7 +112,7 @@ export default function Stats() {
 
     const spentBpAtCreate = bpSpent > 0
     const timesUpgradedOnLevels = spentBpAtCreate ? timesUpgraded - 1 : timesUpgraded
-    
+
     // only 1 upgrade per stat level up
     if (timesUpgradedOnLevels < availablePoints?.remainingFromLvl && availablePoints.remainingFromBp === 0) {
       return true
