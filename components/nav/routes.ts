@@ -24,10 +24,8 @@ export const PRIVATE_ROUTE_URLS = {
   ADMIN: '/admin',
 }
 
-
 export type PublicPathname = (typeof PUBLIC_ROUTE_URLS)[keyof typeof PUBLIC_ROUTE_URLS]
 export type PrivatePathname = (typeof PRIVATE_ROUTE_URLS)[keyof typeof PRIVATE_ROUTE_URLS]
-
 
 export type RouteType = {
   link: PublicPathname | PrivatePathname

@@ -53,10 +53,10 @@ export function useSkillsApi() {
         graphQLClient.request<CreateMemberSkillMutation>(CreateMemberSkillRequest, data),
       onSuccess: (data, variables) => {
         if (variables.characterId || variables.friendId) {
-          queryClient.setQueryData(
-            [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
-            (prev: any) => [ ...prev, data.createMemberSkill?.memberSkill ]
-          )
+          queryClient.setQueryData([ SKILLS_QUERY_KEY.MEMBER_SKILLS ], (prev: any) => [
+            ...prev,
+            data.createMemberSkill?.memberSkill,
+          ])
 
           // queryClient.invalidateQueries({
           //   queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
@@ -89,7 +89,7 @@ export function useSkillsApi() {
         queryClient.invalidateQueries({
           queryKey: [ COMPANION_QUERY_KEYS.MERCENARIES ],
         })
-        
+
         queryClient.invalidateQueries({
           queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
         })

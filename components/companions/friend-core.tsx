@@ -19,7 +19,7 @@ export default function FriendCore() {
   const { data: mercenaries } = useCompanionsApi().getMercenaries
   const { data: skills } = useSkillsApi().getSkills
   const { mutate: updateFriend } = useCompanionsApi().updateFriend
-  
+
   const handleSubmit = (data: FriendPatch) => {
     if (data.name) {
       updateFriend({

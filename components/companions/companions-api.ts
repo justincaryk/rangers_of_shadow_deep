@@ -35,7 +35,7 @@ export function useCompanionsApi() {
   const { graphQLClient } = useGraphQL()
   const queryClient = useQueryClient()
   const params = useParams()
-  
+
   return {
     getMercenaries: useQuery({
       queryKey: [ COMPANION_QUERY_KEYS.MERCENARIES ],

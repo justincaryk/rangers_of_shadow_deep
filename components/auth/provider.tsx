@@ -7,7 +7,13 @@ import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 
 import Loading from '../../app/loading'
 
-import { PRIVATE_ROUTE_URLS, DYNAMIC_ROUTE_BASE_URLS, PUBLIC_ROUTE_URLS, PublicPathname, PrivatePathname } from '../nav/routes'
+import {
+  PRIVATE_ROUTE_URLS,
+  DYNAMIC_ROUTE_BASE_URLS,
+  PUBLIC_ROUTE_URLS,
+  PublicPathname,
+  PrivatePathname,
+} from '../nav/routes'
 
 import { parseJwt } from '../utils'
 
