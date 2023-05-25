@@ -38,7 +38,7 @@
     "graphql-request": "^5.1.0",
     "jotai": "^1.12.1",
     "lodash": "^4.17.21",
-    "next": "^13.3.4",
+    "next": "^13.4.3",
     "pg": "^8.8.0",
     "postgraphile": "^4.12.12",
     "react": "18.2.0",

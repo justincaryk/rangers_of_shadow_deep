@@ -22,6 +22,7 @@ import DeleteFriendRequest from '../../graphql/mutations/friend-delete'
 
 import { useParams } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { staticQueryConfig } from '../react-query/defaults'
 
 export enum COMPANION_QUERY_KEYS {
   FRIEND_FULL = 'friend-full',
@@ -34,22 +35,24 @@ export function useCompanionsApi() {
   const { graphQLClient } = useGraphQL()
   const queryClient = useQueryClient()
   const params = useParams()
-
+  
   return {
     getMercenaries: useQuery({
       queryKey: [ COMPANION_QUERY_KEYS.MERCENARIES ],
       queryFn: async () => graphQLClient.request<MercenariesQuery>(GetMercenariessRequest),
+      ...staticQueryConfig,
     }),
     getFriends: useQuery({
       queryKey: [ COMPANION_QUERY_KEYS.FRIENDS ],
       queryFn: async () => graphQLClient.request<FriendsQuery>(GetFriendsRequest),
     }),
     getFriendFull: useQuery({
+      refetchOnWindowFocus: false,
       queryKey: [ COMPANION_QUERY_KEYS.FRIEND_FULL ],
       queryFn: async () => {
-        return params?.id
+        return params?.memberId
           ? graphQLClient.request<FriendFullQuery>(GetFriendFullRequest, {
-              id: params?.id,
+              id: params?.memberId,
             })
           : null
       },
@@ -57,9 +60,9 @@ export function useCompanionsApi() {
     getFriendSummary: useQuery({
       queryKey: [ COMPANION_QUERY_KEYS.FRIEND_SUMMARY ],
       queryFn: async () => {
-        return params?.id
+        return params?.memberId
           ? graphQLClient.request<FriendSummaryQuery>(GetFriendSummaryRequest, {
-              id: params?.id,
+              id: params?.memberId,
             })
           : null
       },

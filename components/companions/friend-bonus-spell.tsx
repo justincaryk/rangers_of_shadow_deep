@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { SparklesIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
 
@@ -15,7 +15,7 @@ import { useSpellsApi } from '../spells/spells-api'
 
 import { MercenaryFeature } from './types'
 import Decrement from '../parts/decrement'
-import { MemberSpell, Spell } from '../spells/types'
+import { MemberSpell } from '../spells/types'
 import { DECREASE, INCREASE } from '../rules/creation-rules'
 
 interface Props {
@@ -25,25 +25,36 @@ export default function FriendBonusSpell({ feat }: Props) {
   const [ show, toggleShow ] = useState(false)
 
   const { data: friend, status: friendQueryStatus } = useCompanionsApi().getFriendSummary
-  const { data: friendSpells, status: friendSpellQueryStatus } = useSpellsApi().getMemberSpells
+  const { data: memberSpells, status: memberSpellsStatus } = useSpellsApi().getMemberSpells
   const { data: spells, status: spellsQueryStatus } = useSpellsApi().getSpells
 
   const { mutate: learnSpell, status: learnStatus, reset: resetLearn } = useSpellsApi().learnSpell
   const { mutate: unlearnSpell, status: unlearnStatus, reset: resetUnlearn } = useSpellsApi().unlearnSpell
-  const { mutate: updateTimesSpellKnown, status: addUseStatus, reset: resetAddUse } = useSpellsApi().buyAdditionalUse
-
-  // useEffect(() => {
-  //     if (learnStatus === 'success') resetLearn()
-  //     if (unlearnStatus === 'success') resetUnlearn()
-  //     if (addUseStatus === 'success') resetAddUse()
-  // }, [learnStatus, unlearnStatus, addUseStatus, resetLearn, resetUnlearn, resetAddUse])
+  const { mutate: updateTimesSpellKnown, status: addUseStatus, reset: resetAddUse } = useSpellsApi().setNumberOfUses
 
   const isLoading = useMemo(() => {
     return learnStatus === 'loading' || unlearnStatus === 'loading' || addUseStatus === 'loading'
   }, [ learnStatus, unlearnStatus, addUseStatus ])
 
+  const canIncrement = useMemo(() => {
+    const totalKnown =
+      memberSpells?.allMemberSpells?.nodes.reduce((prev, curr) => {
+        return (prev = prev + curr.uses)
+      }, 0) ?? 0
+    const totalAllotted = feat.value ?? 0
+    return totalKnown < totalAllotted
+  }, [ feat.value, memberSpells ])
+
+  const checkCanDecrement = (memberSpellId?: string) => {
+    if (!memberSpellId) {
+      return false
+    }
+
+    return true
+  }
+
   const updateLearnedStatus = (spellId: string, spellLookupRef?: MemberSpell) => {
-    if (isLoading) {
+    if (isLoading || !canIncrement) {
       return null
     }
     if (spellLookupRef) {
@@ -63,34 +74,17 @@ export default function FriendBonusSpell({ feat }: Props) {
       return null
     }
 
+    if (spellLookupRef.uses + modifier < 1) {
+      updateLearnedStatus(spellLookupRef.id, spellLookupRef)
+      return null
+    }
+
     updateTimesSpellKnown({
       lookupId: spellLookupRef.id,
       uses: spellLookupRef.uses + modifier,
     })
   }
 
-  const checkCanIncrement = () => {
-    const totalKnown =
-      friendSpells?.allMemberSpells?.nodes.reduce((prev, curr) => {
-        return (prev = prev + curr.uses)
-      }, 0) ?? 0
-    const totalAllotted = feat.value ?? 0
-    return totalKnown < totalAllotted
-  }
-
-  const checkCanDecrement = (memberSpellId?: string) => {
-    if (!memberSpellId) {
-      return false
-    }
-
-    return true
-  }
-
-  if (friendQueryStatus === 'loading' || friendSpellQueryStatus === 'loading' || spellsQueryStatus === 'loading') {
-    return null
-  }
-
-  console.log
   return (
     <div className='space-y-6'>
       <div className='mt-2 cursor-pointer' onClick={() => toggleShow(!show)}>
@@ -105,10 +99,9 @@ export default function FriendBonusSpell({ feat }: Props) {
             <div className='space-y-1 text-sm font-bold'>Choose {feat.value} from the options below:</div>
           </Card>
           {spells?.allSpells?.nodes.map(spell => {
-            const spellLookupRef = friendSpells?.allMemberSpells?.nodes.find(x => x.spellId === spell.id)
-            const canIncrement = checkCanIncrement()
+            const spellLookupRef = memberSpells?.allMemberSpells?.nodes.find(x => x.spellId === spell.id)
             const canDecrement = checkCanDecrement(spellLookupRef?.id)
-            console.log('x: ', spellLookupRef)
+
             return (
               <Card
                 key={spell.id}
@@ -120,50 +113,48 @@ export default function FriendBonusSpell({ feat }: Props) {
                         <div className='text-sm font-semibold'>( uses: {spellLookupRef.uses} )</div>
                       ) : null}
                     </div>
-                    <div className='flex justify-end items-center gap-x-3'>
-                      <div className='flex gap-x-1'>
-                        {spellLookupRef?.uses && (
-                          <div
-                            className={classnames({
-                              'w-6': true,
-                              'cursor-not-allowed': !canIncrement,
-                              'cursor-pointer': canIncrement,
-                            })}
-                          >
-                            <Increment
-                              onClick={() => updateNumberOfUses(spellLookupRef, INCREASE)}
-                              disabled={!canIncrement}
-                            />
+                    {spellLookupRef ? (
+                      <>
+                        <div className='flex justify-end items-center gap-x-3'>
+                          <div className='flex gap-x-1'>
+                            <div
+                              className={classnames({
+                                'w-6': true,
+                                'cursor-not-allowed': !canIncrement,
+                                'cursor-pointer': canIncrement,
+                              })}
+                            >
+                              <Increment
+                                onClick={() => updateNumberOfUses(spellLookupRef, INCREASE)}
+                                disabled={!canIncrement}
+                              />
+                            </div>
+                            <div
+                              className={classnames({
+                                'w-6': true,
+                                'cursor-not-allowed': !canDecrement,
+                                'cursor-pointer': canDecrement,
+                              })}
+                            >
+                              <Decrement
+                                onClick={() => updateNumberOfUses(spellLookupRef, DECREASE)}
+                                disabled={!canDecrement}
+                              />
+                            </div>
                           </div>
-                        )}
-                        {spellLookupRef && (
-                          <div
-                            className={classnames({
-                              'w-6': true,
-                              'cursor-not-allowed': !canDecrement,
-                              'cursor-pointer': canDecrement,
-                            })}
+                          <SmallButton
+                            onClick={() => updateLearnedStatus(spell.id, spellLookupRef)}
+                            disabled={!canDecrement}
                           >
-                            <Decrement
-                              onClick={() => updateNumberOfUses(spellLookupRef, DECREASE)}
-                              disabled={!canDecrement}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      {spellLookupRef ? (
-                        <SmallButton
-                          onClick={() => updateLearnedStatus(spell.id, spellLookupRef)}
-                          disabled={!canDecrement}
-                        >
-                          unlearn
-                        </SmallButton>
-                      ) : (
-                        <SmallButton onClick={() => updateLearnedStatus(spell.id)} disabled={!canIncrement} primary>
-                          learn
-                        </SmallButton>
-                      )}
-                    </div>
+                            unlearn
+                          </SmallButton>
+                        </div>
+                      </>
+                    ) : (
+                      <SmallButton onClick={() => updateLearnedStatus(spell.id)} disabled={!canIncrement} primary>
+                        learn
+                      </SmallButton>
+                    )}
                   </div>
                 }
               >

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
 import { useRouter } from 'next/navigation'
-import { PUBLIC_LINK_ROUTES } from '../nav/routes'
+import { PUBLIC_ROUTE_URLS } from '../nav/routes'
 import { useAuthApi } from './auth-api'
 import { SignupInput } from '../../graphql/generated/graphql'
 
@@ -26,7 +26,7 @@ export default function SignupForm() {
         return
       }
 
-      router.push(PUBLIC_LINK_ROUTES.SIGN_IN)
+      router.push(PUBLIC_ROUTE_URLS.SIGN_IN)
       return
     }
   }, [ data, setSignupError, status, router ])

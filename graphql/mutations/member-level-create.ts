@@ -19,7 +19,15 @@ export default gql`
         }
       }
     ) {
-      clientMutationId
+      memberLevel {
+        id
+        characterId
+        friendId
+        friendLevelGrantId
+        levelGrantId
+        timesGranted
+        timesUsed
+      }
     }
   }
 `

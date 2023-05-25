@@ -20,6 +20,7 @@ import CreateMemberStatRequest from '../../graphql/mutations/member-stat-create'
 import DeleteMemberStatRequest from '../../graphql/mutations/member-stat-delete'
 
 import { COMPANION_QUERY_KEYS } from '../companions/companions-api'
+import { staticQueryConfig } from '../react-query/defaults'
 
 export enum STATS_QUERY_KEYS {
   STATS = 'stats',
@@ -35,6 +36,7 @@ export function useStatsApi() {
     getStats: useQuery({
       queryKey: [ STATS_QUERY_KEYS.STATS ],
       queryFn: async () => graphQLClient.request<StatsQuery>(GetStatsRequest),
+      ...staticQueryConfig,
     }),
     getMemberStats: useQuery({
       queryKey: [ STATS_QUERY_KEYS.MEMBER_STATS ],

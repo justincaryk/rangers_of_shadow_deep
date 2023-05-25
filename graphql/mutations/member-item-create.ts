@@ -7,7 +7,20 @@ export default gql`
         memberItem: { itemId: $itemId, characterId: $characterId, friendId: $friendId, mercenaryId: $mercenaryId }
       }
     ) {
-      clientMutationId
+      memberItem {
+        id
+        characterId
+        friendId
+        itemId
+        itemByItemId {
+          name
+          description
+          class
+          rarity
+          slotCost
+          entityLimit
+        }
+      }
     }
   }
 `

@@ -13,7 +13,17 @@ export default gql`
         }
       }
     ) {
-      clientMutationId
+      memberSkill {
+        id
+        characterId
+        friendId
+        skillId
+        value
+        skillBySkillId {
+          name
+          description
+        }
+      }
     }
   }
 `

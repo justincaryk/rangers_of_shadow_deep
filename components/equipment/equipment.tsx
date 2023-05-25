@@ -4,19 +4,20 @@ import classnames from 'classnames'
 import { useMemo, useState } from 'react'
 
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
-import { Item } from '../../graphql/generated/graphql'
 
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
+import Card from '../parts/card'
+import Checkbox from '../parts/checkbox'
 
 import { MAX_STARTING_ITEM_SLOTS } from '../rules/creation-rules'
 
 import { useEquipmentApi } from './equipment-api'
 import { useRangerApi } from '../ranger/ranger-api'
-import Card from '../parts/card'
-import Checkbox from '../parts/checkbox'
+
+import { Item } from './types'
 
 export default function Equipment() {
   const [ show, toggleShow ] = useState(false)
@@ -112,7 +113,7 @@ export default function Equipment() {
             </Card>
 
             {showMundane &&
-              equipment?.mundane?.nodes.map((item: any) => {
+              equipment?.mundane?.nodes.map(item => {
                 const canIncrement = inventorySlots > 0
                 const canDecrement =
                   ranger?.characterById?.memberItemsByCharacterId.nodes.filter(x => x.itemId === item.id).length ??

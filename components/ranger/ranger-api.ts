@@ -36,6 +36,20 @@ export function useRangerApi() {
   const params = useParams()
 
   return {
+    getAllRangers: useQuery({
+      queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
+      queryFn: async () => graphQLClient.request<AllCharactersQuery>(GetAllCharactersRequest),
+    }),
+    getRangerById: useQuery({
+      queryKey: [ RANGER_QUERY_KEYS.RANGER ],
+      queryFn: async () => {
+        return params?.memberId
+          ? graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
+              id: params?.memberId,
+            })
+          : null
+      },
+    }),
     createRanger: useMutation({
       mutationFn: (data: CreateCharacterMutationVariables) =>
         graphQLClient.request<CreateCharacterMutation>(CreateCharacterRequest, data),
@@ -62,20 +76,6 @@ export function useRangerApi() {
         queryClient.invalidateQueries({
           queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
         })
-      },
-    }),
-    getAllRangers: useQuery({
-      queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
-      queryFn: async () => graphQLClient.request<AllCharactersQuery>(GetAllCharactersRequest),
-    }),
-    getRangerById: useQuery({
-      queryKey: [ RANGER_QUERY_KEYS.RANGER ],
-      queryFn: async () => {
-        return params?.id
-          ? graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
-              id: params?.id,
-            })
-          : null
       },
     }),
     hydrateRanger: useMutation({

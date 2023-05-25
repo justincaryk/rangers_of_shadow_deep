@@ -1,7 +1,7 @@
 'use client'
 
 import classnames from 'classnames'
-import { PRIVATE_LINK_ROUTES } from '../nav/routes'
+import { PRIVATE_ROUTE_URLS } from '../nav/routes'
 import SmallButton from '../parts/small-button'
 import { sectionBaseStyles } from '../parts/styles'
 
@@ -82,7 +82,7 @@ export default function InitCreate() {
   useEffect(() => {
     if (characterHydrated) {
       const rangerId = rangerCreateResult?.createCharacter?.character?.id
-      const hydratedUrl = PRIVATE_LINK_ROUTES.A_RANGER.replace('[id]', rangerId)
+      const hydratedUrl = PRIVATE_ROUTE_URLS.A_RANGER.replace('[memberId]', rangerId)
       router.push(hydratedUrl)
     }
   }, [ router, rangerCreateResult, characterHydrated ])
@@ -91,7 +91,7 @@ export default function InitCreate() {
   useEffect(() => {
     if (friendCreateResult?.createFriend?.friend?.id && friendCreateStatus === 'success') {
       const friendId = friendCreateResult.createFriend.friend.id
-      const hydratedUrl = PRIVATE_LINK_ROUTES.A_COMPANION.replace('[id]', friendId)
+      const hydratedUrl = PRIVATE_ROUTE_URLS.A_COMPANION.replace('[memberId]', friendId)
       router.push(hydratedUrl)
     }
   }, [ router, friendCreateResult, friendCreateStatus ])

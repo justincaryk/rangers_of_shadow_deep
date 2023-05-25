@@ -1,16 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { UserRole } from '../../graphql/generated/graphql'
-import { PUBLIC_LINK_ROUTES, PublicRouteType } from './routes'
+import { PUBLIC_ROUTE_URLS, PublicRouteType } from './routes'
 
 const PUBLIC_ROUTES: PublicRouteType[] = [
   {
-    link: PUBLIC_LINK_ROUTES.SIGN_UP,
+    link: PUBLIC_ROUTE_URLS.SIGN_UP,
     text: 'Signup',
     hasNav: true,
   },
   {
-    link: PUBLIC_LINK_ROUTES.SIGN_IN,
+    link: PUBLIC_ROUTE_URLS.SIGN_IN,
     text: 'Signin',
     hasNav: true,
   },

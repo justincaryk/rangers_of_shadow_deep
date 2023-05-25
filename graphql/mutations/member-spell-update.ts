@@ -7,6 +7,7 @@ export default gql`
         characterId
         friendId
         id
+        uses
       }
     }
   }

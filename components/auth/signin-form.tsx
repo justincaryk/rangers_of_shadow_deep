@@ -11,7 +11,7 @@ import { useAuthApi } from './auth-api'
 import { parseJwt } from '../utils'
 import { useAtom } from 'jotai'
 import { useCurrentUser, useSetCurrentUser } from './atoms/current-user'
-import { PRIVATE_LINK_ROUTES } from '../nav/routes'
+import { PRIVATE_ROUTE_URLS } from '../nav/routes'
 import { SigninInput } from '../../graphql/generated/graphql'
 
 const SigninSchema = Yup.object().shape({
@@ -42,7 +42,7 @@ export default function SigninForm() {
           jwt: data.signin?.jwtToken,
         })
 
-        router.push(PRIVATE_LINK_ROUTES.DASHBOARD)
+        router.push(PRIVATE_ROUTE_URLS.DASHBOARD)
       }
     }
   }, [ router, status, data, currentUser, setCurrentUser ])

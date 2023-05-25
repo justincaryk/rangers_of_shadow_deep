@@ -5,7 +5,17 @@ export default gql`
     addAction: createMemberHeroicAction(
       input: { memberHeroicAction: { characterId: $characterId, heroicActionId: $heroicActionId } }
     ) {
-      clientMutationId
+      memberHeroicAction {
+        id
+        characterId
+        friendId
+        heroicActionId
+        uses
+        heroicActionByHeroicActionId {
+          name
+          description
+        }
+      }
     }
   }
 `

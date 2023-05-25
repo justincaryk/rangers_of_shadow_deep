@@ -6,6 +6,17 @@ export default gql`
       input: { memberSpell: { characterId: $characterId, spellId: $spellId, friendId: $friendId } }
     ) {
       clientMutationId
+      memberSpell {
+        id
+        spellId
+        uses
+        friendId
+        characterId
+        spellBySpellId {
+          name
+          description
+        }
+      }
     }
   }
 `

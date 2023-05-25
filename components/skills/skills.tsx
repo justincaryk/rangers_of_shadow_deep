@@ -80,7 +80,7 @@ export default function Skills() {
           }
           return prev
         }, 0) ?? 0
-      console.log('skill level ups: ', skillLevelUps)
+      
       const totalSkillsIncreased =
         memberSkills?.allMemberSkills?.nodes.reduce((prev, curr) => {
           if (curr.value > 0) {

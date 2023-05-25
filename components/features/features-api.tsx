@@ -11,6 +11,7 @@ import {
 import GetFeaturesRequest from '../../graphql/queries/features'
 import GetFeaturesRelationDataRequest from '../../graphql/queries/feature-relation'
 import UpdateFeatureRefsByIdRequest from '../../graphql/mutations/feature-update'
+import { staticQueryConfig } from '../react-query/defaults'
 
 export enum FEATURES_QUERY_KEYS {
   FEATURES = 'features',
@@ -22,6 +23,16 @@ export function useFeaturesApi() {
   const queryClient = useQueryClient()
 
   return {
+    getFeatures: useQuery({
+      queryKey: [ FEATURES_QUERY_KEYS.FEATURES ],
+      queryFn: async () => graphQLClient.request<FeaturesQuery>(GetFeaturesRequest),
+      ...staticQueryConfig,
+    }),
+    getFeatureRelatedData: useQuery({
+      queryKey: [ FEATURES_QUERY_KEYS.FEATURES_DATA ],
+      queryFn: async () => graphQLClient.request<FeatureRelationDataQuery>(GetFeaturesRelationDataRequest),
+      ...staticQueryConfig,
+    }),
     updateFeatureById: useMutation({
       mutationFn: (data: UpdateFeatureRefsByIdMutationVariables) =>
         graphQLClient.request<UpdateFeatureRefsByIdMutation>(UpdateFeatureRefsByIdRequest, data),
@@ -30,14 +41,6 @@ export function useFeaturesApi() {
           queryKey: [ FEATURES_QUERY_KEYS.FEATURES ],
         })
       },
-    }),
-    getFeatures: useQuery({
-      queryKey: [ FEATURES_QUERY_KEYS.FEATURES ],
-      queryFn: async () => graphQLClient.request<FeaturesQuery>(GetFeaturesRequest),
-    }),
-    getFeatureRelatedData: useQuery({
-      queryKey: [ FEATURES_QUERY_KEYS.FEATURES_DATA ],
-      queryFn: async () => graphQLClient.request<FeatureRelationDataQuery>(GetFeaturesRelationDataRequest),
     }),
   }
 }

@@ -6,7 +6,7 @@ import { Bars3Icon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import Image from 'next/image'
 import { NAV_TEXT_STYLE } from '../utils'
-import { PRIVATE_LINK_ROUTES, PUBLIC_LINK_ROUTES, PrivateRouteType } from './routes'
+import { PRIVATE_ROUTE_URLS, PUBLIC_ROUTE_URLS, PrivateRouteType } from './routes'
 import { AUTH_TOKEN } from '../auth/types'
 import { UserRole } from '../../graphql/generated/graphql'
 import { useAtom } from 'jotai'
@@ -14,44 +14,44 @@ import { useCurrentUser } from '../auth/atoms/current-user'
 
 export const PRIVATE_ROUTES: PrivateRouteType[] = [
   {
-    link: PRIVATE_LINK_ROUTES.DASHBOARD,
+    link: PRIVATE_ROUTE_URLS.DASHBOARD,
     text: 'Dashboard',
     hasNav: false,
     home: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.HEROIC_ACTIONS,
+    link: PRIVATE_ROUTE_URLS.HEROIC_ACTIONS,
     text: 'Heroic Actions',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.SPELLS,
+    link: PRIVATE_ROUTE_URLS.SPELLS,
     text: 'Spells',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.EQUIPMENT,
+    link: PRIVATE_ROUTE_URLS.EQUIPMENT,
     text: 'Equipment',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.INJURIES,
+    link: PRIVATE_ROUTE_URLS.INJURIES,
     text: 'Injuries',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.PROGRESSION,
+    link: PRIVATE_ROUTE_URLS.PROGRESSION,
     text: 'Progression',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_LINK_ROUTES.ADMIN,
+    link: PRIVATE_ROUTE_URLS.ADMIN,
     text: 'Area 51',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
@@ -66,7 +66,7 @@ export const PRIVATE_ROUTES: PrivateRouteType[] = [
 export default function PrivateNavigation() {
   const signout = () => {
     localStorage.setItem(AUTH_TOKEN, '')
-    window.location.href = PUBLIC_LINK_ROUTES.SIGN_IN
+    window.location.href = PUBLIC_ROUTE_URLS.SIGN_IN
   }
 
   const [ user ] = useAtom(useCurrentUser)

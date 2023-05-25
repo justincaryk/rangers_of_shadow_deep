@@ -1,3 +1,5 @@
+'use client'
+
 import {
   HeroicActionsQuery,
   LearnHeroicActionMutation,
@@ -18,6 +20,7 @@ import SetHeroicActionUsesRequest from '../../graphql/mutations/character-heroic
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCurrentMember } from '../react-query/hooks'
+import { staticQueryConfig } from '../react-query/defaults'
 
 export enum HEROIC_ACTIONS_QUERY_KEYS {
   ALL_HEROIC_ACTIONS = 'all_heroic_actions',
@@ -33,6 +36,7 @@ export function useHeroicActionApi() {
     getHeroicActions: useQuery({
       queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.ALL_HEROIC_ACTIONS ],
       queryFn: async () => graphQLClient.request<HeroicActionsQuery>(GetHeroicActionsRequest),
+      ...staticQueryConfig,
     }),
     getMemberHeroicActions: useQuery({
       queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ],
@@ -44,23 +48,30 @@ export function useHeroicActionApi() {
           : null
       },
     }),
-
     learnHeroicAction: useMutation({
       mutationFn: (data: LearnHeroicActionMutationVariables) =>
         graphQLClient.request<LearnHeroicActionMutation>(LearnHeroicActionRequest, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ],
-        })
+      onSuccess: data => {
+        queryClient.setQueryData([ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ], (prev: any) => [
+          ...prev,
+          data.addAction?.memberHeroicAction,
+        ])
+        // queryClient.invalidateQueries({
+        //   queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ],
+        // })
       },
     }),
     buyAdditionalUse: useMutation({
       mutationFn: (data: SetHeroicActionUsesMutationVariables) =>
         graphQLClient.request<SetHeroicActionUsesMutation>(SetHeroicActionUsesRequest, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ],
-        })
+      onSuccess: data => {
+        // queryClient.invalidateQueries({
+        //   queryKey: [HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS],
+        // })
+        queryClient.setQueryData(
+          [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS, data.setHeroicActionUses?.memberHeroicAction?.id ],
+          data.setHeroicActionUses?.memberHeroicAction
+        )
       },
     }),
     unlearnHeroicAction: useMutation({

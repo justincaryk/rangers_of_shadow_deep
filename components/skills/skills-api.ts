@@ -20,6 +20,7 @@ import CreateMemberSkillRequest from '../../graphql/mutations/member-skill-creat
 import DeleteMemberSkillRequest from '../../graphql/mutations/member-skill-delete'
 
 import { COMPANION_QUERY_KEYS } from '../companions/companions-api'
+import { staticQueryConfig } from '../react-query/defaults'
 
 export enum SKILLS_QUERY_KEY {
   ALL_SKILLS = 'all_skills',
@@ -35,6 +36,7 @@ export function useSkillsApi() {
     getSkills: useQuery({
       queryKey: [ SKILLS_QUERY_KEY.ALL_SKILLS ],
       queryFn: async () => graphQLClient.request<SkillsQuery>(GetSkillsRequest),
+      ...staticQueryConfig,
     }),
     getMemberSkills: useQuery({
       queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
@@ -49,11 +51,16 @@ export function useSkillsApi() {
     createMemberSkill: useMutation({
       mutationFn: (data: CreateMemberSkillMutationVariables) =>
         graphQLClient.request<CreateMemberSkillMutation>(CreateMemberSkillRequest, data),
-      onSuccess: (_, variables) => {
+      onSuccess: (data, variables) => {
         if (variables.characterId || variables.friendId) {
-          queryClient.invalidateQueries({
-            queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
-          })
+          queryClient.setQueryData(
+            [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
+            (prev: any) => [ ...prev, data.createMemberSkill?.memberSkill ]
+          )
+
+          // queryClient.invalidateQueries({
+          //   queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
+          // })
         }
         if (variables.mercenaryId) {
           queryClient.invalidateQueries({
@@ -65,10 +72,14 @@ export function useSkillsApi() {
     updateMemberSkill: useMutation({
       mutationFn: (data: UpdateMemberSkillMutationVariables) =>
         graphQLClient.request<UpdateMemberSkillMutation>(UpdateMemberSkillRequest, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
-        })
+      onSuccess: data => {
+        queryClient.setQueryData(
+          [ SKILLS_QUERY_KEY.MEMBER_SKILLS, data.updateMemberSkillById?.memberSkill?.id ],
+          data.updateMemberSkillById?.memberSkill
+        )
+        // queryClient.invalidateQueries({
+        //   queryKey: [SKILLS_QUERY_KEY.MEMBER_SKILLS],
+        // })
       },
     }),
     deleteMemberSkill: useMutation({
@@ -78,6 +89,7 @@ export function useSkillsApi() {
         queryClient.invalidateQueries({
           queryKey: [ COMPANION_QUERY_KEYS.MERCENARIES ],
         })
+        
         queryClient.invalidateQueries({
           queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
         })

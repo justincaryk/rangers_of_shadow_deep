@@ -5,7 +5,15 @@ export default gql`
     updateMemberLevelById(
       input: { memberLevelPatch: { timesGranted: $timesGranted, timesUsed: $timesUsed }, id: $id }
     ) {
-      clientMutationId
+      memberLevel {
+        id
+        characterId
+        friendId
+        friendLevelGrantId
+        levelGrantId
+        timesGranted
+        timesUsed
+      }
     }
   }
 `

@@ -5,7 +5,17 @@ export default gql`
     setHeroicActionUses: updateMemberHeroicActionById(
       input: { memberHeroicActionPatch: { uses: $uses }, id: $lookupId }
     ) {
-      clientMutationId
+      memberHeroicAction {
+        id
+        characterId
+        friendId
+        heroicActionId
+        uses
+        heroicActionByHeroicActionId {
+          name
+          description
+        }
+      }
     }
   }
 `

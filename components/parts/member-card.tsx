@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useMemo } from 'react'
 import { Exact } from '../../graphql/generated/graphql'
 import { useCompanionsApi } from '../companions/companions-api'
-import { PRIVATE_LINK_ROUTES } from '../nav/routes'
+import { PRIVATE_ROUTE_URLS } from '../nav/routes'
 import { useRangerApi } from '../ranger/ranger-api'
 import { MEMBER_TYPE_ENUM } from '../types'
 import { getLetterAt } from '../utils'
@@ -40,11 +40,11 @@ export default function MemberCard({ member, memberType, cardIndex }: MemberCard
     () => ({
       [MEMBER_TYPE_ENUM.RANGER]: {
         delete: deleteRanger,
-        memberUrl: PRIVATE_LINK_ROUTES.A_RANGER.replace('[id]', member.id),
+        memberUrl: PRIVATE_ROUTE_URLS.A_RANGER.replace('[memberId]', member.id),
       },
       [MEMBER_TYPE_ENUM.FRIEND]: {
         delete: deleteFriend,
-        memberUrl: PRIVATE_LINK_ROUTES.A_COMPANION.replace('[id]', member.id),
+        memberUrl: PRIVATE_ROUTE_URLS.A_COMPANION.replace('[memberId]', member.id),
       },
     }),
     [ member, deleteFriend, deleteRanger ]
