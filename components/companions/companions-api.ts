@@ -47,7 +47,6 @@ export function useCompanionsApi() {
       queryFn: async () => graphQLClient.request<FriendsQuery>(GetFriendsRequest),
     }),
     getFriendFull: useQuery({
-      refetchOnWindowFocus: false,
       queryKey: [ COMPANION_QUERY_KEYS.FRIEND_FULL ],
       queryFn: async () => {
         return params?.memberId

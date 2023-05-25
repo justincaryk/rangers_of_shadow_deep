@@ -32,6 +32,11 @@ export function useLevelingApi() {
   const queryClient = useQueryClient()
   const { id, referenceColumnName, memberType } = useCurrentMember()
 
+  const getQueryContextOnMutate = () => {
+    const prev = queryClient.getQueryData([ LEVEL_RULES.MEMBER_LEVELS ]) as MemberLevelsQuery
+    return { old: prev?.allMemberLevels?.nodes ?? [] }
+  }
+
   return {
     rangerRules: useQuery({
       queryKey: [ LEVEL_RULES.RANGER_RULES ],
@@ -56,32 +61,45 @@ export function useLevelingApi() {
     createLevelRef: useMutation({
       mutationFn: (data: AddMemberLevelMutationVariables) =>
         graphQLClient.request<AddMemberLevelMutation>(AddMemberLevelRequest, data),
-      onSuccess: data => {
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, _, context) => {
         if (memberType === 'ranger') {
           queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
         }
         if (memberType === 'friend') {
-          queryClient.setQueryData([ LEVEL_RULES.MEMBER_LEVELS ], (prev: any) => [
-            ...prev,
-            data.createMemberLevel?.memberLevel,
-          ])
-          // queryClient.invalidateQueries({ queryKey: [ LEVEL_RULES.MEMBER_LEVELS ] })
+          if (context?.old && data.createMemberLevel?.memberLevel) {
+            const updated: MemberLevelsQuery = {
+              allMemberLevels: {
+                nodes: [ ...context.old, data.createMemberLevel.memberLevel ],
+              },
+            }
+            queryClient.setQueryData([ LEVEL_RULES.MEMBER_LEVELS ], updated)
+          }
         }
       },
     }),
     updateLevelRef: useMutation({
       mutationFn: (data: UpdateMemberLevelMutationVariables) =>
         graphQLClient.request<UpdateMemberLevelMutation>(UpdateMemberLevelRequest, data),
-      onSuccess: data => {
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, _, context) => {
         if (memberType === 'ranger') {
           queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
         }
-        if (memberType === 'friend') {
-          queryClient.setQueryData(
-            [ LEVEL_RULES.MEMBER_LEVELS, data.updateMemberLevelById?.memberLevel?.id ],
-            data.updateMemberLevelById?.memberLevel
-          )
-          // queryClient.invalidateQueries({ queryKey: [ LEVEL_RULES.MEMBER_LEVELS ] })
+        if (memberType === 'friend' && context?.old) {
+          const updated: MemberLevelsQuery = {
+            allMemberLevels: {
+              nodes: [
+                ...context.old.map(x => {
+                  if (x.id === data.updateMemberLevelById?.memberLevel?.id) {
+                    return data.updateMemberLevelById!.memberLevel!
+                  }
+                  return x
+                }),
+              ],
+            },
+          }
+          queryClient.setQueryData([ LEVEL_RULES.MEMBER_LEVELS ], updated)
         }
       },
     }),

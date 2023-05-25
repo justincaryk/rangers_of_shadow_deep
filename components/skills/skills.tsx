@@ -182,7 +182,7 @@ export default function Skills() {
       //  2. max skill value is 2 per skill type level up
       //  3. must have skill points for spending
       const maxVal = availablePoints.skillLvlGrantCount * increaseLimitForSkillLevelUp
-      console.log('maxVal', maxVal)
+      
       if (rangerSkillsHash[rangerSkill.id].adjustedVal < maxVal) {
         return true
       }

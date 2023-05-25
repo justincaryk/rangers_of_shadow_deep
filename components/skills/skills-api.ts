@@ -32,6 +32,11 @@ export function useSkillsApi() {
   const queryClient = useQueryClient()
   const { id, referenceColumnName } = useCurrentMember()
 
+  const getQueryContextOnMutate = () => {
+    const prev = queryClient.getQueryData([ SKILLS_QUERY_KEY.MEMBER_SKILLS ]) as MemberSkillsQuery
+    return { old: prev?.allMemberSkills?.nodes ?? [] }
+  }
+
   return {
     getSkills: useQuery({
       queryKey: [ SKILLS_QUERY_KEY.ALL_SKILLS ],
@@ -51,16 +56,13 @@ export function useSkillsApi() {
     createMemberSkill: useMutation({
       mutationFn: (data: CreateMemberSkillMutationVariables) =>
         graphQLClient.request<CreateMemberSkillMutation>(CreateMemberSkillRequest, data),
-      onSuccess: (data, variables) => {
-        if (variables.characterId || variables.friendId) {
-          queryClient.setQueryData([ SKILLS_QUERY_KEY.MEMBER_SKILLS ], (prev: any) => [
-            ...prev,
-            data.createMemberSkill?.memberSkill,
-          ])
-
-          // queryClient.invalidateQueries({
-          //   queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
-          // })
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, variables, context) => {
+        if ((variables.characterId || variables.friendId) && context?.old) {
+          queryClient.setQueryData(
+            [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
+            [ ...context?.old, data.createMemberSkill?.memberSkill ]
+          )
         }
         if (variables.mercenaryId) {
           queryClient.invalidateQueries({
@@ -72,14 +74,23 @@ export function useSkillsApi() {
     updateMemberSkill: useMutation({
       mutationFn: (data: UpdateMemberSkillMutationVariables) =>
         graphQLClient.request<UpdateMemberSkillMutation>(UpdateMemberSkillRequest, data),
-      onSuccess: data => {
-        queryClient.setQueryData(
-          [ SKILLS_QUERY_KEY.MEMBER_SKILLS, data.updateMemberSkillById?.memberSkill?.id ],
-          data.updateMemberSkillById?.memberSkill
-        )
-        // queryClient.invalidateQueries({
-        //   queryKey: [SKILLS_QUERY_KEY.MEMBER_SKILLS],
-        // })
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, _, context) => {
+        if (context?.old && data.updateMemberSkillById?.memberSkill) {
+          const updated: MemberSkillsQuery = {
+            allMemberSkills: {
+              nodes: [
+                ...context.old.map(x => {
+                  if (x.id === data.updateMemberSkillById?.memberSkill) {
+                    return data.updateMemberSkillById!.memberSkill!
+                  }
+                  return x
+                }),
+              ],
+            },
+          }
+          queryClient.setQueryData([ SKILLS_QUERY_KEY.MEMBER_SKILLS ], updated)
+        }
       },
     }),
     deleteMemberSkill: useMutation({

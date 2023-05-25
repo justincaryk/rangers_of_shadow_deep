@@ -31,12 +31,10 @@ export function useSpellsApi() {
   const { graphQLClient } = useGraphQL()
   const queryClient = useQueryClient()
   const { id, referenceColumnName } = useCurrentMember()
-  console.log('x: ', {
-    ...staticQueryConfig,
-  })
+
   const getQueryContextOnMutate = () => {
     const prev = queryClient.getQueryData([ SPELLS_QUERY_KEYS.MEMBER_SPELLS ]) as MemberSpellsQuery
-    return { prev: prev || null }
+    return { old: prev.allMemberSpells?.nodes || [] }
   }
 
   return {
@@ -61,11 +59,14 @@ export function useSpellsApi() {
       },
       onMutate: getQueryContextOnMutate,
       onSuccess: (data, _, context) => {
-        if (context?.prev?.allMemberSpells?.nodes) {
-          if (data.addAction?.memberSpell) {
-            context.prev.allMemberSpells.nodes.push(data.addAction.memberSpell)
+        if (context?.old && data.addAction?.memberSpell?.id) {
+          const updated: MemberSpellsQuery = {
+            allMemberSpells: {
+              nodes: [ ...context.old, data.addAction.memberSpell ],
+            },
           }
-          queryClient.setQueryData([ SPELLS_QUERY_KEYS.MEMBER_SPELLS ], () => context.prev)
+
+          queryClient.setQueryData([ SPELLS_QUERY_KEYS.MEMBER_SPELLS ], updated)
         }
       },
     }),
@@ -73,11 +74,18 @@ export function useSpellsApi() {
       mutationFn: (data: SetSpellUsesMutationVariables) =>
         graphQLClient.request<SetSpellUsesMutation>(SetSpellUsesRequest, data),
       onMutate: getQueryContextOnMutate,
-      onSuccess: (data, variables, context) => {
-        if (context?.prev?.allMemberSpells?.nodes) {
-          context.prev.allMemberSpells.nodes.find(x => x.id === data.setSpellUses?.memberSpell?.id)!.uses =
-            variables.uses
-          queryClient.setQueryData([ SPELLS_QUERY_KEYS.MEMBER_SPELLS ], context.prev)
+      onSuccess: (data, _, context) => {
+        if (context?.old) {
+          const updated: MemberSpellsQuery = {
+            allMemberSpells: {
+              nodes: [
+                ...context.old.map(x =>
+                  x.id === data.setSpellUses?.memberSpell?.id ? data.setSpellUses!.memberSpell! : x
+                ),
+              ],
+            },
+          }
+          queryClient.setQueryData([ SPELLS_QUERY_KEYS.MEMBER_SPELLS ], updated)
         }
       },
     }),
@@ -85,13 +93,13 @@ export function useSpellsApi() {
       mutationFn: (data: UnlearnSpellMutationVariables) =>
         graphQLClient.request<UnlearnSpellMutation>(UnlearnSpellRequest, data),
       onMutate: getQueryContextOnMutate,
-      onSuccess: (data, variables, context) => {
-        if (context?.prev?.allMemberSpells?.nodes) {
-          if (data.unlearnSpell?.deletedMemberSpellId) {
-            const filtered = context.prev.allMemberSpells.nodes.filter(x => x.id !== variables.id)
-            context.prev.allMemberSpells.nodes = filtered
+      onSuccess: (_, variables, context) => {
+        if (context?.old) {
+          const updated: MemberSpellsQuery = {
+            allMemberSpells: { nodes: [ ...context.old.filter(x => x.id !== variables.id) ] },
           }
-          queryClient.setQueryData([ SPELLS_QUERY_KEYS.MEMBER_SPELLS ], () => context.prev)
+
+          queryClient.setQueryData([ SPELLS_QUERY_KEYS.MEMBER_SPELLS ], updated)
         }
       },
     }),

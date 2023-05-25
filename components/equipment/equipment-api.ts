@@ -27,6 +27,11 @@ export function useEquipmentApi() {
   const queryClient = useQueryClient()
   const { id, referenceColumnName } = useCurrentMember()
 
+  const getQueryContextOnMutate = () => {
+    const prev = queryClient.getQueryData([ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ]) as MemberItemsQuery
+    return { old: prev?.allMemberItems?.nodes ?? [] }
+  }
+
   return {
     getEquipment: useQuery({
       queryKey: [ EQUIPMENT_QUERY_KEYS.EQUIPMENT ],
@@ -46,27 +51,32 @@ export function useEquipmentApi() {
     createMemberItem: useMutation({
       mutationFn: (data: CreateMemberItemMutationVariables) =>
         graphQLClient.request<CreateMemberItemMutation>(AddItemToRangerRequest, data),
-      onSuccess: data => {
-        queryClient.setQueryData([ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ], (prev: any) => [
-          ...prev,
-          data.createMemberItem?.memberItem,
-        ])
-        // queryClient.invalidateQueries({
-        //   queryKey: [ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ],
-        // })
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, _, context) => {
+        if (context?.old && data.createMemberItem?.memberItem) {
+          const updated: MemberItemsQuery = {
+            allMemberItems: {
+              nodes: [ ...context.old, data.createMemberItem?.memberItem ],
+            },
+          }
+          queryClient.setQueryData([ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ], updated)
+        }
       },
     }),
     deleteMemberItem: useMutation({
       mutationFn: (data: DeleteMemberItemMutationVariables) =>
         graphQLClient.request<DeleteMemberItemMutation>(DeleteRangerItemRequest, data),
-      onSuccess: (data, variables) => {
-        queryClient.setQueryData([ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ], (prev: any) => [
-          ...prev.filter((x: any) => x.id === variables.id),
-          // data.createMemberItem?.memberItem,
-        ])
-        // queryClient.invalidateQueries({
-        //   queryKey: [EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT],
-        // })
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (_, variables, context) => {
+        if (context?.old) {
+          const updated: MemberItemsQuery = {
+            allMemberItems: {
+              nodes: [ ...context.old.filter(x => x.id !== variables.id) ],
+            },
+          }
+
+          queryClient.setQueryData([ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ], updated)
+        }
       },
     }),
   }

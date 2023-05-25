@@ -24,26 +24,26 @@ interface Props {
 export default function FriendBonusSpell({ feat }: Props) {
   const [ show, toggleShow ] = useState(false)
 
-  const { data: friend, status: friendQueryStatus } = useCompanionsApi().getFriendSummary
-  const { data: memberSpells, status: memberSpellsStatus } = useSpellsApi().getMemberSpells
-  const { data: spells, status: spellsQueryStatus } = useSpellsApi().getSpells
+  const { data: friend } = useCompanionsApi().getFriendSummary
+  const { data: memberSpells } = useSpellsApi().getMemberSpells
+  const { data: spells } = useSpellsApi().getSpells
 
-  const { mutate: learnSpell, status: learnStatus, reset: resetLearn } = useSpellsApi().learnSpell
-  const { mutate: unlearnSpell, status: unlearnStatus, reset: resetUnlearn } = useSpellsApi().unlearnSpell
-  const { mutate: updateTimesSpellKnown, status: addUseStatus, reset: resetAddUse } = useSpellsApi().setNumberOfUses
-
+  const { mutate: learnSpell, status: learnStatus } = useSpellsApi().learnSpell
+  const { mutate: unlearnSpell, status: unlearnStatus } = useSpellsApi().unlearnSpell
+  const { mutate: updateTimesSpellKnown, status: addUseStatus } = useSpellsApi().setNumberOfUses
+  
   const isLoading = useMemo(() => {
     return learnStatus === 'loading' || unlearnStatus === 'loading' || addUseStatus === 'loading'
   }, [ learnStatus, unlearnStatus, addUseStatus ])
 
-  const canIncrement = useMemo(() => {
+  const checkCanIncrement = () => {
     const totalKnown =
       memberSpells?.allMemberSpells?.nodes.reduce((prev, curr) => {
         return (prev = prev + curr.uses)
       }, 0) ?? 0
     const totalAllotted = feat.value ?? 0
     return totalKnown < totalAllotted
-  }, [ feat.value, memberSpells ])
+  }
 
   const checkCanDecrement = (memberSpellId?: string) => {
     if (!memberSpellId) {
@@ -54,14 +54,14 @@ export default function FriendBonusSpell({ feat }: Props) {
   }
 
   const updateLearnedStatus = (spellId: string, spellLookupRef?: MemberSpell) => {
-    if (isLoading || !canIncrement) {
+    if (isLoading) {
       return null
     }
     if (spellLookupRef) {
       unlearnSpell({
         id: spellLookupRef.id,
       })
-    } else {
+    } else if (checkCanIncrement()) {
       learnSpell({
         friendId: friend?.friendById?.id,
         spellId,
@@ -75,7 +75,7 @@ export default function FriendBonusSpell({ feat }: Props) {
     }
 
     if (spellLookupRef.uses + modifier < 1) {
-      updateLearnedStatus(spellLookupRef.id, spellLookupRef)
+      updateLearnedStatus(spellLookupRef.spellId, spellLookupRef)
       return null
     }
 
@@ -100,6 +100,7 @@ export default function FriendBonusSpell({ feat }: Props) {
           </Card>
           {spells?.allSpells?.nodes.map(spell => {
             const spellLookupRef = memberSpells?.allMemberSpells?.nodes.find(x => x.spellId === spell.id)
+            const canIncrement = checkCanIncrement()
             const canDecrement = checkCanDecrement(spellLookupRef?.id)
 
             return (

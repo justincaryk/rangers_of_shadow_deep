@@ -32,6 +32,11 @@ export function useHeroicActionApi() {
   const queryClient = useQueryClient()
   const { id, referenceColumnName } = useCurrentMember()
 
+  const getQueryContextOnMutate = () => {
+    const prev = queryClient.getQueryData([ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ]) as MemberHeroicActionsQuery
+    return { old: prev?.allMemberHeroicActions?.nodes ?? [] }
+  }
+
   return {
     getHeroicActions: useQuery({
       queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.ALL_HEROIC_ACTIONS ],
@@ -51,36 +56,56 @@ export function useHeroicActionApi() {
     learnHeroicAction: useMutation({
       mutationFn: (data: LearnHeroicActionMutationVariables) =>
         graphQLClient.request<LearnHeroicActionMutation>(LearnHeroicActionRequest, data),
-      onSuccess: data => {
-        queryClient.setQueryData([ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ], (prev: any) => [
-          ...prev,
-          data.addAction?.memberHeroicAction,
-        ])
-        // queryClient.invalidateQueries({
-        //   queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ],
-        // })
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, _, context) => {
+        if (context?.old && data.addAction?.memberHeroicAction) {
+          const updated: MemberHeroicActionsQuery = {
+            allMemberHeroicActions: {
+              nodes: [ ...context.old, data.addAction?.memberHeroicAction ],
+            },
+          }
+          queryClient.setQueryData([ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ], updated)
+        }
       },
     }),
     buyAdditionalUse: useMutation({
       mutationFn: (data: SetHeroicActionUsesMutationVariables) =>
         graphQLClient.request<SetHeroicActionUsesMutation>(SetHeroicActionUsesRequest, data),
-      onSuccess: data => {
-        // queryClient.invalidateQueries({
-        //   queryKey: [HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS],
-        // })
-        queryClient.setQueryData(
-          [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS, data.setHeroicActionUses?.memberHeroicAction?.id ],
-          data.setHeroicActionUses?.memberHeroicAction
-        )
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, _, context) => {
+        if (context?.old && data.setHeroicActionUses?.memberHeroicAction) {
+          const updated: MemberHeroicActionsQuery = {
+            allMemberHeroicActions: {
+              nodes: [
+                ...context.old.map(x => {
+                  if (x.id === data.setHeroicActionUses?.memberHeroicAction?.id) {
+                    return data.setHeroicActionUses!.memberHeroicAction!
+                  }
+                  return x
+                }),
+              ],
+            },
+          }
+          queryClient.setQueryData([ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ], updated)
+        }
       },
     }),
     unlearnHeroicAction: useMutation({
       mutationFn: (data: UnlearnHeroicActionMutationVariables) =>
         graphQLClient.request<UnlearnHeroicActionMutation>(UnlearnHeroicActionRequest, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ],
-        })
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (_, variables, context) => {
+        if (context?.old) {
+          const updated: MemberHeroicActionsQuery = {
+            allMemberHeroicActions: {
+              nodes: [
+                ...context.old.filter(x => x.id !== variables.id),
+              ],
+            },
+          }
+
+          queryClient.setQueryData([ HEROIC_ACTIONS_QUERY_KEYS.MEMBER_HEROIC_ACTIONS ], updated)
+        }
       },
     }),
   }
