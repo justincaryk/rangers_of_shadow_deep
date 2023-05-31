@@ -98,9 +98,7 @@ export function useHeroicActionApi() {
         if (context?.old) {
           const updated: MemberHeroicActionsQuery = {
             allMemberHeroicActions: {
-              nodes: [
-                ...context.old.filter(x => x.id !== variables.id),
-              ],
+              nodes: [ ...context.old.filter(x => x.id !== variables.id) ],
             },
           }
 
