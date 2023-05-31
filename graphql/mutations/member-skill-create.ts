@@ -19,9 +19,11 @@ export default gql`
         friendId
         skillId
         value
+        nodeId
         skillBySkillId {
           name
           description
+          nodeId
         }
       }
     }

@@ -13,6 +13,7 @@ export default gql`
         levelGrantId
         timesGranted
         timesUsed
+        nodeId
       }
     }
   }

@@ -9,6 +9,7 @@ export default gql`
       mercenaryId
       bonusSkill
       avatarUrl
+      nodeId
     }
   }
 `

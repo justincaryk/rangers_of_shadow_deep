@@ -7,6 +7,7 @@ export default gql`
         name
         description
         id
+        nodeId
       }
     }
     allLevelGrants {
@@ -14,24 +15,28 @@ export default gql`
         id
         name
         description
+        nodeId
       }
     }
     allFriendLevelGrants {
       nodes {
         id
         description
+        nodeId
       }
     }
     allSkills {
       nodes {
         id
         name
+        nodeId
       }
     }
     allStats {
       nodes {
         id
         name
+        nodeId
       }
     }
     allItems {
@@ -39,6 +44,7 @@ export default gql`
         name
         id
         description
+        nodeId
       }
     }
     allMercenaries {
@@ -46,6 +52,7 @@ export default gql`
         id
         name
         description
+        nodeId
       }
     }
   }

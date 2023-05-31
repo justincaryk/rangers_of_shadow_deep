@@ -7,6 +7,7 @@ export default gql`
       memberSpell {
         characterId
         friendId
+        nodeId
       }
     }
   }

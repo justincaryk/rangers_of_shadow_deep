@@ -5,7 +5,7 @@ export default gql`
     updateCharacterBpLookupById(
       input: {
         characterBpLookupPatch: {
-          bpSpentOnHeroicActions: $heroic
+          bpSpentOnHeroicAbilities: $heroic
           bpSpentOnRp: $rp
           bpSpentOnSkills: $skills
           bpSpentOnStats: $stats

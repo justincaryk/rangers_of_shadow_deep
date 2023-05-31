@@ -9,9 +9,11 @@ export default gql`
         uses
         friendId
         characterId
+        nodeId
         spellBySpellId {
           name
           description
+          nodeId
         }
       }
     }

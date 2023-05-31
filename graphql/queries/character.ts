@@ -44,6 +44,7 @@ export default gql`
                 statId
                 value
                 mechanicMod
+                nodeId
               }
             }
             nodeId
@@ -91,7 +92,7 @@ export default gql`
           bpSpentOnStats
           bpSpentOnSkills
           bpSpentOnRp
-          bpSpentOnHeroicActions
+          bpSpentOnHeroicAbilities
           nodeId
           characterId
         }
@@ -107,7 +108,9 @@ export default gql`
             grantType
             name
             description
+            nodeId
           }
+          nodeId
         }
         totalCount
       }

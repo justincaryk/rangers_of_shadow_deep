@@ -16,13 +16,16 @@ export default gql`
         move
         shoot
         will
+        nodeId
         memberItemsByMercenaryId {
           nodes {
             id
             itemId
+            nodeId
             itemByItemId {
               name
               description
+              nodeId
             }
           }
         }
@@ -31,8 +34,10 @@ export default gql`
             id
             skillId
             value
+            nodeId
             skillBySkillId {
               name
+              nodeId
             }
           }
         }
@@ -41,8 +46,10 @@ export default gql`
             id
             statId
             value
+            nodeId
             statByStatId {
               name
+              nodeId
             }
           }
         }
@@ -53,6 +60,7 @@ export default gql`
             mechanicMod
             pickIds
             value
+            nodeId
           }
         }
       }

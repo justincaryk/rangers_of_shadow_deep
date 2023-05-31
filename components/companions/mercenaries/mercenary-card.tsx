@@ -1,11 +1,11 @@
-import Card from '../parts/card'
-import SmallButton from '../parts/small-button'
+import Card from '../../parts/card'
+import SmallButton from '../../parts/small-button'
 import classnames from 'classnames'
 
-import { BASE_STATS_ENUM, EXTENDED_STATS_ENUM } from '../types'
-import { Mercenary } from './types'
+import { BASE_STATS_ENUM, EXTENDED_STATS_ENUM } from '../../types'
+import { Mercenary } from '../types'
 
-import { objectKeys } from '../utils'
+import { objectKeys } from '../../utils'
 
 const baseBorderColor = { 'border border-orange-900 border-collapse': true }
 const baseBgColor = 'bg-amber-600/50'

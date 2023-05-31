@@ -8,6 +8,7 @@ export default gql`
         description
         ppMilestoneFirst
         ppMilestoneSecond
+        nodeId
         featuresByFriendLevelGrantId {
           nodes {
             id
@@ -17,6 +18,7 @@ export default gql`
             statId
             skillId
             pickIds
+            nodeId
           }
         }
       }

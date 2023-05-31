@@ -24,6 +24,8 @@ exports.up = knex =>
         excludes_item_id uuid REFERENCES ranger.items (id),
         requires_item_id uuid REFERENCES ranger.items(id),
         pick_ids  uuid[],
+        count smallint,
+        limit_per smallint,
         value real -- allow decimals
     );
 

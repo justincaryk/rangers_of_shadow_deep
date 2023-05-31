@@ -23,6 +23,7 @@ export default gql`
         levelGrantId
         mercenaryId
         pickIds
+        nodeId
       }
     }
   }

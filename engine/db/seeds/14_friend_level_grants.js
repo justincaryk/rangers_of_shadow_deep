@@ -6,6 +6,10 @@ exports.seed = function (knex) {
       // Inserts seed entries
       return knex('ranger.friend_level_grants').insert([
         {
+          pp_milestone_first: 0,
+          description: '+3 to one Skill',
+        },
+        {
           pp_milestone_first: 10,
           pp_milestone_second: 60,
           description: '+1 Health',

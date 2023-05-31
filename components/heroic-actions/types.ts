@@ -7,9 +7,5 @@ export type HeroicAction = Omit<Codegen_HeroicAction, 'memberHeroicActionsByHero
 
 export type MemberHeroicAction = Omit<
   Codegen_MemberHeroicAction,
-  | 'characterByCharacterId'
-  | 'characterCompanionByCompanionId'
-  | 'heroicActionByHeroicActionId'
-  | '__typename'
-  | 'nodeId'
+  'characterByCharacterId' | 'characterCompanionByCompanionId' | 'heroicActionByHeroicActionId' | '__typename'
 >

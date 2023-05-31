@@ -8,6 +8,7 @@ export default gql`
         characterId
         friendId
         itemId
+        nodeId
         itemByItemId {
           name
           description
@@ -15,6 +16,7 @@ export default gql`
           rarity
           slotCost
           entityLimit
+          nodeId
         }
       }
     }

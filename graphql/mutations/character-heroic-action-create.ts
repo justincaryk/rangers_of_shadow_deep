@@ -11,9 +11,11 @@ export default gql`
         friendId
         heroicActionId
         uses
+        nodeId
         heroicActionByHeroicActionId {
           name
           description
+          nodeId
         }
       }
     }

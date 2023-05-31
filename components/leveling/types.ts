@@ -1,21 +1,24 @@
+import { Features } from '@headlessui/react/dist/utils/render'
 import {
   LevelGrant as Codegen_LevelGrant,
   MemberLevel as Codegen_MemberLevel,
   RangerLevelCost as Codegen_RangerLevelCost,
   FriendLevelGrant as Codegen_FriendLevelGrant,
+  MemberLevelsQuery as Codegen_MemberLevelsQuery,
   FeaturesConnection,
 } from '../../graphql/generated/graphql'
 import { Feature } from '../features/types'
 
 export type MemberLevel = Omit<
   Codegen_MemberLevel,
-  | 'nodeId'
-  | 'friendLevelGrantByFriendLevelGrantId'
-  | 'friendByFriendId'
-  | 'characterByCharacterId'
-  | 'levelGrantByLevelGrantId'
-  | '__typename'
->
+  'characterByCharacterId' | 'friendByFriendId' | 'friendLevelGrantByFriendLevelGrantId'
+> & {
+  friendLevelGrantByFriendLevelGrantId?: Omit<FriendLevelGrant, 'featuresByFriendLevelGrantId' | 'description'> & {
+    featuresByFriendLevelGrantId?: {
+      nodes: Omit<Feature, 'name'>[]
+    }
+  }
+}
 
 export interface LevelGrant
   extends Omit<
@@ -27,19 +30,15 @@ export interface LevelGrant
     | 'rangerLevelCostsByBenefit'
     | 'memberLevelsByLevelGrantId'
     | 'featuresByLevelGrantId'
-    | 'nodeId'
   > {
   featuresByLevelGrantId: Omit<FeaturesConnection, '__typename' | 'edges' | 'pageInfo' | 'totalCount' | 'nodes'> & {
     nodes: Pick<Feature, 'id' | 'mechanicMod' | 'mechanicClass' | 'primaryType' | 'value'>[]
   }
 }
 
-export type RangerLevelCost = Omit<Codegen_RangerLevelCost, '__typename' | 'nodeId'>
+export type RangerLevelCost = Omit<Codegen_RangerLevelCost, '__typename'>
 
-export type FriendLevelGrant = Omit<
-  Codegen_FriendLevelGrant,
-  'nodeId' | '__typename' | 'memberLevelsByFriendLevelGrantId' | 'featuresByFriendLevelGrantId'
->
+export type FriendLevelGrant = Omit<Codegen_FriendLevelGrant, '__typename' | 'memberLevelsByFriendLevelGrantId'>
 
 export type FriendLevelGrantUnwound = FriendLevelGrant & {
   unwoundCost: number

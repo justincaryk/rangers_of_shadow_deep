@@ -9,11 +9,13 @@ export default gql`
         friendId
         statId
         value
+        nodeId
         statByStatId {
           name
           rangerDefault
           statType
           hardCap
+          nodeId
         }
       }
     }

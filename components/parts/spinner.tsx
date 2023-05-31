@@ -2,7 +2,7 @@ import classnames from 'classnames'
 
 export const Spinner = () => {
   const baseStyles = {
-    'spinner-grow inline-block w-8 h-8 bg-current rounded-full opacity-0': true,
+    'spinner-grow inline-block w-4 h-4 bg-current rounded-full': true,
   }
 
   return (
@@ -10,6 +10,7 @@ export const Spinner = () => {
       <div
         className={classnames({
           ...baseStyles,
+          // 'opacity-0': false,
           'text-cyan-900': true,
         })}
         role='status'

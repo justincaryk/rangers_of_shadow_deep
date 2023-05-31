@@ -8,6 +8,7 @@ export default gql`
         cost
         levelMin
         levelMax
+        nodeId
       }
     }
     levelGrants: allLevelGrants(orderBy: FIRST_LEVEL_GRANTED_ASC) {
@@ -26,6 +27,7 @@ export default gql`
             value
             mechanicClass
             pickIds
+            nodeId
           }
         }
       }

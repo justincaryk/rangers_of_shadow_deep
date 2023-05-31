@@ -5,16 +5,17 @@ export default gql`
     addAction: createMemberSpell(
       input: { memberSpell: { characterId: $characterId, spellId: $spellId, friendId: $friendId } }
     ) {
-      clientMutationId
       memberSpell {
         id
         spellId
         uses
         friendId
         characterId
+        nodeId
         spellBySpellId {
           name
           description
+          nodeId
         }
       }
     }

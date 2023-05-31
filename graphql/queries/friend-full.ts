@@ -8,13 +8,16 @@ export default gql`
       progressionPoints
       mercenaryId
       bonusSkill
+      nodeId
       skillByBonusSkill {
+        nodeId
         name
         id
         description
       }
       mercenaryByMercenaryId {
         id
+        nodeId
         description
         cost
         name
@@ -32,13 +35,16 @@ export default gql`
             mechanicMod
             pickIds
             value
+            nodeId
           }
         }
         memberItemsByMercenaryId {
           nodes {
             id
             itemId
+            nodeId
             itemByItemId {
+              nodeId
               name
               description
             }
@@ -46,6 +52,7 @@ export default gql`
         }
         memberSkillsByMercenaryId {
           nodes {
+            nodeId
             id
             skillId
             value
@@ -56,6 +63,7 @@ export default gql`
         }
         memberStatsByMercenaryId {
           nodes {
+            nodeId
             id
             statId
             value
@@ -68,6 +76,7 @@ export default gql`
       memberLevelsByFriendId {
         totalCount
         nodes {
+          nodeId
           id
           friendId
           friendLevelGrantId
@@ -78,9 +87,11 @@ export default gql`
       }
       memberItemsByFriendId {
         nodes {
+          nodeId
           id
           itemId
           itemByItemId {
+            nodeId
             description
             name
           }
@@ -91,6 +102,7 @@ export default gql`
           heroicActionId
           id
           uses
+          nodeId
         }
         totalCount
       }
@@ -99,6 +111,7 @@ export default gql`
           id
           statId
           value
+          nodeId
         }
       }
       memberSkillsByFriendId {
@@ -106,6 +119,7 @@ export default gql`
           skillId
           value
           id
+          nodeId
         }
       }
       memberSpellsByFriendId {
@@ -113,6 +127,7 @@ export default gql`
           id
           spellId
           uses
+          nodeId
         }
         totalCount
       }

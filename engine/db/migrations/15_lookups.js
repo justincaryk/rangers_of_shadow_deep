@@ -58,13 +58,13 @@ exports.up = knex =>
     CREATE TABLE ranger.character_bp_lookup (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
-      bp_spent_on_heroic_actions smallint DEFAULT 0 NOT NULL,
+      bp_spent_on_heroic_abilities smallint DEFAULT 0 NOT NULL,
       bp_spent_on_skills smallint DEFAULT 0 NOT NULL,
       bp_spent_on_stats smallint DEFAULT 0 NOT NULL,
       bp_spent_on_rp smallint DEFAULT 0 NOT NULL
     );
 
-    -- ranger + level ups
+    -- ranger/friend + level ups
     CREATE TABLE ranger.member_levels (
       id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
       character_id uuid REFERENCES ranger.characters (id),
@@ -72,7 +72,7 @@ exports.up = knex =>
       level_grant_id uuid REFERENCES ranger.level_grants (id),
       friend_level_grant_id uuid REFERENCES ranger.friend_level_grants (id),
       times_granted smallint DEFAULT 1 NOT NULL,
-      times_used smallint DEFAULT 1 NOT NULL,
+      times_used smallint DEFAULT 0 NOT NULL,
       CONSTRAINT check_field_refs_match_type 
 	      CHECK ((friend_id IS NULL AND friend_level_grant_id IS NULL) <> (character_id IS NULL AND level_grant_id IS NULL)),
 	    CONSTRAINT check_member_type_is_valid

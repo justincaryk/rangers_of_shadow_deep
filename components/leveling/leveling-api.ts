@@ -6,6 +6,7 @@ import {
   AddMemberLevelMutation,
   AddMemberLevelMutationVariables,
   FriendLevelRulesQuery,
+  MemberLevel,
   MemberLevelsQuery,
   RangerLevelingRulesQuery,
   UpdateMemberLevelMutation,
@@ -70,7 +71,7 @@ export function useLevelingApi() {
           if (context?.old && data.createMemberLevel?.memberLevel) {
             const updated: MemberLevelsQuery = {
               allMemberLevels: {
-                nodes: [ ...context.old, data.createMemberLevel.memberLevel ],
+                nodes: [ ...context.old, data.createMemberLevel.memberLevel ] as MemberLevel[],
               },
             }
             queryClient.setQueryData([ LEVEL_RULES.MEMBER_LEVELS ], updated)

@@ -10,8 +10,8 @@ export type Feature = Omit<
   | 'itemFeaturesByFeatureId'
   | 'levelGrantByLevelGrantId'
   | 'mercenaryByMercenaryId'
-  | 'nodeId'
   | 'pickIds'
+  | 'memberLevelsByFriendLevelGrantId'
 > & {
   pickIds?: string[]
 }

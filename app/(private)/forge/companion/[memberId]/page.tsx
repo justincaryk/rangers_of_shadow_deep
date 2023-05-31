@@ -17,10 +17,10 @@ import MinorHeader from '../../../../../components/parts/minor-header'
 // import { getAdjustedRecruitmentPoints, objectKeys } from '../../../../../components/utils'
 
 // import { BASE_RECRUITMENT_POINTS, RECRUITMENT_POINTS_PER_BP } from '../../../../../components/rules/creation-rules'
-import FriendCore from '../../../../../components/companions/friend-core'
-import MercTypeSelect from '../../../../../components/companions/merc-type-select'
-import FriendBonusSkill from '../../../../../components/companions/friend-bonus-skill'
-import FriendPickContainer from '../../../../../components/companions/friend-pick-container'
+import FriendCore from '../../../../../components/companions//friend/friend-core'
+import PickMercType from '../../../../../components/companions/friend/pick-merc-type'
+import PickSkill from '../../../../../components/companions/friend/pick-skill'
+import FriendPickContainer from '../../../../../components/companions/friend/pick-container'
 
 interface Props {
   params: {
@@ -125,14 +125,6 @@ export default function Friend() {
         }
       />
       */}
-
-      <StackSection>
-        <MercTypeSelect />
-      </StackSection>
-
-      <StackSection>
-        <FriendBonusSkill />
-      </StackSection>
 
       <FriendPickContainer />
     </div>

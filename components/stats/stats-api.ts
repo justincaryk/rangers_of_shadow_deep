@@ -32,6 +32,11 @@ export function useStatsApi() {
   const queryClient = useQueryClient()
   const { id, referenceColumnName } = useCurrentMember()
 
+  const getQueryContextOnMutate = () => {
+    const prev = queryClient.getQueryData([ STATS_QUERY_KEYS.MEMBER_STATS ]) as MemberStatsQuery
+    return { old: prev?.allMemberStats?.nodes || [] }
+  }
+
   return {
     getStats: useQuery({
       queryKey: [ STATS_QUERY_KEYS.STATS ],
@@ -51,13 +56,24 @@ export function useStatsApi() {
     createMemberStat: useMutation({
       mutationFn: (data: CreateMemberStatMutationVariables) =>
         graphQLClient.request<CreateMemberStatMutation>(CreateMemberStatRequest, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: [ COMPANION_QUERY_KEYS.MERCENARIES ],
-        })
-        queryClient.invalidateQueries({
-          queryKey: [ STATS_QUERY_KEYS.MEMBER_STATS ],
-        })
+      onMutate: getQueryContextOnMutate,
+      onSuccess: (data, variables, context) => {
+        if (variables.friendId) {
+          if (context?.old && data.createMemberStat?.memberStat?.id) {
+            const updated: MemberStatsQuery = {
+              allMemberStats: {
+                nodes: [ ...context.old, data.createMemberStat.memberStat ],
+              },
+            }
+
+            queryClient.setQueryData([ STATS_QUERY_KEYS.MEMBER_STATS ], updated)
+          }
+        }
+        if (variables.characterId) {
+          queryClient.invalidateQueries({
+            queryKey: [ STATS_QUERY_KEYS.MEMBER_STATS ],
+          })
+        }
       },
     }),
     updateMemberStatById: useMutation({

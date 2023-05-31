@@ -1,8 +1,7 @@
 'use client'
 
 import MercenaryCard, { MercenaryProps } from './mercenary-card'
-import { useCompanionsApi } from './companions-api'
-import { Mercenary } from './types'
+import { useCompanionsApi } from '../companions-api'
 
 type Mercenaries = Omit<MercenaryProps, 'mercenary'>
 

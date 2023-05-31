@@ -11,6 +11,26 @@ export default gql`
         levelGrantId
         timesGranted
         timesUsed
+        nodeId
+        friendLevelGrantByFriendLevelGrantId {
+          id
+          ppMilestoneFirst
+          ppMilestoneSecond
+          nodeId
+          featuresByFriendLevelGrantId {
+            nodes {
+              id
+              primaryType
+              mechanicClass
+              mechanicMod
+              value
+              statSubtype
+              statId
+              pickIds
+              nodeId
+            }
+          }
+        }
       }
     }
   }

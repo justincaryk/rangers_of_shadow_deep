@@ -2,9 +2,9 @@ import { Skill as Codegen_Skill, MemberSkill as Codegen_MemberSkill } from '../.
 
 export type Skill = Omit<
   Codegen_Skill,
-  'friendsByBonusSkill' | 'memberSkillsBySkillId' | 'featuresBySkillId' | '__typename' | 'nodeId'
+  'friendsByBonusSkill' | 'memberSkillsBySkillId' | 'featuresBySkillId' | '__typename'
 >
 export type MemberSkill = Omit<
   Codegen_MemberSkill,
-  'characterByCharacterId' | 'characterCompanionByCompanionId' | 'skillBySkillId' | '__typename' | 'nodeId'
+  'characterByCharacterId' | 'characterCompanionByCompanionId' | 'skillBySkillId' | '__typename'
 >

@@ -8,12 +8,14 @@ import classnames from 'classnames'
 import Card from '../parts/card'
 import { baseInputClasses } from '../parts/input'
 import SmallButton from '../parts/small-button'
+import { Spinner } from '../parts/spinner'
 import Loader from '../loader'
 
 import { useLevelingApi } from './leveling-api'
 import { useCompanionsApi } from '../companions/companions-api'
+import { useStatsApi } from '../stats/stats-api'
 
-import { FriendPatch } from '../../graphql/generated/graphql'
+import { FriendPatch, MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
 import { FriendLevelGrant, FriendLevelGrantUnwound, MemberLevel } from './types'
 import { FriendSummary } from '../companions/types'
 
@@ -29,10 +31,11 @@ interface LevelUpCardProps {
 const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
   const { mutate: mutateFriend } = useCompanionsApi().updateFriend
   const { data: levelsData } = useLevelingApi().friendRules
-  const { mutate: createLevelRef } = useLevelingApi().createLevelRef
-  const { mutate: updateLevelRef } = useLevelingApi().updateLevelRef
+  const { mutate: createLevelRef, status: createLevelStatus } = useLevelingApi().createLevelRef
+  const { mutate: updateLevelRef, status: updateLevelStatus } = useLevelingApi().updateLevelRef
+  const { mutate: addMemberStat, status: addMemberStatStatus } = useStatsApi().createMemberStat
 
-  const handleSubmit = (data: FriendPatch) => {
+  const updageProgressionPoints = (data: FriendPatch) => {
     mutateFriend({
       id: friend.id,
       patch: {
@@ -91,10 +94,23 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
     return !isMaxRank && hasRequisitePoints
   }, [ friend, levelsData, memberLevels ])
 
-  const tryBuyLevel = () => {
+  const addStatFromLevel = (level: FriendLevelGrant) => {
+    // check is a mod type
+    const feature = level.featuresByFriendLevelGrantId.nodes.find(feat => feat.mechanicMod === MechanicModType.Modifier)
+    if (feature?.mechanicClass === MechanicClassType.Stat) {
+      addMemberStat({
+        friendId: friend.id,
+        statId: feature.statId,
+        value: feature.value ?? 0,
+      })
+    }
+  }
+
+  const tryBuyLevel = async () => {
     if (!levelUpAvail || !levelsUnwound.length) {
       return null
     }
+
     const uniqueLevelRecordsExpected = levelsData?.allFriendLevelGrants?.nodes?.length ?? 0
 
     // the friend doesn't have level loopup records for each unique level up type
@@ -102,18 +118,22 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
       for (const level of levelsUnwound) {
         const purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
         if (!purchased) {
-          return createLevelRef({
+          // the next two calls need to be done separately because of the varying level up types
+          addStatFromLevel(level)
+
+          createLevelRef({
             friendId: friend.id,
             friendLevelGrantId: level.id,
             timesGranted: 1,
           })
+          return
         }
       }
     }
     // the friend has already hydrated records with unique benefits, now we just need to update the count
     else {
       for (const level of levelsUnwound) {
-        let purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
+        const purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
         if (!purchased) {
           console.warn('rut roh. cant find the right level')
           return
@@ -123,29 +143,44 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
         const { timesGranted } = purchased
 
         if (canBeBoughtTwice && timesGranted === 1) {
-          return updateLevelRef({
+          // the next two calls need to be done separately because of the varying level up types
+          addStatFromLevel(level)
+
+          updateLevelRef({
             id: purchased.id,
             timesGranted: purchased.timesGranted + 1,
+            timesUsed: purchased.timesUsed + 1,
           })
         }
       }
     }
   }
 
+  const isLoading = useMemo(() => {
+    if (createLevelStatus === 'loading' || updateLevelStatus === 'loading' || addMemberStatStatus === 'loading') {
+      return true
+    }
+    return false
+  }, [ createLevelStatus, updateLevelStatus, addMemberStatStatus ])
+
   return (
     <div className='space-y-4'>
       <div className='flex gap-x-4 justify-between items-center'>
         <div className='font-bold'>Progression Points: {friend.progressionPoints}</div>
-        <SmallButton
-          onClick={tryBuyLevel}
-          type='button'
-          className={classnames({
-            'bg-lime-500': levelUpAvail,
-            'cursor-not-allowed': !levelUpAvail,
-          })}
-        >
-          Unlock progression reward
-        </SmallButton>
+        {true ? (
+          <Spinner />
+        ) : (
+          <SmallButton
+            onClick={tryBuyLevel}
+            type='button'
+            className={classnames({
+              'bg-lime-500': levelUpAvail,
+              'cursor-not-allowed': !levelUpAvail,
+            })}
+          >
+            Unlock progression reward
+          </SmallButton>
+        )}
       </div>
       <table className='table-auto text-xs border-collapse'>
         <thead>
@@ -169,7 +204,7 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
             progressionPoints: friend.progressionPoints ?? 0,
           }}
           validationSchema={FriendLevelingFieldsSchema}
-          onSubmit={handleSubmit}
+          onSubmit={updageProgressionPoints}
         >
           {({ submitForm, errors }) => (
             <Form className='flex gap-x-6 justify-content'>
@@ -200,7 +235,10 @@ export default function FriendLeveling() {
     <div>
       <div className='space-y-1'>
         <Card>
-          <LevelUpCardContent friend={friend.friendById} memberLevels={memberLevels?.allMemberLevels?.nodes ?? []} />
+          <LevelUpCardContent
+            friend={friend.friendById}
+            memberLevels={(memberLevels?.allMemberLevels?.nodes as MemberLevel[]) ?? []}
+          />
         </Card>
       </div>
     </div>

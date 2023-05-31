@@ -1,8 +1,8 @@
 'use client'
 
-import MemberCard from '../parts/member-card'
-import { MEMBER_TYPE_ENUM } from '../types'
-import { useCompanionsApi } from './companions-api'
+import MemberCard from '../../parts/member-card'
+import { MEMBER_TYPE_ENUM } from '../../types'
+import { useCompanionsApi } from '../companions-api'
 
 export default function FriendCards() {
   const { data: friends } = useCompanionsApi().getFriends
