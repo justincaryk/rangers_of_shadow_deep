@@ -31,8 +31,8 @@ interface LevelUpCardProps {
 const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
   const { mutate: mutateFriend } = useCompanionsApi().updateFriend
   const { data: levelsData } = useLevelingApi().friendRules
-  const { mutate: createLevelRef, status: createLevelStatus } = useLevelingApi().createLevelRef
-  const { mutate: updateLevelRef, status: updateLevelStatus } = useLevelingApi().updateLevelRef
+  const { mutateAsync: createLevelRef, status: createLevelStatus } = useLevelingApi().createLevelRef
+  const { mutateAsync: updateLevelRef, status: updateLevelStatus } = useLevelingApi().updateLevelRef
   const { mutate: addMemberStat, status: addMemberStatStatus } = useStatsApi().createMemberStat
 
   const updageProgressionPoints = (data: FriendPatch) => {
@@ -97,6 +97,7 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
   const addStatFromLevel = (level: FriendLevelGrant) => {
     // check is a mod type
     const feature = level.featuresByFriendLevelGrantId.nodes.find(feat => feat.mechanicMod === MechanicModType.Modifier)
+    
     if (feature?.mechanicClass === MechanicClassType.Stat) {
       addMemberStat({
         friendId: friend.id,
@@ -119,9 +120,10 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
         const purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
         if (!purchased) {
           // the next two calls need to be done separately because of the varying level up types
+          
           addStatFromLevel(level)
-
-          createLevelRef({
+          
+          await createLevelRef({
             friendId: friend.id,
             friendLevelGrantId: level.id,
             timesGranted: 1,
@@ -146,7 +148,7 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
           // the next two calls need to be done separately because of the varying level up types
           addStatFromLevel(level)
 
-          updateLevelRef({
+          await updateLevelRef({
             id: purchased.id,
             timesGranted: purchased.timesGranted + 1,
             timesUsed: purchased.timesUsed + 1,
@@ -167,7 +169,7 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
     <div className='space-y-4'>
       <div className='flex gap-x-4 justify-between items-center'>
         <div className='font-bold'>Progression Points: {friend.progressionPoints}</div>
-        {true ? (
+        {isLoading ? (
           <Spinner />
         ) : (
           <SmallButton
