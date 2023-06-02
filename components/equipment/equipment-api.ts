@@ -5,6 +5,8 @@ import {
   DeleteMemberItemMutationVariables,
   GetEquipmentSortedQuery,
   MemberItemsQuery,
+  UpdateMemberItemMutation,
+  UpdateMemberItemMutationVariables,
 } from '../../graphql/generated/graphql'
 
 import useGraphQL from '../graphql/useGraphQL'
@@ -14,7 +16,9 @@ import { useCurrentMember } from '../react-query/hooks'
 import GetEquipmentSortedRequest from '../../graphql/queries/items'
 import GetMemberEquipmentRequest from '../../graphql/queries/member-items'
 import AddItemToRangerRequest from '../../graphql/mutations/member-item-create'
+import UpdateMemberItemRequest from '../../graphql/mutations/member-item-update'
 import DeleteRangerItemRequest from '../../graphql/mutations/member-item-delete'
+
 import { staticQueryConfig } from '../react-query/defaults'
 
 export enum EQUIPMENT_QUERY_KEYS {
@@ -61,6 +65,13 @@ export function useEquipmentApi() {
           }
           queryClient.setQueryData([ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ], updated)
         }
+      },
+    }),
+    updateMemberItem: useMutation({
+      mutationFn: (data: UpdateMemberItemMutationVariables) =>
+        graphQLClient.request<UpdateMemberItemMutation>(UpdateMemberItemRequest, data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: [ EQUIPMENT_QUERY_KEYS.MEMBER_EQUIPMENT ] })
       },
     }),
     deleteMemberItem: useMutation({

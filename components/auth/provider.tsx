@@ -66,12 +66,12 @@ export default function AuthProvider({ children }: PropsWithChildren) {
     }
     // reroute FROM public pages if signed in
     if (isPublicRoute && currentUser?.userId) {
-      router.replace(PRIVATE_ROUTE_URLS.DASHBOARD)
+      router.push(PRIVATE_ROUTE_URLS.DASHBOARD)
       return
     }
     // reroute TO signin if signed out
     else if (!currentUser?.userId && isPrivateRoute) {
-      router.replace(PUBLIC_ROUTE_URLS.SIGN_IN)
+      router.push(PUBLIC_ROUTE_URLS.SIGN_IN)
       return
     }
 

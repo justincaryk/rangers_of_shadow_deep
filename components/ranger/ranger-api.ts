@@ -1,6 +1,7 @@
 import {
   AllCharactersQuery,
-  CharacterByIdQuery,
+  CharacterFullQuery,
+  CharacterSummaryQuery,
   CreateCharacterMutation,
   CreateCharacterMutationVariables,
   DeleteCharacterMutationVariables,
@@ -15,7 +16,8 @@ import {
 import useGraphQL from '../graphql/useGraphQL'
 
 import GetAllCharactersRequest from '../../graphql/queries/characters'
-import GetCharacterByIdRequest from '../../graphql/queries/character'
+import GetCharacterFullRequest from '../../graphql/queries/character-full'
+import GetCharacterSummaryRequest from '../../graphql/queries/character-summary'
 import UpdateCharacterById from '../../graphql/mutations/character-update'
 import CreateCharacterRequest from '../../graphql/mutations/character-create'
 import DeleteCharacterRequest from '../../graphql/mutations/character-delete'
@@ -26,7 +28,8 @@ import { useParams } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export enum RANGER_QUERY_KEYS {
-  RANGER = 'ranger',
+  RANGER_SUMMARY = 'ranger-summary',
+  RANGER_FULL = 'ranger-full',
   ALL_RANGERS = 'all_rangers',
 }
 
@@ -40,11 +43,21 @@ export function useRangerApi() {
       queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
       queryFn: async () => graphQLClient.request<AllCharactersQuery>(GetAllCharactersRequest),
     }),
-    getRangerById: useQuery({
-      queryKey: [ RANGER_QUERY_KEYS.RANGER ],
+    getRangerSummary: useQuery({
+      queryKey: [ RANGER_QUERY_KEYS.RANGER_SUMMARY ],
       queryFn: async () => {
         return params?.memberId
-          ? graphQLClient.request<CharacterByIdQuery>(GetCharacterByIdRequest, {
+          ? graphQLClient.request<CharacterSummaryQuery>(GetCharacterSummaryRequest, {
+              id: params?.memberId,
+            })
+          : null
+      },
+    }),
+    getRangerFull: useQuery({
+      queryKey: [ RANGER_QUERY_KEYS.RANGER_FULL ],
+      queryFn: async () => {
+        return params?.memberId
+          ? graphQLClient.request<CharacterFullQuery>(GetCharacterFullRequest, {
               id: params?.memberId,
             })
           : null
@@ -63,7 +76,8 @@ export function useRangerApi() {
       mutationFn: (data: UpdateCharacterMutationVariables) =>
         graphQLClient.request<UpdateCharacterMutation>(UpdateCharacterById, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER_SUMMARY ] })
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER_FULL ] })
         queryClient.invalidateQueries({
           queryKey: [ RANGER_QUERY_KEYS.ALL_RANGERS ],
         })
@@ -82,14 +96,16 @@ export function useRangerApi() {
       mutationFn: (data: HydrateRangerMutationVariables) =>
         graphQLClient.request<HydrateRangerMutation>(HydrateCharacterRequest, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER_SUMMARY ] })
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER_FULL ] })
       },
     }),
     updateRangerBpAllottment: useMutation({
       mutationFn: (data: UpdateBpSpentMutationVariables) =>
         graphQLClient.request<UpdateBpSpentMutation>(UpdateRBpAllottmentRequest, data),
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER_SUMMARY ] })
+        queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER_FULL ] })
       },
     }),
   }

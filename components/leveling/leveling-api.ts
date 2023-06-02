@@ -19,7 +19,6 @@ import UpdateMemberLevelRequest from '../../graphql/mutations/member-level-updat
 import FriendLevelRulesRequest from '../../graphql/queries/friend-level-grants'
 import GetMemberLevelsRequest from '../../graphql/queries/member-levels'
 
-import { RANGER_QUERY_KEYS } from '../ranger/ranger-api'
 import { staticQueryConfig } from '../react-query/defaults'
 
 enum LEVEL_RULES {
@@ -64,18 +63,13 @@ export function useLevelingApi() {
         graphQLClient.request<AddMemberLevelMutation>(AddMemberLevelRequest, data),
       onMutate: getQueryContextOnMutate,
       onSuccess: (data, _, context) => {
-        if (memberType === 'ranger') {
-          queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
-        }
-        if (memberType === 'friend') {
-          if (context?.old && data.createMemberLevel?.memberLevel) {
-            const updated: MemberLevelsQuery = {
-              allMemberLevels: {
-                nodes: [ ...context.old, data.createMemberLevel.memberLevel ] as MemberLevel[],
-              },
-            }
-            queryClient.setQueryData([ LEVEL_RULES.MEMBER_LEVELS ], updated)
+        if (context?.old && data.createMemberLevel?.memberLevel) {
+          const updated: MemberLevelsQuery = {
+            allMemberLevels: {
+              nodes: [ ...context.old, data.createMemberLevel.memberLevel ],
+            },
           }
+          queryClient.setQueryData([ LEVEL_RULES.MEMBER_LEVELS ], updated)
         }
       },
     }),
@@ -83,21 +77,11 @@ export function useLevelingApi() {
       mutationFn: (data: UpdateMemberLevelMutationVariables) =>
         graphQLClient.request<UpdateMemberLevelMutation>(UpdateMemberLevelRequest, data),
       onMutate: getQueryContextOnMutate,
-      onSuccess: (data, _, context) => {
-        if (memberType === 'ranger') {
-          queryClient.invalidateQueries({ queryKey: [ RANGER_QUERY_KEYS.RANGER ] })
-        }
-        if (memberType === 'friend' && context?.old) {
+      onSuccess: (data, variables, context) => {
+        if (context?.old && data.updateMemberLevelById?.memberLevel) {
           const updated: MemberLevelsQuery = {
             allMemberLevels: {
-              nodes: [
-                ...context.old.map(x => {
-                  if (x.id === data.updateMemberLevelById?.memberLevel?.id) {
-                    return data.updateMemberLevelById!.memberLevel!
-                  }
-                  return x
-                }),
-              ],
+              nodes: [ ...context.old.filter(x => x.id !== variables.id), data.updateMemberLevelById.memberLevel ],
             },
           }
           queryClient.setQueryData([ LEVEL_RULES.MEMBER_LEVELS ], updated)

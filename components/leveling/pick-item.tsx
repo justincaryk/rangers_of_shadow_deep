@@ -16,6 +16,7 @@ import { MercenaryFeature } from '../companions/types'
 
 import { capitalizeEach } from '../utils'
 import { isEqual } from 'lodash'
+import { notify } from '../parts/toast'
 
 interface Props {
   feat: MercenaryFeature
@@ -79,6 +80,7 @@ export default function FriendBonusItem({ feat }: Props) {
       })
     }
 
+    notify('Equipment selection saved!', { type: 'success' })
     toggleShow(false)
   }
 

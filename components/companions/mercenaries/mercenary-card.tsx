@@ -16,13 +16,26 @@ const baseTableClasses = {
 
 const statKeys = [ ...objectKeys(BASE_STATS_ENUM), ...objectKeys(EXTENDED_STATS_ENUM) ]
 
+export type FriendLevelBonus = {
+  bonusId: string
+  value: number
+}
+
 export interface MercenaryProps {
   mercenary: Mercenary
   onMercSelect?: (merc: Mercenary) => void
   onMercRemove?: (merc: Mercenary) => void
+  statBonuses?: FriendLevelBonus[]
+  skillBonuses?: FriendLevelBonus[]
 }
 
-export default function MercenaryCard({ onMercSelect, onMercRemove, mercenary }: MercenaryProps) {
+export default function MercenaryCard({
+  onMercSelect,
+  onMercRemove,
+  mercenary,
+  statBonuses = [],
+  skillBonuses = [],
+}: MercenaryProps) {
   return (
     <Card>
       <div className='space-y-2'>

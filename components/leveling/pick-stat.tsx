@@ -14,12 +14,12 @@ import SmallButton from '../parts/small-button'
 import { useCompanionsApi } from '../companions/companions-api'
 import { useStatsApi } from '../stats/stats-api'
 import { useLevelingApi } from './leveling-api'
-// import { useRangerApi } from '../ranger/ranger-api'
 import { useCurrentMember } from '../react-query/hooks'
 
 import { MemberLevel } from './types'
 import { Stat, StatWithBaseTypedName } from '../stats/types'
 import { CreateMemberStatMutationVariables, StatType } from '../../graphql/generated/graphql'
+import { notify } from '../parts/toast'
 
 interface Props {
   statTypeLevel?: MemberLevel
@@ -30,7 +30,6 @@ export default function FriendBonusStat({ statTypeLevel }: Props) {
   const [ selection, setSelection ] = useState<string | null>(null)
 
   const { data: friend } = useCompanionsApi().getFriendSummary
-  // const { data: ranger } = useRangerApi().getRangerById
   const { id: memberId, memberType, referenceColumnName } = useCurrentMember()
 
   const { data: stats } = useStatsApi().getStats
@@ -66,10 +65,6 @@ export default function FriendBonusStat({ statTypeLevel }: Props) {
   const checkCanIncrease = (stat: Stat) => {
     // check if selection
     if (selection) {
-      return false
-    }
-    // check if mutate loading.
-    if (false) {
       return false
     }
     // check for pickIds, otherwise let it roll
@@ -115,6 +110,8 @@ export default function FriendBonusStat({ statTypeLevel }: Props) {
       id: statTypeLevel.id,
       timesUsed: statTypeLevel.timesUsed + 1,
     })
+
+    notify('Stat modified!', { type: 'success' })
   }
 
   return (

@@ -74,23 +74,10 @@ export function useSkillsApi() {
     updateMemberSkill: useMutation({
       mutationFn: (data: UpdateMemberSkillMutationVariables) =>
         graphQLClient.request<UpdateMemberSkillMutation>(UpdateMemberSkillRequest, data),
-      onMutate: getQueryContextOnMutate,
-      onSuccess: (data, _, context) => {
-        if (context?.old && data.updateMemberSkillById?.memberSkill) {
-          const updated: MemberSkillsQuery = {
-            allMemberSkills: {
-              nodes: [
-                ...context.old.map(x => {
-                  if (x.id === data.updateMemberSkillById?.memberSkill) {
-                    return data.updateMemberSkillById!.memberSkill!
-                  }
-                  return x
-                }),
-              ],
-            },
-          }
-          queryClient.setQueryData([ SKILLS_QUERY_KEY.MEMBER_SKILLS ], updated)
-        }
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: [ SKILLS_QUERY_KEY.MEMBER_SKILLS ],
+        })
       },
     }),
     deleteMemberSkill: useMutation({

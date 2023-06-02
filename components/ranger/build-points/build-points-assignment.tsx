@@ -8,7 +8,7 @@ import AssignmentSection from './assignment-section'
 import { BP_ASSIGNABLE_ATTRS_KEYS } from './types'
 
 export default function BuildPointsAssignment() {
-  const { data: ranger } = useRangerApi().getRangerById
+  const { data: ranger } = useRangerApi().getRangerSummary
 
   const bpLookupRecord = useMemo(() => {
     return ranger?.characterById?.characterBpLookupsByCharacterId.nodes[0] ?? {}

@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
 export default gql`
-  mutation UnlearnHeroicAction($characterId: UUID!, $id: UUID!) {
+  mutation UnlearnHeroicAction($id: UUID!) {
     deleteMemberHeroicActionById(input: { id: $id }) {
       deletedMemberHeroicActionId
     }

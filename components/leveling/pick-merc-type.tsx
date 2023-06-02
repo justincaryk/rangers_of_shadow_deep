@@ -1,37 +1,35 @@
 'use client'
 
 import { FingerPrintIcon } from '@heroicons/react/24/outline'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
 import { useCompanionsApi } from '../companions/companions-api'
 import MercenariesList from '../companions/mercenaries/mercenaries-list'
 import { Mercenary } from '../companions/types'
+import { notify } from '../parts/toast'
 
 export default function PickMercType() {
   const [ show, toggleShow ] = useState(false)
 
   const { data: friend } = useCompanionsApi().getFriendSummary
-  const { mutate: assignMutate, status, reset } = useCompanionsApi().updateFriend
+  const { mutateAsync: assignMutate, status, reset } = useCompanionsApi().updateFriend
 
-  useEffect(() => {
-    if (show && status === 'success') {
-      toggleShow(false)
-      reset()
-    }
-  }, [ show, status, reset ])
-
-  const handleMercTypeSelect = (merc: Mercenary) => {
+  const handleMercTypeSelect = async (merc: Mercenary) => {
     if (status === 'loading') {
       return null
     }
 
-    assignMutate({
+    await assignMutate({
       id: friend?.friendById?.id,
       patch: {
         mercenaryId: merc.id,
       },
     })
+
+    reset()
+    notify('Companion type saved!', { type: 'success' })
+    toggleShow(false)
   }
 
   return (

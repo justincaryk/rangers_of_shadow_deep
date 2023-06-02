@@ -18,7 +18,7 @@ export type MemberLevel = Omit<
   Codegen_MemberLevel,
   'characterByCharacterId' | 'friendByFriendId' | 'friendLevelGrantByFriendLevelGrantId'
 > & {
-  friendLevelGrantByFriendLevelGrantId?: Omit<FriendLevelGrant, 'featuresByFriendLevelGrantId' | 'description'> & {
+  friendLevelGrantByFriendLevelGrantId?: Omit<FriendLevelGrant, 'featuresByFriendLevelGrantId'> & {
     featuresByFriendLevelGrantId?: {
       nodes: MemberLevelFeature[]
     }

@@ -15,9 +15,10 @@ import { useLevelingApi } from './leveling-api'
 import { useCompanionsApi } from '../companions/companions-api'
 import { useStatsApi } from '../stats/stats-api'
 
-import { FriendPatch, MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
+import { MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
 import { FriendLevelGrant, FriendLevelGrantUnwound, MemberLevel } from './types'
 import { FriendSummary } from '../companions/types'
+import { notify } from '../parts/toast'
 
 export const FriendLevelingFieldsSchema = Yup.object().shape({
   progressionPoints: Yup.number().required('Required'),
@@ -49,11 +50,11 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
     return false
   }, [ createLevelStatus, updateLevelStatus, addMemberStatStatus, updateMemberStatStatus ])
 
-  const updageProgressionPoints = (data: FriendPatch) => {
+  const updageProgressionPoints = (data: Yup.InferType<typeof FriendLevelingFieldsSchema>) => {
     mutateFriend({
       id: friend.id,
       patch: {
-        progressionPoints: FriendLevelingFieldsSchema.fields.progressionPoints.cast(data.progressionPoints),
+        progressionPoints: Number(data.progressionPoints),
       },
     })
   }
@@ -151,6 +152,7 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
     if (memberLevels.length < uniqueLevelRecordsExpected) {
       for (const level of levelsUnwound) {
         const purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
+        
         if (!purchased) {
           // the next two calls need to be done separately because of the varying level up types
 
@@ -162,6 +164,8 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
             timesGranted: 1,
             timesUsed: result ? 1 : 0,
           })
+
+          notify('Progression reward unlocked!', { type: 'success' })
           return
         }
       }
@@ -171,6 +175,7 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
       for (const level of levelsUnwound) {
         const purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
         if (!purchased) {
+          notify("Can't find the right progression reward. Try reloading the page!", { type: 'error' })
           console.warn('rut roh. cant find the right level')
           return
         }
@@ -180,13 +185,16 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
 
         if (canBeBoughtTwice && timesGranted === 1) {
           // the next two calls need to be done separately because of the varying level up types
-          const result = await applyStatBonus(level)
+          const statApplyResult = await applyStatBonus(level)
 
           await updateLevelRef({
             id: purchased.id,
             timesGranted: purchased.timesGranted + 1,
-            timesUsed: result ? 1 : 0,
+            timesUsed: statApplyResult ? purchased.timesUsed + 1 : purchased.timesUsed,
           })
+
+          notify('Progression reward unlocked!', { type: 'success' })
+          return
         }
       }
     }

@@ -68,7 +68,7 @@ export function useHeroicActionApi() {
         }
       },
     }),
-    buyAdditionalUse: useMutation({
+    setNumberOfUses: useMutation({
       mutationFn: (data: SetHeroicActionUsesMutationVariables) =>
         graphQLClient.request<SetHeroicActionUsesMutation>(SetHeroicActionUsesRequest, data),
       onMutate: getQueryContextOnMutate,

@@ -1,20 +1,26 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import * as Yup from 'yup'
 import { Field, Form, Formik } from 'formik'
-import { useCompanionsApi } from '../companions-api'
-import { MemberCoreFieldsSchema } from '../../ranger/core-character'
-import { FriendPatch, StatType } from '../../../graphql/generated/graphql'
+
 import { baseInputClasses } from '../../parts/input'
-import Loader from '../../loader'
-import MercenaryCard from '../mercenaries/mercenary-card'
-import { capitalizeEach } from '../../utils'
 import Card from '../../parts/card'
+import Loader from '../../loader'
+import MercenaryCard, { FriendLevelBonus } from '../mercenaries/mercenary-card'
 import FriendLeveling from '../../leveling/friend-leveling'
+
 import { useSkillsApi } from '../../skills/skills-api'
 import { useStatsApi } from '../../stats/stats-api'
+import { useCompanionsApi } from '../companions-api'
+
+import { MemberCoreFieldsSchema } from '../../ranger/core-character'
+import { StatType } from '../../../graphql/generated/graphql'
 import { Stat } from '../../stats/types'
 import { Mercenary } from '../types'
+
+import { capitalizeEach } from '../../utils'
+import { notify } from '../../parts/toast'
 
 export default function FriendCore() {
   const [ showLevelUp, setShowLevelUp ] = useState(false)
@@ -22,10 +28,10 @@ export default function FriendCore() {
   const { data: mercenaries } = useCompanionsApi().getMercenaries
   const { data: skills } = useSkillsApi().getSkills
   const { data: stats } = useStatsApi().getStats
-  const { data: memberStats, status: memberStatsStatus } = useStatsApi().getMemberStats
+  const { data: memberStats } = useStatsApi().getMemberStats
   const { mutate: updateFriend } = useCompanionsApi().updateFriend
 
-  const handleSubmit = (data: FriendPatch) => {
+  const handleSubmit = (data: Yup.InferType<typeof MemberCoreFieldsSchema>) => {
     if (data.name) {
       updateFriend({
         id: friend?.friendById?.id,
@@ -51,26 +57,28 @@ export default function FriendCore() {
     }
   }, [ mercenaries, friend?.friendById?.mercenaryId ])
 
-  const bonusSkillFromRef = useMemo(() => {
-    return skills?.allSkills?.nodes.find(skill => skill.id === friend?.friendById?.bonusSkill)
-  }, [ friend?.friendById?.bonusSkill, skills ])
+  // const skillBonuses = useMemo(() => {
+  //   return skills?.allSkills?.nodes.find(skill => skill.id === friend?.friendById?.bonusSkill)
+  // }, [friend?.friendById?.bonusSkill, skills])
+
+  const statBonuses = useMemo(() => {
+    const bonuses: FriendLevelBonus[] = []
+
+    if (memberStats?.allMemberStats?.nodes.length && stats?.allStats?.nodes.length) {
+      for (const stat of stats.allStats.nodes) {
+        const match = memberStats.allMemberStats.nodes.find(ms => ms.statId === stat.id)
+
+        if (match) {
+          bonuses.push({ bonusId: stat.id, value: match.value })
+        }
+      }
+    }
+
+    return bonuses
+  }, [ memberStats, stats ])
 
   if (status === 'loading') {
     return <Loader />
-  }
-
-  const getFriendStat = (stat: Stat) => {
-    const initialMercStatValue: number = selectedMercType?.[stat.name as keyof Mercenary] ?? 0
-
-    const bonusFromLeveling =
-      memberStats?.allMemberStats?.nodes.reduce((prev, curr) => {
-        if (curr.statId === stat.id) {
-          return prev + curr.value
-        }
-        return prev
-      }, 0) ?? 0
-
-    return initialMercStatValue + bonusFromLeveling
   }
 
   return (
@@ -103,10 +111,11 @@ export default function FriendCore() {
         <div className={'cursor-pointer text-blue-500'} onClick={() => setShowLevelUp(!showLevelUp)}>
           {showLevelUp ? 'Done managing levels and xp' : 'Manage Levels and XP!'}
         </div>
-
+        
+        
         {showLevelUp && <FriendLeveling />}
 
-        {bonusSkillFromRef && (
+        {/* {bonusSkillFromRef && (
           <div>
             <div className='flex gap-x-3'>
               <div className='font-bold'>+3 Bonus Skill:</div>
@@ -114,22 +123,16 @@ export default function FriendCore() {
             </div>
             <div className='italic'>{bonusSkillFromRef?.description}</div>
           </div>
-        )}
+        )} */}
 
-        {memberStatsStatus === 'success' && (
-          <div>
-            {stats?.allStats?.nodes
-              .filter(stat => stat.statType === StatType.Base)
-              .map(stat => (
-                <div key={stat.id} className='flex gap-x-2'>
-                  <div className='font-bold uppercase text-sm'>{stat.name}:</div>
-                  <div>{getFriendStat(stat)}</div>
-                </div>
-              ))}
-          </div>
+        {selectedMercType && (
+          <MercenaryCard
+            mercenary={selectedMercType}
+            statBonuses={statBonuses}
+            skillBonuses={[]} //skillBonuses}
+            onMercRemove={handleRemoveMercType}
+          />
         )}
-
-        {selectedMercType && <MercenaryCard mercenary={selectedMercType} onMercRemove={handleRemoveMercType} />}
       </div>
     </Card>
   )

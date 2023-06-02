@@ -17,6 +17,7 @@ import { MercenaryFeature } from '../companions/types'
 import Decrement from '../parts/decrement'
 import { MemberSpell } from '../spells/types'
 import { DECREASE, INCREASE } from '../rules/creation-rules'
+import { notify } from '../parts/toast'
 
 interface Props {
   feat: MercenaryFeature
@@ -66,6 +67,7 @@ export default function PickSpell({ feat }: Props) {
         friendId: friend?.friendById?.id,
         spellId,
       })
+      notify('Spell learned!', { type: 'success' })
     }
   }
 

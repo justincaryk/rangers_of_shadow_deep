@@ -31,7 +31,7 @@ export default function CoreCharacter() {
   const [ showBuildPoints, setShowBuildPoints ] = useState(false)
 
   const [ totalBuildPoints ] = useAtom(useBuildPoints)
-  const { data: ranger, status } = useRangerApi().getRangerById
+  const { data: ranger, status } = useRangerApi().getRangerSummary
   const { mutate } = useRangerApi().updateRanger
 
   const handleSubmit = (data: CharacterPatch) => {

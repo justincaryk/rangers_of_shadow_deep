@@ -29,17 +29,17 @@ export function useSyncRangerBp() {
   const [ , setRpBp ] = useAtom(useSetRecruitmentBp)
   const [ , setHeroicBp ] = useAtom(useSetHeroicActionBp)
 
-  const { data } = useRangerApi().getRangerById
+  const { data } = useRangerApi().getRangerSummary
 
   useEffect(() => {
     if (data?.characterById) {
       let totalBp = BASE_BUILD_POINTS
 
-      const { bpSpentOnHeroicActions, bpSpentOnRp, bpSpentOnSkills, bpSpentOnStats } =
+      const { bpSpentOnHeroicAbilities, bpSpentOnRp, bpSpentOnSkills, bpSpentOnStats } =
         data.characterById.characterBpLookupsByCharacterId.nodes[0]
 
       // only deduct what is allowed at create
-      const heroicBpSpent = Math.min(bpSpentOnHeroicActions, MAX_BP_FOR_HEROIC_SPELLS)
+      const heroicBpSpent = Math.min(bpSpentOnHeroicAbilities, MAX_BP_FOR_HEROIC_SPELLS)
       const skillBpSpent = Math.min(bpSpentOnSkills, MAX_BP_FOR_SKILLS)
       const statBpSpent = Math.min(bpSpentOnStats, MAX_BP_FOR_STATS)
       const recruitmentBpSpent = Math.min(bpSpentOnRp, MAX_BP_FOR_RP)

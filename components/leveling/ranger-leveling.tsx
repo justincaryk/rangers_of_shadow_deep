@@ -1,3 +1,4 @@
+import * as Yup from 'yup'
 import { Field, Form, Formik } from 'formik'
 import Card from '../parts/card'
 import { baseInputClasses } from '../parts/input'
@@ -27,14 +28,15 @@ interface LevelUpCardProps {
 const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
   const { mutate: mutateRanger } = useRangerApi().updateRanger
   const { data: rules, status: rulesStatus } = useLevelingApi().rangerRules
+  const { data: memberLevels } = useLevelingApi().getMemberLevels
   const { mutate: createLevelRef, status: createLevelStatus, reset: resetCreateLevel } = useLevelingApi().createLevelRef
   const { mutate: updateLevelRef, status: updateLevelStatus, reset: resetUpdateLevel } = useLevelingApi().updateLevelRef
 
-  const handleSubmit = (data: CharacterPatch) => {
+  const handleSubmit = (data: Yup.InferType<typeof RangerLevelingFieldsSchema>) => {
     mutateRanger({
       id: ranger.id,
       patch: {
-        xp: RangerLevelingFieldsSchema.fields.xp.cast(data.xp),
+        xp: Number(data.xp),
       },
     })
   }
@@ -76,7 +78,7 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
     }
     // update instead
     else {
-      const levelRef = ranger.memberLevelsByCharacterId.nodes.find(x => x.levelGrantId === nextLevel.level?.id)
+      const levelRef = memberLevels?.allMemberLevels?.nodes.find(x => x.levelGrantId === nextLevel.level?.id)
 
       if (!levelRef) {
         console.error('cant find a matching level reference')
@@ -177,7 +179,7 @@ const LevelUpCardContent = ({ ranger }: LevelUpCardProps) => {
 }
 
 export default function LevelUpRanger() {
-  const { data: ranger } = useRangerApi().getRangerById
+  const { data: ranger } = useRangerApi().getRangerSummary
 
   if (!ranger?.characterById) {
     return <Loader />

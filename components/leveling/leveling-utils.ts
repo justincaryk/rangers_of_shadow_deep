@@ -1,5 +1,5 @@
 import { MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
-import { LevelGrant, RangerLevelCost } from './types'
+import { LevelGrant, MemberLevel, RangerLevelCost } from './types'
 import { RangerLevelingFields } from '../ranger/types'
 import { Feature } from '../features/types'
 
@@ -58,7 +58,7 @@ type MechanicBenefit = {
 export function getMechanicBenefitForRanger(level: LevelGrant) {
   // const { mechanicClass, value } =
   const { mechanicClass, value } =
-    level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Modifier) ?? ({} as Feature)
+    level.featuresByLevelGrantId.nodes.find(x => x.mechanicMod === MechanicModType.Pick || x.mechanicMod === MechanicModType.Modifier) ?? ({} as Feature)
 
   const mechanicBenefit = {
     field: null,
@@ -81,4 +81,23 @@ export function getMechanicBenefitForRanger(level: LevelGrant) {
   }
 
   return mechanicBenefit
+}
+
+export function getPendingPickTypeMemberLevels (memberLevels: MemberLevel[], classType: MechanicClassType) {
+  const pendingTargetLevels: MemberLevel[] = []
+
+    // check for member levels that have not been effected
+    for (const memberLevel of memberLevels) {
+      if (memberLevel.timesGranted > memberLevel.timesUsed) {
+        const features = memberLevel.friendLevelGrantByFriendLevelGrantId?.featuresByFriendLevelGrantId?.nodes ?? []
+        // check the member level's features for Pick & Stat type
+        for (const feature of features) {
+          if (feature.mechanicMod === MechanicModType.Pick && feature.mechanicClass === classType) {
+            pendingTargetLevels.push(memberLevel)
+          }
+        }
+      }
+    }
+
+    return pendingTargetLevels
 }

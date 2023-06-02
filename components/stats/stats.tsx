@@ -20,12 +20,17 @@ import { useStatsApi } from './stats-api'
 import { useRangerApi } from '../ranger/ranger-api'
 import { useAtom } from 'jotai'
 import { useStatsBp } from '../ranger/atoms/build-points'
+import { useLevelingApi } from '../leveling/leveling-api'
+import { notify } from '../parts/toast'
 
 export default function Stats() {
   const [ show, toggleShow ] = useState(false)
   const [ bpSpent ] = useAtom(useStatsBp)
   const { data: stats } = useStatsApi().getStats
-  const { data: ranger } = useRangerApi().getRangerById
+  const { data: ranger } = useRangerApi().getRangerSummary
+
+  const { data: memberStats } = useStatsApi().getMemberStats
+  const { data: memberLevels } = useLevelingApi().getMemberLevels
 
   const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStat
 
@@ -36,10 +41,10 @@ export default function Stats() {
     const defaultAtCreateTotal =
       stats?.allStats?.nodes.reduce((acc, curr) => (curr.rangerDefault ? curr.rangerDefault + acc : acc), 0) ?? 0
     const currentRangerTotal =
-      ranger?.characterById?.memberStatsByCharacterId.nodes.reduce((acc, curr) => acc + curr.value, 0) ?? 0
+    memberStats?.allMemberStats?.nodes.reduce((acc, curr) => acc + curr.value, 0) ?? 0
 
     return currentRangerTotal - defaultAtCreateTotal
-  }, [ ranger, stats ])
+  }, [ memberStats, stats ])
 
   const availablePoints = useMemo(() => {
     const availablePointsLocal = {
@@ -52,7 +57,7 @@ export default function Stats() {
     if (ranger) {
       const bpAllottedForStats = ranger?.characterById?.characterBpLookupsByCharacterId?.nodes?.[0]?.bpSpentOnStats ?? 0
       const statLevelUps =
-        ranger?.characterById?.memberLevelsByCharacterId.nodes.reduce((prev, curr) => {
+        memberLevels?.allMemberLevels?.nodes.reduce((prev, curr) => {
           if (curr.levelGrantByLevelGrantId?.grantType === MechanicClassType.Stat) {
             return prev + curr.timesGranted
           }
@@ -82,7 +87,7 @@ export default function Stats() {
     }
 
     return availablePointsLocal
-  }, [ totalSpentOnStats, ranger ])
+  }, [ totalSpentOnStats, ranger, memberLevels ])
 
   // how many build points available for stats
 
@@ -147,9 +152,10 @@ export default function Stats() {
     const memberStat = getMemberStatFromStatId(stat.id)
 
     if (!memberStat) {
+      notify("Can't find a maching member stat id. Try reloading the page!", { type: 'error' })
       console.error('no matching member stat id: ', {
         statId: stat.id,
-        memberStats: ranger?.characterById?.memberStatsByCharacterId.nodes ?? [],
+        memberStats: memberStats?.allMemberStats?.nodes ?? [],
       })
       throw new Error()
     }
@@ -161,7 +167,7 @@ export default function Stats() {
   }
 
   function getMemberStatFromStatId(statId: string) {
-    return ranger?.characterById?.memberStatsByCharacterId.nodes.find(x => statId && statId === x?.statId) || null
+    return memberStats?.allMemberStats?.nodes.find(x => statId && statId === x?.statId) || null
   }
 
   function getCurrentStatValue(statId: string) {
@@ -177,23 +183,11 @@ export default function Stats() {
         <MinorHeader
           content='stats'
           icon={<AdjustmentsHorizontalIcon className='text-rose-600' />}
-          // {...(availablePoints.remainingFromBp !== 0
-          //   ? {
-          //       subtext: 'Available points (from build):',
-          //       subvalue: availablePoints.remainingFromBp,
-          //     }
-          //   : {})}
           subtext='Available points (from build):'
           subvalue={availablePoints?.remainingFromBp}
         />
         <MinorHeader
           content=''
-          // {...(availablePoints.remainingFromLvl !== 0
-          //   ? {
-          //       subtext: 'Available points (from build):',
-          //       subvalue: availablePoints.remainingFromLvl,
-          //     }
-          //   : {})}
           subtext='Available points (from leveling):'
           subvalue={availablePoints?.remainingFromLvl}
         />

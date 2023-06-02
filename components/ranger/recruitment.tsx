@@ -15,7 +15,7 @@ import { RECRUITMENT_POINTS_PER_BP } from '../rules/creation-rules'
 export default function RecruitmentPoints() {
   const [ show, toggleShow ] = useState(false)
   const [ recruitmentBp ] = useAtom(useRecruitmentPointsBp)
-  const { data: ranger } = useRangerApi().getRangerById
+  const { data: ranger } = useRangerApi().getRangerSummary
 
   return (
     <div className='space-y-4'>

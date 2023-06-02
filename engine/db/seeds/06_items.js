@@ -14,6 +14,14 @@ exports.seed = function (knex) {
           slot_cost: 1,
         },
         {
+          name: 'dagger',
+          description:
+            'FREE - This is a knife that is not balanced for throwing. Daggers have a -1 damage modifier. The first dagger or throwing knife carried by a ranger does not take up an item slot.',
+          class: 'WEAPON',
+          rarity: 'MUNDANE',
+          slot_cost: 0,
+        },
+        {
           name: 'bow',
           description:
             'The favoured missile weapon of rangers, bows may be loaded and fired in a single action. For game purposes the maximum range of a bow is 24”. Bows have no damage modifier. A figure must also carry a quiver, or some type of magic ammunition, to use a bow.',
@@ -90,9 +98,17 @@ exports.seed = function (knex) {
           name: 'throwing knife',
           description:
             'This includes any kind of small throwing weapon such as knives, axes, and light javelins. A figure may make one shooting attack per game for each knife carried. This attack has a maximum range of 8” and does -1 damage. In a pinch, a throwing weapon can also be used as a back-up melee weapon. A figure carrying an unused throwing knife as his only weapon does not count as unarmed but does suffer a -2 damage modifier in hand-to-hand combat. The first  dagger or throwing knife carried by a ranger does not take up an item slot.',
-          class: 'EQUIPMENT',
+          class: 'WEAPON',
           rarity: 'MUNDANE',
           slot_cost: 1,
+        },
+        {
+          name: 'throwing knife',
+          description:
+            'FREE - This includes any kind of small throwing weapon such as knives, axes, and light javelins. A figure may make one shooting attack per game for each knife carried. This attack has a maximum range of 8” and does -1 damage. In a pinch, a throwing weapon can also be used as a back-up melee weapon. A figure carrying an unused throwing knife as his only weapon does not count as unarmed but does suffer a -2 damage modifier in hand-to-hand combat. The first  dagger or throwing knife carried by a ranger does not take up an item slot.',
+          class: 'WEAPON',
+          rarity: 'MUNDANE',
+          slot_cost: 0,
         },
         {
           name: 'two-handed weapon',

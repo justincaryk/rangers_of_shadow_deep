@@ -11,6 +11,8 @@ export default gql`
         mechanicMod
         statSubtype
         riderSubtype
+        count
+        limitPer
         value
         statId
         skillId

@@ -4,9 +4,9 @@ import { FireIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
 
 import { useAtom } from 'jotai'
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState, useEffect, useCallback } from 'react'
 
-import { MemberSkill, Skill } from './types'
+import { MemberSkill } from './types'
 
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
@@ -20,6 +20,7 @@ import { useRangerApi } from '../ranger/ranger-api'
 import { useSkillsApi } from './skills-api'
 import { MechanicClassType, MechanicModType, PrimaryFeatureType } from '../../graphql/generated/graphql'
 import { useFeaturesApi } from '../features/features-api'
+import { useLevelingApi } from '../leveling/leveling-api'
 
 export default function Skills() {
   const [ show, toggleShow ] = useState(false)
@@ -27,20 +28,11 @@ export default function Skills() {
 
   const { data: skills } = useSkillsApi().getSkills
   const { data: memberSkills } = useSkillsApi().getMemberSkills
+  const { data: memberLevels } = useLevelingApi().getMemberLevels
   const { data: features } = useFeaturesApi().getFeatures
-  const { data: ranger } = useRangerApi().getRangerById
-  const {
-    mutate: mutateUpdateSkill,
-    status: updateSkillMutateStatus,
-    reset: resetUpdateSkillMutation,
-  } = useSkillsApi().updateMemberSkill
+  const { data: ranger } = useRangerApi().getRangerSummary
 
-  // reset the mutation to ensure multiple updates are allowed
-  useEffect(() => {
-    if (updateSkillMutateStatus === 'success') {
-      resetUpdateSkillMutation()
-    }
-  }, [ updateSkillMutateStatus, resetUpdateSkillMutation ])
+  const { mutate: mutateUpdateSkill, status: updateSkillMutateStatus } = useSkillsApi().updateMemberSkill
 
   const purchasedSkillsCount = useMemo(() => {
     return (
@@ -56,8 +48,8 @@ export default function Skills() {
         feat =>
           feat.primaryType === PrimaryFeatureType.LevelGrant &&
           feat.mechanicClass === MechanicClassType.Skill &&
-          feat.mechanicMod === MechanicModType.Limit
-      )?.value ?? 1
+          feat.mechanicMod === MechanicModType.Pick
+      )?.limitPer ?? 1
     )
   }, [ features ])
 
@@ -74,7 +66,7 @@ export default function Skills() {
       const bpAllottedForSkills =
         ranger?.characterById?.characterBpLookupsByCharacterId?.nodes?.[0]?.bpSpentOnSkills ?? 0
       const skillLevelUps =
-        ranger?.characterById?.memberLevelsByCharacterId.nodes.reduce((prev, curr) => {
+        memberLevels?.allMemberLevels?.nodes.reduce((prev, curr) => {
           if (curr.levelGrantByLevelGrantId?.grantType === MechanicClassType.Skill) {
             return prev + curr.timesGranted
           }
@@ -93,7 +85,7 @@ export default function Skills() {
         return (
           feat.primaryType === PrimaryFeatureType.LevelGrant &&
           feat.mechanicClass === MechanicClassType.Skill &&
-          feat.mechanicMod === MechanicModType.Modifier
+          feat.mechanicMod === MechanicModType.Pick
         )
       })
       let spentDecremented = purchasedSkillsCount
@@ -120,12 +112,10 @@ export default function Skills() {
     }
 
     return availablePointsLocal
-  }, [ purchasedSkillsCount, ranger, features, memberSkills ])
+  }, [ purchasedSkillsCount, memberLevels, features, memberSkills, ranger ])
 
   const getRangerSkillBySkillId = (skillId: string): MemberSkill | null => {
-    const { nodes: rangerSkills } = memberSkills?.allMemberSkills ?? { nodes: [] }
-    const rangerSkill = rangerSkills.find(rs => rs.skillId === skillId)
-    return rangerSkill ?? null
+    return memberSkills?.allMemberSkills?.nodes.find(ms => ms.skillId === skillId) ?? null
   }
 
   const checkCanIncrease = (rangerSkill: MemberSkill) => {
@@ -204,7 +194,7 @@ export default function Skills() {
   const updateSkill = (rangerSkill: MemberSkill | null, modifier: number) => {
     const skill = skills?.allSkills?.nodes.find(skill => skill.id === rangerSkill?.skillId)
 
-    if (updateSkillMutateStatus != 'idle' || !rangerSkill || !skill) {
+    if (updateSkillMutateStatus === 'loading' || !rangerSkill || !skill) {
       return null
     }
 
@@ -230,24 +220,11 @@ export default function Skills() {
         <MinorHeader
           content='skills'
           icon={<FireIcon className='text-orange-400' />}
-          // {...(budgetedSkillsCount - purchasedSkillsCount !== 0
-          //   ? {
-          //       subtext: 'Available points:',
-          //       subvalue: budgetedSkillsCount - purchasedSkillsCount,
-          //     }
-          //   : {})}
           subtext='Available points (from build):'
           subvalue={availablePoints?.remainingFromBp}
         />
         <MinorHeader
           content=''
-          // icon={<FireIcon className='text-orange-400' />}
-          // {...(budgetedSkillsCount - purchasedSkillsCount !== 0
-          //   ? {
-          //       subtext: 'Available points:',
-          //       subvalue: budgetedSkillsCount - purchasedSkillsCount,
-          //     }
-          //   : {})}
           subtext='Available points (from leveling):'
           subvalue={availablePoints?.remainingFromLvl}
         />
@@ -260,7 +237,7 @@ export default function Skills() {
             const canDecrement = checkCanDecrease(rangerSkill!)
 
             return (
-              <div key={skill.name}>
+              <div key={skill.id}>
                 <div className='grid grid-flow-col auto-cols-min justify-start gap-x-4 items-center w-1/2'>
                   <div className='font-semibold capitalize w-28'>{skill.name}</div>
                   <div className='text-lg font-bold'>{rangerSkill?.value ?? 0}</div>

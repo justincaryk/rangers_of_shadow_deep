@@ -18,29 +18,31 @@ import { useEquipmentApi } from './equipment-api'
 import { useRangerApi } from '../ranger/ranger-api'
 
 import { Item } from './types'
+import FreeItem from './free-item'
 
 export default function Equipment() {
   const [ show, toggleShow ] = useState(false)
   const [ showMagic, toggleShowMagic ] = useState(true)
   const [ showMundane, toggleShowMundane ] = useState(true)
 
-  const { data: ranger } = useRangerApi().getRangerById
+  const { data: ranger } = useRangerApi().getRangerSummary
   const { data: equipment } = useEquipmentApi().getEquipment
+  const { data: memberItems } = useEquipmentApi().getMemberItems
 
   const { mutate: addRangerItem } = useEquipmentApi().createMemberItem
   const { mutate: removeRangerItem } = useEquipmentApi().deleteMemberItem
 
   const inventorySlots = useMemo(() => {
-    if (ranger?.characterById?.memberItemsByCharacterId.nodes.length) {
+    if (memberItems?.allMemberItems?.nodes.length) {
       return (
         MAX_STARTING_ITEM_SLOTS -
-        ranger.characterById.memberItemsByCharacterId.nodes.reduce((prev, curr) => {
+        memberItems.allMemberItems.nodes.reduce((prev, curr) => {
           return prev + (curr.itemByItemId?.slotCost ?? 1)
         }, 0)
       )
     }
     return MAX_STARTING_ITEM_SLOTS
-  }, [ ranger?.characterById?.memberItemsByCharacterId ])
+  }, [ memberItems ])
 
   // TODO: add / remove custom equipment
   // TODO: make starting equipment list to always include 1 free dagger or 1 free throwing knife
@@ -58,7 +60,7 @@ export default function Equipment() {
 
   const tryRemoveItem = (item: Item) => {
     removeRangerItem({
-      id: ranger?.characterById?.memberItemsByCharacterId.nodes.find(x => x.itemId === item.id)?.id,
+      id: memberItems?.allMemberItems?.nodes.find(x => x.itemId === item.id)?.id,
     })
   }
 
@@ -76,11 +78,11 @@ export default function Equipment() {
         />
       </div>
 
-      {ranger?.characterById?.memberItemsByCharacterId?.nodes?.length! > 0 && (
+      {!!memberItems?.allMemberItems?.nodes.length && (
         <div>
           <div className='font-bold'>Carried:</div>
           <ul className='list-disc ml-6'>
-            {ranger?.characterById?.memberItemsByCharacterId.nodes.map(item => (
+            {memberItems?.allMemberItems?.nodes.map(item => (
               <li key={item.id} className='capitalize'>
                 {item.itemByItemId?.name}
               </li>
@@ -98,26 +100,19 @@ export default function Equipment() {
               iconSize={'w-6'}
             />
 
-            <Card header={'Choose Free Item:'}>
-              {/* <div>Choose Free Item:</div> */}
-              <div className='flex gap-x-4'>
-                <div className='flex gap-x-2'>
-                  <Checkbox />
-                  <div>Throwing Knife</div>
-                </div>
-                <div className='flex gap-x-2'>
-                  <Checkbox />
-                  <div>Dagger</div>
-                </div>
-              </div>
-            </Card>
+            {/* <Card> */}
+            <div>
+              {/* <div className='flex gap-x-4 items-center'> */}
+              {/* <div className='text-sm uppercase font-extrabold'>Choose Free Item:</div> */}
+              <FreeItem />
+            </div>
+            {/* </Card> */}
 
             {showMundane &&
               equipment?.mundane?.nodes.map(item => {
                 const canIncrement = inventorySlots > 0
                 const canDecrement =
-                  ranger?.characterById?.memberItemsByCharacterId.nodes.filter(x => x.itemId === item.id).length ??
-                  false
+                  memberItems?.allMemberItems?.nodes.filter(x => x.itemId === item.id).length ?? false
 
                 return (
                   <div key={item?.id} className='px-2'>
@@ -143,10 +138,7 @@ export default function Equipment() {
                         >
                           <Decrement
                             onClick={() => tryRemoveItem(item)}
-                            disabled={
-                              ranger?.characterById?.memberItemsByCharacterId.nodes.filter(x => x.itemId === item.id)
-                                .length === 0
-                            }
+                            disabled={memberItems?.allMemberItems?.nodes.filter(x => x.itemId === item.id).length === 0}
                           />
                         </div>
                       </div>
@@ -167,8 +159,7 @@ export default function Equipment() {
               equipment?.magic?.nodes.map((item: any) => {
                 const canIncrement = inventorySlots > 0
                 const canDecrement =
-                  ranger?.characterById?.memberItemsByCharacterId.nodes.filter(x => x.itemId === item.id).length ??
-                  false
+                  memberItems?.allMemberItems?.nodes.filter(x => x.itemId === item.id).length ?? false
 
                 return (
                   <div key={item?.id} className='px-2 border-'>

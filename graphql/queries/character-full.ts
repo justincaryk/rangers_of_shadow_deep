@@ -1,7 +1,7 @@
 import { gql } from 'graphql-request'
 
 export default gql`
-  query CharacterById($id: UUID!) {
+  query CharacterFull($id: UUID!) {
     characterById(id: $id) {
       avatarUrl
       id

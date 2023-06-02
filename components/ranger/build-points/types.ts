@@ -10,7 +10,7 @@ import {
 
 export type BpLookUpKeyFields = Pick<
   CharacterBpLookup,
-  'bpSpentOnHeroicActions' | 'bpSpentOnRp' | 'bpSpentOnSkills' | 'bpSpentOnStats'
+  'bpSpentOnHeroicAbilities' | 'bpSpentOnRp' | 'bpSpentOnSkills' | 'bpSpentOnStats'
 >
 export type CharacterBpTrackingFields = Pick<
   Character,
@@ -53,7 +53,7 @@ export const ATTR_TO_BP_LOOKUP_KEY_HASH: BpLookupHash = {
   },
   [BP_ASSIGNABLE_ATTRS_KEYS.HEROIC]: {
     bpMutateVarKey: 'heroic',
-    bpVarKey: 'bpSpentOnHeroicActions',
+    bpVarKey: 'bpSpentOnHeroicAbilities',
     characterVarKey: 'totalHeroicActions',
     maxAllowed: MAX_BP_FOR_HEROIC_SPELLS,
     attributeTextShort: 'Heroic Actions & Spells',

@@ -24,6 +24,8 @@ import { useHeroicActionApi } from '../heroic-actions/heroic-actions-api'
 import { useSpellsApi } from '../spells/spells-api'
 
 import { DECREASE, INCREASE } from '../rules/creation-rules'
+import { useLevelingApi } from '../leveling/leveling-api'
+import { MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
 
 const SectionIcon = (type: RangerLookupFieldHashKeyStrings) => {
   if (type === RANGER_LOOKUP_FIELD_HASH_KEYS.HEROIC_ACTIONS) return <BoltIcon className='text-yellow-400' />
@@ -47,17 +49,20 @@ export default function ArrayFieldBase({ type, data }: Props) {
   const [ submitting, setSubmitting ] = useState(false)
 
   const [ heroicBp ] = useAtom(useHeroicActionBp)
-  const { data: ranger } = useRangerApi().getRangerById
+  const { data: ranger } = useRangerApi().getRangerSummary
   const { data: memberSpells } = useSpellsApi().getMemberSpells
   const { data: memberHeroicActions } = useHeroicActionApi().getMemberHeroicActions
+  const { data: memberLevels } = useLevelingApi().getMemberLevels
+
+  const { mutateAsync: updateMemberLevel } = useLevelingApi().updateLevelRef
 
   const { mutate: mutateActionLearn, status: statusActionLearn } = useHeroicActionApi().learnHeroicAction
   const { mutate: mutateActionUnlearn, status: statusActionUnlearn } = useHeroicActionApi().unlearnHeroicAction
-  const { mutate: mutateBuyExtraActionUses, status: statusActionBuyUses } = useHeroicActionApi().buyAdditionalUse
+  const { mutate: mutateBuyExtraActionUses, status: statusActionBuyUses } = useHeroicActionApi().setNumberOfUses
 
   const { mutate: mutateSpellLearn, status: statusSpellLearn } = useSpellsApi().learnSpell
   const { mutate: mutateSpellUnlearn, status: statusSpellUnlearn } = useSpellsApi().unlearnSpell
-  const { mutate: mutateBuyExtraSpellUses, status: statusSpellBuyses } = useSpellsApi().buyAdditionalUse
+  const { mutate: mutateBuyExtraSpellUses, status: statusSpellBuyses } = useSpellsApi().setNumberOfUses
 
   useEffect(() => {
     if (statusActionLearn === 'loading') {
@@ -97,6 +102,17 @@ export default function ArrayFieldBase({ type, data }: Props) {
     submitting,
   ])
 
+  const targetMemberLevel = useMemo(() => {
+    console.log('lvlCheckRunning: ', memberLevels?.allMemberLevels?.nodes.find(ml =>
+      ml.levelGrantByLevelGrantId?.featuresByLevelGrantId.nodes.find(
+        feat => feat.mechanicClass === MechanicClassType.HeroicAbility
+      )))
+    return memberLevels?.allMemberLevels?.nodes.find(ml =>
+      ml.levelGrantByLevelGrantId?.featuresByLevelGrantId.nodes.find(
+        feat => feat.mechanicClass === MechanicClassType.HeroicAbility
+      )
+    )
+  }, [ memberLevels ])
   const heroicBpRemaining = useMemo(() => {
     const spellsBought =
       memberSpells?.allMemberSpells?.nodes.reduce((prev, curr) => {
@@ -107,8 +123,13 @@ export default function ArrayFieldBase({ type, data }: Props) {
         return prev + curr.uses
       }, 0) ?? 0
 
-    return heroicBp - spellsBought - heroicActionsBought
+    return Math.max(heroicBp - spellsBought - heroicActionsBought, 0)
   }, [ heroicBp, memberHeroicActions, memberSpells ])
+
+  const levelUpPointsRemaining = useMemo(() => {
+    const { timesUsed, timesGranted } = targetMemberLevel ?? { timesUsed: 0, timesGranted: 0 }
+    return timesGranted - timesUsed
+  }, [ targetMemberLevel ])
 
   const rangerLookupRefData = useMemo(() => {
     let base = null
@@ -148,14 +169,19 @@ export default function ArrayFieldBase({ type, data }: Props) {
     }
   }
 
-  const updateLearnedStatus = (lookupFieldData: LookupFieldData) => {
+  const updateLearnedStatus = async (lookupFieldData: LookupFieldData) => {
     if (submitting) {
       return
     }
+    
+    // spend heroic bp first
+    if (heroicBpRemaining < 1) {
+      const { timesUsed } = targetMemberLevel!
 
-    const baseDeletePayload = {
-      id: lookupFieldData?.rangerLookupRef?.id,
-      characterId: ranger?.characterById?.id,
+      await updateMemberLevel({
+        id: targetMemberLevel?.id,
+        timesUsed: lookupFieldData.known ? timesUsed - 1 : timesUsed + 1,
+      })
     }
 
     switch (true) {
@@ -167,7 +193,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
         break
       case lookupFieldData.known && type === 'heroic_actions':
         mutateActionUnlearn({
-          ...baseDeletePayload,
+          id: lookupFieldData?.rangerLookupRef?.id,
         })
         break
       case !lookupFieldData.known && type === 'spells':
@@ -178,20 +204,30 @@ export default function ArrayFieldBase({ type, data }: Props) {
         break
       case lookupFieldData.known && type === 'spells':
         mutateSpellUnlearn({
-          ...baseDeletePayload,
+          id: lookupFieldData?.rangerLookupRef?.id,
         })
         break
       default:
         break
     }
   }
-  const updateNumberOfUses = (lookupFieldData: LookupFieldData, modifier: number) => {
+
+  const updateNumberOfUses = async (lookupFieldData: LookupFieldData, modifier: number) => {
     if (submitting || !lookupFieldData.known) {
       return
     }
 
     const newValue = (lookupFieldData.rangerLookupRef?.uses || 1) + modifier
 
+    // spend heroic bp first
+    if (heroicBpRemaining < 1) {
+      const { timesUsed } = targetMemberLevel!
+
+      await updateMemberLevel({
+        id: targetMemberLevel?.id,
+        timesUsed: timesUsed + modifier,
+      })
+    }
     // remove the lookup ref altogether
     if (newValue === 0) {
       return updateLearnedStatus(lookupFieldData)
@@ -228,27 +264,24 @@ export default function ArrayFieldBase({ type, data }: Props) {
         <MinorHeader
           content={headerContent}
           icon={SectionIcon(type)}
-          {...(heroicBpRemaining !== 0
-            ? {
-                subtext: 'Available build points:',
-                subvalue: heroicBpRemaining,
-              }
-            : {})}
+          subtext='Available points (from build):'
+          subvalue={heroicBpRemaining}
         />
+        <MinorHeader content='' subtext='Available points (from leveling):' subvalue={levelUpPointsRemaining} />
       </div>
       {show && (
         <div className='space-y-4'>
-          {data.map(item => {
-            const lookupFieldData = lookupRangerFieldById(item)
-            const canIncrement = heroicBpRemaining > 0
+          {data.map(heroicAbility => {
+            const lookupFieldData = lookupRangerFieldById(heroicAbility)
+            const canIncrement = heroicBpRemaining > 0 || levelUpPointsRemaining > 0
             const canDecrement = lookupFieldData.rangerLookupRef && lookupFieldData.rangerLookupRef.uses > 0
             return (
               <Card
-                key={item.id}
+                key={heroicAbility.id}
                 header={
                   <div className='flex justify-between items-center'>
                     <div className='flex gap-x-2 items-center'>
-                      <div className='font-semibold capitalize'>{item.name}</div>
+                      <div className='font-semibold capitalize'>{heroicAbility.name}</div>
                       {lookupFieldData.rangerLookupRef ? (
                         <div className='text-sm font-semibold'>( uses: {lookupFieldData.rangerLookupRef?.uses} )</div>
                       ) : null}
@@ -264,7 +297,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                             })}
                           >
                             <Increment
-                              onClick={() => updateNumberOfUses(lookupFieldData, INCREASE)}
+                              onClick={() => canIncrement && updateNumberOfUses(lookupFieldData, INCREASE)}
                               disabled={!canIncrement}
                             />
                           </div>
@@ -278,7 +311,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                             })}
                           >
                             <Decrement
-                              onClick={() => updateNumberOfUses(lookupFieldData, DECREASE)}
+                              onClick={() => canDecrement && updateNumberOfUses(lookupFieldData, DECREASE)}
                               disabled={!canDecrement}
                             />
                           </div>
@@ -290,7 +323,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                         </SmallButton>
                       ) : (
                         <SmallButton
-                          onClick={() => updateLearnedStatus(lookupFieldData)}
+                          onClick={() => canIncrement && updateLearnedStatus(lookupFieldData)}
                           disabled={!canIncrement}
                           primary
                         >
@@ -301,7 +334,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                   </div>
                 }
               >
-                <div>{item.description}</div>
+                <div>{heroicAbility.description}</div>
               </Card>
             )
           })}
@@ -310,30 +343,29 @@ export default function ArrayFieldBase({ type, data }: Props) {
       {/* always show preview of selected heroic actions  */}
       {!show && ranger && (
         <div className='space-y-4'>
-          {rangerLookupRefData.map(itemRef => {
-            const item = data.find(item => {
-              if (item.id === (itemRef as MemberHeroicAction).heroicActionId) return true
-              if (item.id === (itemRef as MemberSpell).spellId) return true
+          {rangerLookupRefData.map(heroicAbilityRef => {
+            const heroicAbility = data.find(heroicAbility => {
+              if (heroicAbility.id === (heroicAbilityRef as MemberHeroicAction).heroicActionId) return true
+              if (heroicAbility.id === (heroicAbilityRef as MemberSpell).spellId) return true
               return false
             })
 
-            if (!item) {
+            if (!heroicAbility) {
               return null
             }
             return (
               <Card
-                key={item.id}
+                key={heroicAbility.id}
                 header={
                   <div className='flex justify-between items-center'>
                     <div className='font-semibold capitalize'>
-                      {item.name} {`( uses: ${itemRef.uses} )`}
+                      {heroicAbility.name} {`( uses: ${heroicAbilityRef.uses} )`}
                     </div>
 
                     <SmallButton
                       onClick={() =>
                         mutateActionUnlearn({
-                          characterId: ranger.characterById?.id,
-                          id: itemRef.id,
+                          id: heroicAbilityRef.id,
                         })
                       }
                     >
@@ -342,7 +374,7 @@ export default function ArrayFieldBase({ type, data }: Props) {
                   </div>
                 }
               >
-                <div>{item.description}</div>
+                <div>{heroicAbility.description}</div>
               </Card>
             )
           })}
