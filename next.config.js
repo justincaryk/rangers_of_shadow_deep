@@ -13,6 +13,11 @@ async function redirects() {
       destination: '/auth/signin',
       permanent: true,
     },
+    {
+      source: '/member',
+      destination: '/dashboard',
+      permanent: true,
+    },
   ]
 }
 

@@ -1,56 +1,144 @@
 'use client'
 
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
-import { useAtom } from 'jotai'
-import { useState } from 'react'
+import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
 import Decrement from '../parts/decrement'
 import Increment from '../parts/increment'
 import MinorHeader from '../parts/minor-header'
 import ShowHide from '../parts/show-hide'
-import { RANGER_FIELD, BASE_STATS_ENUM } from '../types'
-import { useGetTrueAvailBp } from '../utils'
-import { useBpForStats } from '../ranger/atoms/build-points'
-import { useRanger } from '../ranger/atoms/ranger'
-import { BASE_STATS, DECREASE, INCREASE } from '../rules/ranger-rules'
+
+import { useMemo, useState } from 'react'
+
+// types
+import { DECREASE, INCREASE } from '../rules/creation-rules'
+import { BASE_STATS_ENUM } from '../types'
+import { MechanicClassType, StatType } from '../../graphql/generated/graphql'
+import { Stat } from './types'
+
+// hooks
+import { useStatsApi } from './stats-api'
+import { useRangerApi } from '../ranger/ranger-api'
+import { useAtom } from 'jotai'
+import { useStatsBp } from '../ranger/atoms/build-points'
+import { useLevelingApi } from '../leveling/leveling-api'
+import { notify } from '../parts/toast'
 
 export default function Stats() {
   const [ show, toggleShow ] = useState(false)
+  const [ bpSpent ] = useAtom(useStatsBp)
+  const { data: stats } = useStatsApi().getStats
+  const { data: ranger } = useRangerApi().getRangerSummary
+
+  const { data: memberStats } = useStatsApi().getMemberStats
+  const { data: memberLevels } = useLevelingApi().getMemberLevels
+
+  const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStat
+
+  const totalSpentOnStats = useMemo(() => {
+    // on character create, a lookup record is generated with the default stat value for each stat.
+    // so to determine how many are spent
+    // we need to find the diff between the default point total and the rangers point total
+    const defaultAtCreateTotal =
+      stats?.allStats?.nodes.reduce((acc, curr) => (curr.rangerDefault ? curr.rangerDefault + acc : acc), 0) ?? 0
+    const currentRangerTotal =
+    memberStats?.allMemberStats?.nodes.reduce((acc, curr) => acc + curr.value, 0) ?? 0
+
+    return currentRangerTotal - defaultAtCreateTotal
+  }, [ memberStats, stats ])
+
+  const availablePoints = useMemo(() => {
+    const availablePointsLocal = {
+      remainingFromBp: 0,
+      remainingFromLvl: 0,
+      statLvlGrantCount: 0,
+      total: 0,
+    }
+
+    if (ranger) {
+      const bpAllottedForStats = ranger?.characterById?.characterBpLookupsByCharacterId?.nodes?.[0]?.bpSpentOnStats ?? 0
+      const statLevelUps =
+        memberLevels?.allMemberLevels?.nodes.reduce((prev, curr) => {
+          if (curr.levelGrantByLevelGrantId?.grantType === MechanicClassType.Stat) {
+            return prev + curr.timesGranted
+          }
+          return prev
+        }, 0) ?? 0
+
+      let spentDecremented = totalSpentOnStats
+      let pointsFromBpLeft = bpAllottedForStats
+      let pointsFromLvlLeft = statLevelUps
+
+      if (totalSpentOnStats > bpAllottedForStats) {
+        spentDecremented = spentDecremented - bpAllottedForStats
+        pointsFromBpLeft = 0
+      } else {
+        spentDecremented = 0
+        pointsFromBpLeft = bpAllottedForStats - totalSpentOnStats
+      }
+
+      if (spentDecremented > 0) {
+        pointsFromLvlLeft = pointsFromLvlLeft - spentDecremented
+      }
+
+      availablePointsLocal.statLvlGrantCount = statLevelUps
+      availablePointsLocal.remainingFromBp = pointsFromBpLeft
+      availablePointsLocal.remainingFromLvl = pointsFromLvlLeft
+      availablePointsLocal.total = pointsFromBpLeft + pointsFromLvlLeft
+    }
+
+    return availablePointsLocal
+  }, [ totalSpentOnStats, ranger, memberLevels ])
 
   // how many build points available for stats
-  const [ bpForStats, updateBuildPoints ] = useAtom(useBpForStats)
-  const trueAvailBp = useGetTrueAvailBp(bpForStats)
 
-  const [ ranger, updateRanger ] = useAtom(useRanger)
-
-  const checkCanIncrease = (stat: BASE_STATS_ENUM) => {
-    // make sure we have build points available
-    if (trueAvailBp === 0) {
+  const checkCanIncrease = (stat: Stat) => {
+    // make sure we have points from some source available
+    if (availablePoints?.total === 0) {
       return false
     }
 
     // no armor upgrades
-    if (stat === BASE_STATS_ENUM.armor) {
+    if (stat.name === BASE_STATS_ENUM.armor) {
       return false
     }
 
-    // only 1 upgrade allowed per stat at creation
-    if (ranger[RANGER_FIELD.STATS][stat] === BASE_STATS[stat]) {
+    const currentStatValue = getCurrentStatValue(stat.id)
+
+    if (typeof currentStatValue !== 'number') {
+      return false
+    }
+
+    const timesUpgraded = currentStatValue - stat.rangerDefault!
+
+    // only allow 1 upgrade per stat at create
+    if (timesUpgraded === 0 && availablePoints.remainingFromBp > 0) {
+      return true
+    }
+
+    const spentBpAtCreate = bpSpent > 0
+    const timesUpgradedOnLevels = spentBpAtCreate ? timesUpgraded - 1 : timesUpgraded
+
+    // only 1 upgrade per stat level up
+    if (timesUpgradedOnLevels < availablePoints?.remainingFromLvl && availablePoints.remainingFromBp === 0) {
       return true
     }
 
     return false
   }
 
-  const checkCanDecrease = (stat: BASE_STATS_ENUM) => {
-    if (ranger[RANGER_FIELD.STATS][stat] > BASE_STATS[stat]) {
+  const checkCanDecrease = (stat: Stat) => {
+    if (stat.rangerDefault && getCurrentStatValue(stat.id) > stat.rangerDefault) {
       return true
     }
 
     return false
   }
 
-  const updateStat = (stat: BASE_STATS_ENUM, modifier: number) => {
+  const updateStat = (stat: Stat, modifier: number) => {
+    if (mutateStatStatus === 'loading') {
+      return null
+    }
+
     if (modifier === INCREASE) {
       if (!checkCanIncrease(stat)) {
         return null
@@ -60,75 +148,88 @@ export default function Stats() {
         return null
       }
     }
-    const currentStats = ranger[RANGER_FIELD.STATS]
-    const currentSkillValue = currentStats[stat]
 
-    // update ranger state
-    updateRanger({
-      ...ranger,
-      [RANGER_FIELD.STATS]: {
-        ...currentStats,
-        [stat]: currentSkillValue + modifier,
-      },
+    const memberStat = getMemberStatFromStatId(stat.id)
+
+    if (!memberStat) {
+      notify("Can't find a maching member stat id. Try reloading the page!", { type: 'error' })
+      console.error('no matching member stat id: ', {
+        statId: stat.id,
+        memberStats: memberStats?.allMemberStats?.nodes ?? [],
+      })
+      throw new Error()
+    }
+
+    mutateStat({
+      id: memberStat.id,
+      value: memberStat.value + modifier,
     })
+  }
 
-    // update build points
-    updateBuildPoints(modifier)
+  function getMemberStatFromStatId(statId: string) {
+    return memberStats?.allMemberStats?.nodes.find(x => statId && statId === x?.statId) || null
+  }
+
+  function getCurrentStatValue(statId: string) {
+    return getMemberStatFromStatId(statId)?.value || 'Could not find current set value'
   }
 
   return (
     <div>
-      <div className='mt-2'>
+      <div className='mt-2 cursor-pointer' onClick={() => toggleShow(!show)}>
         <div className='w-6 float-right'>
-          <ShowHide isShow={show} onClick={() => toggleShow(!show)} />
+          <ShowHide isShow={show} />
         </div>
         <MinorHeader
           content='stats'
-          icon={<AdjustmentsHorizontalIcon />}
-          subtext='Available build points:'
-          subvalue={trueAvailBp}
+          icon={<AdjustmentsHorizontalIcon className='text-rose-600' />}
+          subtext='Available points (from build):'
+          subvalue={availablePoints?.remainingFromBp}
+        />
+        <MinorHeader
+          content=''
+          subtext='Available points (from leveling):'
+          subvalue={availablePoints?.remainingFromLvl}
         />
       </div>
       {show && (
         <div className='px-4 py-4 sm:p-6'>
-          <div className='flex flex-col space-y-2 w-1/4'>
-            {Object.values(BASE_STATS_ENUM)
+          <div className='flex flex-col space-y-2'>
+            {stats?.allStats?.nodes
+              .filter(stat => stat && stat?.statType === StatType.Base)
               .map(stat => {
-              const canIncrement = checkCanIncrease(stat)
-              const canDecrement = checkCanDecrease(stat)
-              return (
-                <div key={stat} className='grid grid-cols-3 gap-x-4'>
-                  <div className='uppercase font-bold text-small'>{stat}:</div>
-                  {ranger[RANGER_FIELD.STATS][stat]}
-                  <div className='flex gap-2'>
-                    <div
-                      className={classnames({
-                        'w-6': true,
-                        'cursor-not-allowed': !canIncrement,
-                        'cursor-pointer': canIncrement,
-                      })}
-                    >
-                      <Increment
-                        onClick={() => updateStat(stat, INCREASE)}
-                        disabled={!canIncrement}
-                      />
+                const canIncrement = checkCanIncrease(stat)
+                const canDecrement = checkCanDecrease(stat)
+                return (
+                  <div key={stat?.id} className='grid grid-flow-col auto-cols-min gap-x-2'>
+                    <div className='uppercase font-bold text-small w-24'>
+                      {BASE_STATS_ENUM[stat?.name as BASE_STATS_ENUM]}: &nbsp;
                     </div>
-                    <div
-                      className={classnames({
-                        'w-6': true,
-                        'cursor-not-allowed': !canDecrement,
-                        'cursor-pointer': canDecrement,
-                      })}
-                    >
-                      <Decrement
-                        onClick={() => updateStat(stat, DECREASE)}
-                        disabled={!canDecrement}
-                      />
+                    {/* <div className='w-10'>{ranger[RANGER_FIELD.STATS][stat?.name as BASE_STATS_ENUM]}</div> */}
+                    <div className='w-10'>{getCurrentStatValue(stat?.id)}</div>
+                    <div className='flex gap-2'>
+                      <div
+                        className={classnames({
+                          'w-6': true,
+                          'cursor-not-allowed': !canIncrement,
+                          'cursor-pointer': canIncrement,
+                        })}
+                      >
+                        <Increment onClick={() => stat && updateStat(stat, INCREASE)} disabled={!canIncrement} />
+                      </div>
+                      <div
+                        className={classnames({
+                          'w-6': true,
+                          'cursor-not-allowed': !canDecrement,
+                          'cursor-pointer': canDecrement,
+                        })}
+                      >
+                        <Decrement onClick={() => stat && updateStat(stat, DECREASE)} disabled={!canDecrement} />
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-            })}
+                )
+              })}
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@ import classnames from 'classnames'
 
 type Option = OptionHTMLAttributes<any> & {
   text: string | number
+  value?: string | number
 }
 
 interface Props extends SelectHTMLAttributes<any> {
@@ -25,7 +26,7 @@ export default function Dropdown({ className, options, ...rest }: Props) {
       {...rest}
     >
       {options.map(opt => (
-        <option key={opt.text} {...opt}>
+        <option key={opt.text} {...opt} value={opt.value}>
           {opt.text}
         </option>
       ))}

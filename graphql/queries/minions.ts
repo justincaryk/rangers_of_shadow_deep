@@ -1,11 +1,12 @@
 import { gql } from 'graphql-request'
 
 export default gql`
-  query MyQuery {
+  query AllMinions {
     allMinions {
       nodes {
         id
         userName
+        nodeId
       }
     }
   }

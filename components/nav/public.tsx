@@ -1,23 +1,22 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { PUBLIC_LINK_ROUTES } from './routes'
+import { PUBLIC_ROUTE_URLS, PublicRouteType } from './routes'
 
-export const PUBLIC_LINKS = [
+const PUBLIC_ROUTES: PublicRouteType[] = [
   {
-    link: PUBLIC_LINK_ROUTES.SIGN_UP,
+    link: PUBLIC_ROUTE_URLS.SIGN_UP,
     text: 'Signup',
+    hasNav: true,
   },
   {
-    link: PUBLIC_LINK_ROUTES.SIGN_IN,
+    link: PUBLIC_ROUTE_URLS.SIGN_IN,
     text: 'Signin',
+    hasNav: true,
   },
 ]
 export default function PublicNavigation() {
-  
-  
-
   return (
-    <div className='w-full bg-stone px-4 relative'>
+    <div className='w-full bg-stone px-4 relative z-20'>
       <div className='flex items-center justify-between md:justify-start md:space-x-10'>
         <div className='flex justify-start lg:w-0 lg:flex-1'>
           <span className='sr-only'>Rangers of Shadow Deep Companion App</span>
@@ -29,7 +28,7 @@ export default function PublicNavigation() {
             alt=''
           />
         </div>
-        {PUBLIC_LINKS.map(x => (
+        {PUBLIC_ROUTES.map(x => (
           <div key={x.text}>
             <Link href={x.link}>
               <button className='flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700'>

@@ -5,13 +5,14 @@ import { useRouter } from 'next/navigation'
 
 import * as Yup from 'yup'
 import { Formik, Form, Field } from 'formik'
-import { AuthFormFields, AUTH_TOKEN } from './types'
+import { AUTH_TOKEN } from './types'
 
-import { useSignin } from './use-signin-query'
+import { useAuthApi } from './auth-api'
 import { parseJwt } from '../utils'
 import { useAtom } from 'jotai'
 import { useCurrentUser, useSetCurrentUser } from './atoms/current-user'
-import { PRIVATE_LINK_ROUTES } from '../nav/routes'
+import { PRIVATE_ROUTE_URLS } from '../nav/routes'
+import { SigninInput } from '../../graphql/generated/graphql'
 
 const SigninSchema = Yup.object().shape({
   username: Yup.string().required('Required'),
@@ -22,7 +23,7 @@ export default function SigninForm() {
   const router = useRouter()
 
   const [ signinError, setSigninError ] = useState(false)
-  const { mutate: signin, data, status } = useSignin()
+  const { mutate: signin, data, status } = useAuthApi().signIn
 
   const [ _, setCurrentUser ] = useAtom(useSetCurrentUser)
   const [ currentUser ] = useAtom(useCurrentUser)
@@ -37,10 +38,11 @@ export default function SigninForm() {
         setCurrentUser({
           userId: parsed.user_id,
           username: parsed.username,
+          userRole: parsed.user_role,
           jwt: data.signin?.jwtToken,
         })
 
-        router.push(PRIVATE_LINK_ROUTES.DASHBOARD)
+        router.push(PRIVATE_ROUTE_URLS.DASHBOARD)
       }
     }
   }, [ router, status, data, currentUser, setCurrentUser ])
@@ -53,17 +55,13 @@ export default function SigninForm() {
     }
   }, [ status, data, setSigninError ])
 
-  const handleSubmit = async (values: AuthFormFields) => {
+  const handleSubmit = async (values: SigninInput) => {
     await signin(values)
   }
 
   return (
     <div>
-      {signinError ? (
-        <div className='text-red-400 font-bold'>
-          Incorrect username or password
-        </div>
-      ) : null}
+      {signinError ? <div className='text-red-400 font-bold'>Incorrect username or password</div> : null}
       <Formik
         initialValues={{
           username: '',
@@ -75,26 +73,14 @@ export default function SigninForm() {
         {({ errors, touched }) => (
           <Form className='space-y-4 relative pt-6'>
             <div>
-              <label
-                className='block text-center hidden'
-                htmlFor='username'
-                aria-label='username'
-              >
+              <label className='text-center hidden' htmlFor='username' aria-label='username'>
                 Enter username
               </label>
-              <Field
-                name='username'
-                placeholder='Aragorn'
-                className='w-full border rounded text-xl p-2 text-center'
-              />
+              <Field name='username' placeholder='Aragorn' className='w-full border rounded text-xl p-2 text-center' />
             </div>
 
             <div>
-              <label
-                className='block text-center hidden'
-                htmlFor='password'
-                aria-label='password'
-              >
+              <label className='text-center hidden' htmlFor='password' aria-label='password'>
                 Enter Password
               </label>
               <Field
@@ -105,10 +91,7 @@ export default function SigninForm() {
               />
             </div>
 
-            <button
-              className='w-full border rounded p-3 bg-indigo-600 text-white font-bold'
-              type='submit'
-            >
+            <button className='w-full border rounded p-3 bg-indigo-600 text-white font-bold' type='submit'>
               SIGN IN
             </button>
           </Form>

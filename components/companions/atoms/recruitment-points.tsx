@@ -1,21 +1,19 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 
+import { BASE_RECRUITMENT_POINTS } from '../../rules/creation-rules'
 
-import {
-  BASE_RECRUITMENT_POINTS,
-  MAX_BUILD_POINTS_BOOSTER,
-  RP_BONUS_PER_BUILD_POINT,
-  RP_BONUS_PER_LEADERSHIP_SP,
-  INITIAL_RECRUIT_SKILL_BUMP,
-} from '../../rules/companion-rules'
+export const useSpentRecruitmentPoints = atomWithReset(0)
+export const useAdjustedRecruitmentPoints = atomWithReset(BASE_RECRUITMENT_POINTS)
 
-export const useRecruitmentPoints = atomWithReset(BASE_RECRUITMENT_POINTS)
+export const useSetAdjustedRecruitmentPoints = atom(null, (get, set, updatedTotal: number) => {
+  set(useAdjustedRecruitmentPoints, updatedTotal)
+})
 
 export const useSpendRecruitmentPoints = atom(null, (get, set, price: number) => {
-  set(useRecruitmentPoints, get(useRecruitmentPoints) - price)
+  set(useSpentRecruitmentPoints, get(useSpentRecruitmentPoints) - price)
 })
 
 export const useRefundRecruitmentPoints = atom(null, (get, set, refund: number) => {
-    set(useRecruitmentPoints, get(useRecruitmentPoints) + refund)
-  })
+  set(useSpentRecruitmentPoints, get(useSpentRecruitmentPoints) + refund)
+})

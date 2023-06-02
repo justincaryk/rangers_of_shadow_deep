@@ -1,7 +1,12 @@
-import { HeroicAction, Skill, Spell } from './data'
+import { Character } from '../graphql/generated/graphql'
+
+export enum MEMBER_TYPE_ENUM {
+  FRIEND = 'friend',
+  RANGER = 'ranger',
+}
 
 export enum RANGER_FIELD {
-  PERSONAL = 'personal',
+  CORE = 'core',
   STATS = 'stats',
   SKILLS = 'skills',
   HEROIC_ACTIONS = 'heroicActions',
@@ -28,26 +33,13 @@ export enum MODS {
   MAGIC_SHOOTING_BONUS = 'magic-shooting-bonus',
 }
 
-export type Ranger = {
-  [RANGER_FIELD.PERSONAL]: {}
-  [RANGER_FIELD.STATS]: {
-    [BASE_STATS_ENUM.move]: number
-    [BASE_STATS_ENUM.fight]: number
-    [BASE_STATS_ENUM.shoot]: number
-    [BASE_STATS_ENUM.armor]: number
-    [BASE_STATS_ENUM.will]: number
-    [BASE_STATS_ENUM.health]: number
-  }
-  [RANGER_FIELD.SKILLS]: {
-      [key: Skill['name']]: number
-  }
-  [RANGER_FIELD.HEROIC_ACTIONS]: HeroicAction['name'][]
-  [RANGER_FIELD.SPELLS]: Spell['name'][]
-  [RANGER_FIELD.EQUIPMENT]: {
-    weapons: string[]
-    armor: string[]
-    equipment: string[]
-  }
+export type RangerLookupFieldHashKeyStrings = 'heroic_actions' | 'spells' | 'skills' | 'stats'
+
+export const RANGER_LOOKUP_FIELD_HASH_KEYS: { [x: string]: RangerLookupFieldHashKeyStrings } = {
+  HEROIC_ACTIONS: 'heroic_actions',
+  SPELLS: 'spells',
+  SKILLS: 'skills',
+  STATS: 'stats',
 }
 
 export enum PLAYER_COUNT {
@@ -56,3 +48,17 @@ export enum PLAYER_COUNT {
   THREE = 'three',
   FOUR = 'four',
 }
+
+export const MAX_COMPANIONS_WITH_PLAYERS = {
+  [PLAYER_COUNT.ONE]: 7,
+  [PLAYER_COUNT.TWO]: 3,
+  [PLAYER_COUNT.THREE]: 2,
+  [PLAYER_COUNT.FOUR]: 1,
+} as const
+
+export const MAX_COMPANION_ACTIVATION = {
+  [PLAYER_COUNT.ONE]: 2,
+  [PLAYER_COUNT.TWO]: 1,
+  [PLAYER_COUNT.THREE]: 0,
+  [PLAYER_COUNT.FOUR]: 0,
+} as const

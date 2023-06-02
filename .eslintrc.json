@@ -1,9 +1,11 @@
 {
-  "extends": ["next/core-web-vitals"],
+  "plugins": ["eslint-plugin-react-hooks"],
+  "extends": ["next/core-web-vitals", "plugin:react-hooks/recommended"],
   "rules": {
     "arrow-parens": ["warn", "as-needed"],
     "array-bracket-spacing": ["warn", "always"],
-    "max-len": "off"
+    "max-len": "off",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "root": true
 }

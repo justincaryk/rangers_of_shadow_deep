@@ -12,7 +12,7 @@ const pool = new Pool({
 
 export { pool as pg }
 
-export default postgraphile(pool, config.PG_SCHEMA, {
+export default postgraphile(pool, [ 'public', ...config.PG_SCHEMA ], {
   // watchPg: true, // Need extension for this to work properly
   jwtSecret: config.JWT_SECRET,
   jwtPgTypeIdentifier: 'public.jwt_token',

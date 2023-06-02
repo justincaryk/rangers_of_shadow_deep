@@ -5,10 +5,7 @@ export interface FallbackProps {
   resetErrorBoundary?: (...args: Array<unknown>) => void
 }
 
-export default function ErrorFallback({
-  error,
-  resetErrorBoundary,
-}: FallbackProps) {
+export default function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
     <div role='alert'>
       <p>Something went wrong:</p>
