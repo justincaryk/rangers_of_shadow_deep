@@ -123,6 +123,14 @@ exports.seed = function (knex) {
           value: 1,
         },
         {
+          name: 'comp level up - initial companion select skill boost',
+          primary_type: 'FRIEND_LEVEL_GRANT',
+          mechanic_class: 'SKILL',
+          mechanic_mod: 'PICK',
+          count: 1,
+          value: 3,
+        },
+        {
           name: 'comp level up - skill',
           primary_type: 'FRIEND_LEVEL_GRANT',
           mechanic_class: 'SKILL',

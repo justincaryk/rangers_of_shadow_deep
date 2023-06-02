@@ -7,14 +7,7 @@ export default gql`
       name
       progressionPoints
       mercenaryId
-      bonusSkill
       nodeId
-      skillByBonusSkill {
-        nodeId
-        name
-        id
-        description
-      }
       mercenaryByMercenaryId {
         id
         nodeId

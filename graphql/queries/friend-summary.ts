@@ -7,7 +7,6 @@ export default gql`
       name
       progressionPoints
       mercenaryId
-      bonusSkill
       avatarUrl
       nodeId
       mercenaryByMercenaryId {
