@@ -32,5 +32,5 @@ export type Mercenary = Omit<
 
 export type FriendSummary = Pick<
   Friend,
-  'id' | 'name' | 'progressionPoints' | 'mercenaryId' | 'bonusSkill' | 'avatarUrl'
+  'id' | 'name' | 'progressionPoints' | 'mercenaryId' | 'avatarUrl'
 >
