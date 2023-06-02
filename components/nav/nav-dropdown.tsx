@@ -1,5 +1,7 @@
 'use client'
 
+import classnames from 'classnames'
+
 import { Popover, Transition } from '@headlessui/react'
 import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import {
@@ -10,10 +12,9 @@ import {
   Squares2X2Icon,
 } from '@heroicons/react/24/outline'
 import { Fragment } from 'react'
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
+import { NAV_TEXT_STYLE } from '../utils'
+import { PrivateRouteType } from './routes'
+import Link from 'next/link'
 
 const solutions = [
   {
@@ -49,11 +50,14 @@ const solutions = [
 ]
 // https://tailwindui.com/components/marketing/elements/headers
 
-export default function Dropdown() {
+interface Props {
+  route: PrivateRouteType
+}
+export default function NavDropdown({ route }: Props) {
   return (
     <div>
       <div className='-my-2 -mr-2 md:hidden'>
-        <Popover.Button className='inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'>
+        <Popover.Button className='inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none'>
           <span className='sr-only'>Open menu</span>
           <Bars3Icon className='h-6 w-6' aria-hidden='true' />
         </Popover.Button>
@@ -63,14 +67,15 @@ export default function Dropdown() {
           {({ open }) => (
             <>
               <Popover.Button
-                className={classNames(
-                  open ? 'text-gray-900' : 'text-gray-500',
-                  'group inline-flex items-center rounded-md text-base font-medium hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-                )}
+                className={classnames({
+                  [NAV_TEXT_STYLE]: true,
+                  'text-hover-white': open,
+                  'group inline-flex items-center rounded-md focus:outline-none': true,
+                })}
               >
-                <span>Solutions</span>
+                <span>{route.text}</span>
                 <ChevronDownIcon
-                  className={classNames(
+                  className={classnames(
                     open ? 'text-gray-600' : 'text-gray-400',
                     'ml-2 h-5 w-5 group-hover:text-gray-500'
                   )}
@@ -90,18 +95,21 @@ export default function Dropdown() {
                 <Popover.Panel className='absolute z-10 -ml-4 mt-3 w-screen max-w-md transform px-2 sm:px-0 lg:left-1/2 lg:ml-0 lg:-translate-x-1/2'>
                   <div className='overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5'>
                     <div className='relative grid gap-6 px-5 py-6 sm:gap-8 sm:p-8'>
-                      {solutions.map(item => (
-                        <a
-                          key={item.name}
-                          href={item.href}
-                          className='-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50'
-                        >
-                          <item.icon className='h-6 w-6 flex-shrink-0 text-indigo-600' aria-hidden='true' />
-                          <div className='ml-4'>
-                            <p className='text-base font-medium text-gray-900'>{item.name}</p>
-                            <p className='mt-1 text-sm text-gray-500'>{item.description}</p>
-                          </div>
-                        </a>
+                      {route.children?.map(child => (
+                        <Link href={child.link!} key={child.text} className={NAV_TEXT_STYLE}>
+                          {child.text}
+                        </Link>
+                        // <a
+                        //   key={child.text}
+                        //   href={item.href}
+                        //   className='-m-3 flex items-start rounded-lg p-3 hover:bg-gray-50'
+                        // >
+                        //   <item.icon className='h-6 w-6 flex-shrink-0 text-indigo-600' aria-hidden='true' />
+                        //   <div className='ml-4'>
+                        //     <p className='text-base font-medium text-gray-900'>{item.name}</p>
+                        //     <p className='mt-1 text-sm text-gray-500'>{item.description}</p>
+                        //   </div>
+                        // </a>
                       ))}
                     </div>
                   </div>

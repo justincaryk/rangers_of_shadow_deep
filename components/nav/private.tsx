@@ -11,6 +11,7 @@ import { AUTH_TOKEN } from '../auth/types'
 import { UserRole } from '../../graphql/generated/graphql'
 import { useAtom } from 'jotai'
 import { useCurrentUser } from '../auth/atoms/current-user'
+import NavDropdown from './nav-dropdown'
 
 export const PRIVATE_ROUTES: PrivateRouteType[] = [
   {
@@ -21,34 +22,44 @@ export const PRIVATE_ROUTES: PrivateRouteType[] = [
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_ROUTE_URLS.HEROIC_ACTIONS,
-    text: 'Heroic Actions',
+    link: PRIVATE_ROUTE_URLS.BRIEFING,
+    text: 'Mission Briefing',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
-    link: PRIVATE_ROUTE_URLS.SPELLS,
-    text: 'Spells',
+    link: null,
+    text: 'Rules',
     hasNav: true,
     permission: [ UserRole.Minion, UserRole.Wizard ],
-  },
-  {
-    link: PRIVATE_ROUTE_URLS.EQUIPMENT,
-    text: 'Equipment',
-    hasNav: true,
-    permission: [ UserRole.Minion, UserRole.Wizard ],
-  },
-  {
-    link: PRIVATE_ROUTE_URLS.INJURIES,
-    text: 'Injuries',
-    hasNav: true,
-    permission: [ UserRole.Minion, UserRole.Wizard ],
-  },
-  {
-    link: PRIVATE_ROUTE_URLS.PROGRESSION,
-    text: 'Progression',
-    hasNav: true,
-    permission: [ UserRole.Minion, UserRole.Wizard ],
+    hasChildren: true,
+    children: [
+      {
+        link: PRIVATE_ROUTE_URLS.HEROIC_ACTIONS,
+        text: 'Heroic Actions',
+        hasNav: true,
+      },
+      {
+        link: PRIVATE_ROUTE_URLS.SPELLS,
+        text: 'Spells',
+        hasNav: true,
+      },
+      {
+        link: PRIVATE_ROUTE_URLS.EQUIPMENT,
+        text: 'Equipment',
+        hasNav: true,
+      },
+      {
+        link: PRIVATE_ROUTE_URLS.INJURIES,
+        text: 'Injuries',
+        hasNav: true,
+      },
+      {
+        link: PRIVATE_ROUTE_URLS.PROGRESSION,
+        text: 'Progression',
+        hasNav: true,
+      },
+    ],
   },
   {
     link: PRIVATE_ROUTE_URLS.ADMIN,
@@ -89,12 +100,11 @@ export default function PrivateNavigation() {
           <div className='flex items-center justify-between md:justify-start md:space-x-10'>
             <div className='flex justify-start lg:w-0 lg:flex-1'>
               <span className='sr-only'>Rangers of Shadow Deep Companion App</span>
-              {PRIVATE_ROUTES.filter(x => x.home).map(x => (
-                <Link href={x.link} key={x.text}>
+              {PRIVATE_ROUTES.filter(x => x.home && x.link).map(x => (
+                <Link href={x.link!} key={x.text}>
                   <Image
                     width={200}
                     height={100}
-                    // className='h-8 w-auto sm:h-10'
                     src='/images/logo-lg.png'
                     alt=''
                   />
@@ -108,11 +118,17 @@ export default function PrivateNavigation() {
               </Popover.Button>
             </div>
             <Popover.Group as='nav' className='hidden space-x-10 md:flex'>
-              {PRIVATE_ROUTES.filter(x => x.hasNav && userMissingPermission(x)).map(x => (
-                <Link href={x.link} key={x.text} className={NAV_TEXT_STYLE}>
-                  {x.text}
-                </Link>
-              ))}
+              {PRIVATE_ROUTES.filter(x => x.hasNav && userMissingPermission(x)).map(x => {
+                if (!x.hasChildren) {
+                  return (
+                    <Link href={x.link!} key={x.text} className={NAV_TEXT_STYLE}>
+                      {x.text}
+                    </Link>
+                  )
+                } else {
+                  return <NavDropdown key={x.text} route={x} />
+                }
+              })}
               <Link href='#' className={NAV_TEXT_STYLE} onClick={signout}>
                 Signout
               </Link>
