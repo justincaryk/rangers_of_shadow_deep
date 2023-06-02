@@ -9,13 +9,18 @@ import {
 } from '../../graphql/generated/graphql'
 import { Feature } from '../features/types'
 
+export type MemberLevelFeature = Pick<
+  Feature,
+  'id' | 'primaryType' | 'mechanicClass' | 'mechanicMod' | 'value' | 'statSubtype' | 'statId' | 'pickIds' | 'nodeId'
+>
+
 export type MemberLevel = Omit<
   Codegen_MemberLevel,
   'characterByCharacterId' | 'friendByFriendId' | 'friendLevelGrantByFriendLevelGrantId'
 > & {
   friendLevelGrantByFriendLevelGrantId?: Omit<FriendLevelGrant, 'featuresByFriendLevelGrantId' | 'description'> & {
     featuresByFriendLevelGrantId?: {
-      nodes: Omit<Feature, 'name'>[]
+      nodes: MemberLevelFeature[]
     }
   }
 }

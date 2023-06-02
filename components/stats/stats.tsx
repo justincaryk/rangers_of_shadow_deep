@@ -27,7 +27,7 @@ export default function Stats() {
   const { data: stats } = useStatsApi().getStats
   const { data: ranger } = useRangerApi().getRangerById
 
-  const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStatById
+  const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStat
 
   const totalSpentOnStats = useMemo(() => {
     // on character create, a lookup record is generated with the default stat value for each stat.

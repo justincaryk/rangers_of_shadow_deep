@@ -4,19 +4,19 @@ import { useMemo, useState } from 'react'
 import { SparklesIcon } from '@heroicons/react/24/outline'
 import classnames from 'classnames'
 
-import MinorHeader from '../../parts/minor-header'
-import ShowHide from '../../parts/show-hide'
-import Card from '../../parts/card'
-import SmallButton from '../../parts/small-button'
-import Increment from '../../parts/increment'
+import MinorHeader from '../parts/minor-header'
+import ShowHide from '../parts/show-hide'
+import Card from '../parts/card'
+import SmallButton from '../parts/small-button'
+import Increment from '../parts/increment'
 
-import { useCompanionsApi } from '../companions-api'
-import { useSpellsApi } from '../../spells/spells-api'
+import { useCompanionsApi } from '../companions/companions-api'
+import { useSpellsApi } from '../spells/spells-api'
 
-import { MercenaryFeature } from '../types'
-import Decrement from '../../parts/decrement'
-import { MemberSpell } from '../../spells/types'
-import { DECREASE, INCREASE } from '../../rules/creation-rules'
+import { MercenaryFeature } from '../companions/types'
+import Decrement from '../parts/decrement'
+import { MemberSpell } from '../spells/types'
+import { DECREASE, INCREASE } from '../rules/creation-rules'
 
 interface Props {
   feat: MercenaryFeature

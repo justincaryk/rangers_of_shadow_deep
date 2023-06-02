@@ -4,17 +4,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 import { MultiSelect, Option } from 'react-multi-select-component'
 
-import MinorHeader from '../../parts/minor-header'
-import ShowHide from '../../parts/show-hide'
-import Card from '../../parts/card'
-import SmallButton from '../../parts/small-button'
+import MinorHeader from '../parts/minor-header'
+import ShowHide from '../parts/show-hide'
+import Card from '../parts/card'
+import SmallButton from '../parts/small-button'
 
-import { useCompanionsApi } from '../companions-api'
-import { useEquipmentApi } from '../../equipment/equipment-api'
+import { useCompanionsApi } from '../companions/companions-api'
+import { useEquipmentApi } from '../equipment/equipment-api'
 
-import { MercenaryFeature } from '../types'
+import { MercenaryFeature } from '../companions/types'
 
-import { capitalizeEach } from '../../utils'
+import { capitalizeEach } from '../utils'
 import { isEqual } from 'lodash'
 
 interface Props {

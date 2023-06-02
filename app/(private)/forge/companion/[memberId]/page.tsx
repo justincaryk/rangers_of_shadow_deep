@@ -20,7 +20,7 @@ import MinorHeader from '../../../../../components/parts/minor-header'
 import FriendCore from '../../../../../components/companions//friend/friend-core'
 import PickMercType from '../../../../../components/companions/friend/pick-merc-type'
 import PickSkill from '../../../../../components/companions/friend/pick-skill'
-import FriendPickContainer from '../../../../../components/companions/friend/pick-container'
+import FriendPickContainer from '../../../../../components/leveling/pick-container'
 
 interface Props {
   params: {

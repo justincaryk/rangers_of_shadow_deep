@@ -5,19 +5,19 @@ import * as Yup from 'yup'
 import { Field, Form, Formik } from 'formik'
 
 import { FireIcon } from '@heroicons/react/24/outline'
-import MinorHeader from '../../parts/minor-header'
-import ShowHide from '../../parts/show-hide'
-import Card from '../../parts/card'
-import { baseInputClasses } from '../../parts/input'
-import SmallButton from '../../parts/small-button'
+import MinorHeader from '../parts/minor-header'
+import ShowHide from '../parts/show-hide'
+import Card from '../parts/card'
+import { baseInputClasses } from '../parts/input'
+import SmallButton from '../parts/small-button'
 
-import { useSkillsApi } from '../../skills/skills-api'
-import { useCompanionsApi } from '../companions-api'
+import { useSkillsApi } from '../skills/skills-api'
+import { useCompanionsApi } from '../companions/companions-api'
 
-import { FriendPatch } from '../../../graphql/generated/graphql'
-import { INITIAL_RECRUIT_SKILL_BUMP } from '../../rules/creation-rules'
+import { FriendPatch } from '../../graphql/generated/graphql'
+import { INITIAL_RECRUIT_SKILL_BUMP } from '../rules/creation-rules'
 
-import { capitalizeEach } from '../../utils'
+import { capitalizeEach } from '../utils'
 import classnames from 'classnames'
 
 const FriendSkillSchema = Yup.object().shape({

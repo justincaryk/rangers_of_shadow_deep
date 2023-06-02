@@ -9,13 +9,13 @@ import {
   DeleteMemberStatMutationVariables,
   MemberStatsQuery,
   StatsQuery,
-  UpdateMemberStatByIdMutation,
-  UpdateMemberStatByIdMutationVariables,
+  UpdateMemberStatMutation,
+  UpdateMemberStatMutationVariables,
 } from '../../graphql/generated/graphql'
 
 import GetStatsRequest from '../../graphql/queries/stats'
 import GetMemberStatsRequest from '../../graphql/queries/member-stats'
-import UpdateMemberStatById from '../../graphql/mutations/character-stats-update'
+import UpdateMemberStatRequest from '../../graphql/mutations/member-stat-update'
 import CreateMemberStatRequest from '../../graphql/mutations/member-stat-create'
 import DeleteMemberStatRequest from '../../graphql/mutations/member-stat-delete'
 
@@ -76,9 +76,9 @@ export function useStatsApi() {
         }
       },
     }),
-    updateMemberStatById: useMutation({
-      mutationFn: (data: UpdateMemberStatByIdMutationVariables) =>
-        graphQLClient.request<UpdateMemberStatByIdMutation>(UpdateMemberStatById, data),
+    updateMemberStat: useMutation({
+      mutationFn: (data: UpdateMemberStatMutationVariables) =>
+        graphQLClient.request<UpdateMemberStatMutation>(UpdateMemberStatRequest, data),
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: [ STATS_QUERY_KEYS.MEMBER_STATS ],

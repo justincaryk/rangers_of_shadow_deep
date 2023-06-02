@@ -2,7 +2,7 @@ import { Friend, Mercenary as Codegen_Mercenary } from '../../graphql/generated/
 import { Item } from '../equipment/types'
 import { Feature } from '../features/types'
 import { MemberSkill } from '../skills/types'
-import { MemberStat } from '../stats/types'
+import { MemberStat, Stat } from '../stats/types'
 
 export type MercenaryItem = Omit<Item, 'rarity' | 'class' | 'description' | 'name' | 'slotCost'>
 export type MercenaryFeature = Omit<Feature, 'id' | 'name'>

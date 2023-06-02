@@ -5,6 +5,7 @@ export default gql`
     $friendId: UUID
     $characterId: UUID
     $timesGranted: Int
+    $timesUsed: Int
     $levelGrantId: UUID
     $friendLevelGrantId: UUID
   ) {
@@ -15,6 +16,7 @@ export default gql`
           levelGrantId: $levelGrantId
           friendId: $friendId
           timesGranted: $timesGranted
+          timesUsed: $timesUsed
           friendLevelGrantId: $friendLevelGrantId
         }
       }

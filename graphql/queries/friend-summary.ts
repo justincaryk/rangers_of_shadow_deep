@@ -10,6 +10,17 @@ export default gql`
       bonusSkill
       avatarUrl
       nodeId
+      mercenaryByMercenaryId {
+        id
+        name
+        move
+        fight
+        shoot
+        armor
+        will
+        health
+        nodeId
+      }
     }
   }
 `

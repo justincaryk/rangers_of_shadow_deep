@@ -2,11 +2,11 @@
 
 import { FingerPrintIcon } from '@heroicons/react/24/outline'
 import { useEffect, useState } from 'react'
-import MinorHeader from '../../parts/minor-header'
-import ShowHide from '../../parts/show-hide'
-import { useCompanionsApi } from '../companions-api'
-import MercenariesList from '../mercenaries/mercenaries-list'
-import { Mercenary } from '../types'
+import MinorHeader from '../parts/minor-header'
+import ShowHide from '../parts/show-hide'
+import { useCompanionsApi } from '../companions/companions-api'
+import MercenariesList from '../companions/mercenaries/mercenaries-list'
+import { Mercenary } from '../companions/types'
 
 export default function PickMercType() {
   const [ show, toggleShow ] = useState(false)

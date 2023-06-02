@@ -31,9 +31,23 @@ interface LevelUpCardProps {
 const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
   const { mutate: mutateFriend } = useCompanionsApi().updateFriend
   const { data: levelsData } = useLevelingApi().friendRules
+  const { data: memberStats } = useStatsApi().getMemberStats
   const { mutateAsync: createLevelRef, status: createLevelStatus } = useLevelingApi().createLevelRef
   const { mutateAsync: updateLevelRef, status: updateLevelStatus } = useLevelingApi().updateLevelRef
-  const { mutate: addMemberStat, status: addMemberStatStatus } = useStatsApi().createMemberStat
+  const { mutateAsync: addMemberStat, status: addMemberStatStatus } = useStatsApi().createMemberStat
+  const { mutateAsync: updateMemberStat, status: updateMemberStatStatus } = useStatsApi().updateMemberStat
+
+  const isLoading = useMemo(() => {
+    if (
+      createLevelStatus === 'loading' ||
+      updateLevelStatus === 'loading' ||
+      addMemberStatStatus === 'loading' ||
+      updateMemberStatStatus === 'loading'
+    ) {
+      return true
+    }
+    return false
+  }, [ createLevelStatus, updateLevelStatus, addMemberStatStatus, updateMemberStatStatus ])
 
   const updageProgressionPoints = (data: FriendPatch) => {
     mutateFriend({
@@ -91,20 +105,39 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
     const isMaxRank = maxLevelsToBeGranted === levelsGranted
     const hasRequisitePoints = Math.floor((friend.progressionPoints ?? 0) / 10) > levelsGranted
 
+    // allow skill at create
+    if (levelsGranted === 0) {
+      return true
+    }
+
     return !isMaxRank && hasRequisitePoints
   }, [ friend, levelsData, memberLevels ])
 
-  const addStatFromLevel = (level: FriendLevelGrant) => {
+  const applyStatBonus = async (level: FriendLevelGrant) => {
+    let result: string | null = null
     // check is a mod type
-    const feature = level.featuresByFriendLevelGrantId.nodes.find(feat => feat.mechanicMod === MechanicModType.Modifier)
-    
-    if (feature?.mechanicClass === MechanicClassType.Stat) {
-      addMemberStat({
-        friendId: friend.id,
-        statId: feature.statId,
-        value: feature.value ?? 0,
-      })
+    const feature = level.featuresByFriendLevelGrantId.nodes.find(
+      feat => feat.mechanicMod === MechanicModType.Modifier && feat.mechanicClass === MechanicClassType.Stat
+    )
+    const memberStat = memberStats?.allMemberStats?.nodes.find(ms => ms.statId === feature?.statId)
+
+    if (feature) {
+      if (memberStat) {
+        const x = await updateMemberStat({
+          id: memberStat.id,
+          value: memberStat.value + (feature.value ?? 0),
+        })
+        result = x.updateMemberStatById?.memberStat?.id ?? null
+      } else {
+        const x = await addMemberStat({
+          friendId: friend.id,
+          statId: feature.statId,
+          value: feature.value ?? 0,
+        })
+        result = x.createMemberStat?.memberStat?.id ?? null
+      }
     }
+    return result
   }
 
   const tryBuyLevel = async () => {
@@ -120,13 +153,14 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
         const purchased = memberLevels.find(levelBought => levelBought.friendLevelGrantId === level.id)
         if (!purchased) {
           // the next two calls need to be done separately because of the varying level up types
-          
-          addStatFromLevel(level)
-          
+
+          const result = await applyStatBonus(level)
+
           await createLevelRef({
             friendId: friend.id,
             friendLevelGrantId: level.id,
             timesGranted: 1,
+            timesUsed: result ? 1 : 0,
           })
           return
         }
@@ -146,24 +180,17 @@ const LevelUpCardContent = ({ friend, memberLevels }: LevelUpCardProps) => {
 
         if (canBeBoughtTwice && timesGranted === 1) {
           // the next two calls need to be done separately because of the varying level up types
-          addStatFromLevel(level)
+          const result = await applyStatBonus(level)
 
           await updateLevelRef({
             id: purchased.id,
             timesGranted: purchased.timesGranted + 1,
-            timesUsed: purchased.timesUsed + 1,
+            timesUsed: result ? 1 : 0,
           })
         }
       }
     }
   }
-
-  const isLoading = useMemo(() => {
-    if (createLevelStatus === 'loading' || updateLevelStatus === 'loading' || addMemberStatStatus === 'loading') {
-      return true
-    }
-    return false
-  }, [ createLevelStatus, updateLevelStatus, addMemberStatStatus ])
 
   return (
     <div className='space-y-4'>

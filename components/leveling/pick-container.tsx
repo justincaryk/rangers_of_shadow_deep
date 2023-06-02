@@ -1,16 +1,17 @@
 'use client'
 
 import { useMemo } from 'react'
-import { MechanicClassType, MechanicModType } from '../../../graphql/generated/graphql'
-import { Feature } from '../../features/types'
-import { useLevelingApi } from '../../leveling/leveling-api'
-import { FriendLevelGrant, MemberLevel } from '../../leveling/types'
-import StackSection from '../../parts/stack-section'
-import { useCompanionsApi } from './../companions-api'
+import { MechanicClassType, MechanicModType } from '../../graphql/generated/graphql'
+import { Feature } from '../features/types'
+import { useLevelingApi } from './leveling-api'
+import { FriendLevelGrant, MemberLevel, MemberLevelFeature } from './types'
+import StackSection from '../parts/stack-section'
+import { useCompanionsApi } from '../companions/companions-api'
 import FriendBonusItem from './pick-item'
 import PickMercType from './pick-merc-type'
 import PickSkill from './pick-skill'
 import FriendBonusSpell from './pick-spell'
+import FriendBonusStat from './pick-stat'
 // import FriendBonusStat from './pick-stat'
 
 export default function FriendPickContainer() {
@@ -34,9 +35,8 @@ export default function FriendPickContainer() {
     })
   }, [ mercRef ])
 
-  const statSelect = useMemo(() => {
+  const statTypeMemberLevels = useMemo(() => {
     const memberLevelGrants: MemberLevel[] = []
-    const statPickFeatures: Feature[] = []
 
     // check for member levels that have not been effected
     for (const memberLevel of memberLevels?.allMemberLevels?.nodes ?? []) {
@@ -46,16 +46,12 @@ export default function FriendPickContainer() {
         for (const feature of features) {
           if (feature.mechanicMod === MechanicModType.Pick && feature.mechanicClass === MechanicClassType.Stat) {
             memberLevelGrants.push(memberLevel)
-            statPickFeatures.push(feature)
           }
         }
       }
     }
 
-    return {
-      statPickFeatures,
-      memberLevelGrants,
-    }
+    return memberLevelGrants
   }, [ memberLevels ])
 
   return (
@@ -80,11 +76,12 @@ export default function FriendPickContainer() {
         </StackSection>
       )}
 
-      {/* {!!statSelect.statLevelGrant && (
+      {statTypeMemberLevels?.length > 0 && (
         <StackSection>
-          <FriendBonusStat feat={statSelect.statLevelGrant.featuresByFriendLevelGrantId} />
+          {/* process one unspent stat type upgrade at a time */}
+          <FriendBonusStat statTypeLevel={statTypeMemberLevels?.[0]} />
         </StackSection>
-      )} */}
+      )}
     </>
   )
 }
