@@ -31,6 +31,7 @@ export default function Stats() {
 
   const { data: memberStats } = useStatsApi().getMemberStats
   const { data: memberLevels } = useLevelingApi().getMemberLevels
+  const { mutateAsync: updateMemberLevel } = useLevelingApi().updateLevelRef
 
   const { mutate: mutateStat, status: mutateStatStatus } = useStatsApi().updateMemberStat
 
@@ -40,8 +41,7 @@ export default function Stats() {
     // we need to find the diff between the default point total and the rangers point total
     const defaultAtCreateTotal =
       stats?.allStats?.nodes.reduce((acc, curr) => (curr.rangerDefault ? curr.rangerDefault + acc : acc), 0) ?? 0
-    const currentRangerTotal =
-    memberStats?.allMemberStats?.nodes.reduce((acc, curr) => acc + curr.value, 0) ?? 0
+    const currentRangerTotal = memberStats?.allMemberStats?.nodes.reduce((acc, curr) => acc + curr.value, 0) ?? 0
 
     return currentRangerTotal - defaultAtCreateTotal
   }, [ memberStats, stats ])
@@ -134,7 +134,7 @@ export default function Stats() {
     return false
   }
 
-  const updateStat = (stat: Stat, modifier: number) => {
+  const updateStat = async (stat: Stat, modifier: number) => {
     if (mutateStatStatus === 'loading') {
       return null
     }
@@ -160,6 +160,15 @@ export default function Stats() {
       throw new Error()
     }
 
+    const latestLevel = memberLevels?.allMemberLevels?.nodes.find(
+      ml => ml.levelGrantByLevelGrantId?.grantType === MechanicClassType.Stat
+    )
+    if (latestLevel) {
+      await updateMemberLevel({
+        id: latestLevel.id,
+        timesUsed: latestLevel.timesUsed + modifier,
+      })
+    }
     mutateStat({
       id: memberStat.id,
       value: memberStat.value + modifier,

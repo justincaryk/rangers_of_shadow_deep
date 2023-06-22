@@ -7,9 +7,21 @@ module.exports = {
     './graphql/**/*.{js,ts,jsx,tsx}',
     './node_modules/tw-elements/dist/js/**/*.js',
   ],
-  plugins: [ require('tw-elements/dist/plugin') ],
+  plugins: [ require('tw-elements/dist/plugin'), require('tailwindcss/nesting') ],
   theme: {
+    fontFamily: {
+      glue: 'GlueRave',
+    },
     extend: {
+      minHeight: {
+        14: "3.5rem"
+      },
+      minWidth: {
+        14: "3.5rem"
+      },
+      transitionTimingFunction: {
+        "in-out": "cubic-bezier(0.2, 1, 0.25, 1)"
+      },
       maxWidth: {
         '1/4': '25%',
         '1/2': '50%',
@@ -29,6 +41,7 @@ module.exports = {
       },
       colors: {
         gray: {
+          900: "#0f1011",
           dark: '#242527',
         },
         'off-white': 'rgb(240, 239, 239)',
@@ -45,6 +58,13 @@ module.exports = {
         'hero-3': "url('/images/backgrounds/companions-bg-1.png')",
         'red-left': "url('/images/assets/red-border-left.png')",
         'red-right': "url('/images/assets/red-border-right.png')",
+        'blue-1': "url('/images/backgrounds/x-blue-1.jpg')",
+        'blue-2': "url('/images/backgrounds/x-blue-2.jpg')",
+        'green-1': "url('/images/backgrounds/x-green-1.jpg')",
+        'green-2': "url('/images/backgrounds/x-green-2.jpg')",
+        'green-3': "url('/images/backgrounds/x-green-3.jpg')",
+        'red-1': "url('/images/backgrounds/x-red-1.jpg')",
+        'red-2': "url('/images/backgrounds/x-red-2.jpg')",
       },
     },
   },
