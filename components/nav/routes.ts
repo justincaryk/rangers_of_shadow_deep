@@ -22,13 +22,14 @@ export const PRIVATE_ROUTE_URLS = {
   INJURIES: '/game-rules/injuries',
   PROGRESSION: '/game-rules/progression',
   ADMIN: '/admin',
+  BRIEFING: '/briefing'
 }
 
 export type PublicPathname = (typeof PUBLIC_ROUTE_URLS)[keyof typeof PUBLIC_ROUTE_URLS]
 export type PrivatePathname = (typeof PRIVATE_ROUTE_URLS)[keyof typeof PRIVATE_ROUTE_URLS]
 
 export type RouteType = {
-  link: PublicPathname | PrivatePathname
+  link: PublicPathname | PrivatePathname | null
   text?: string
   hasNav: boolean
 }
@@ -36,5 +37,7 @@ export type RouteType = {
 export type PublicRouteType = RouteType
 export type PrivateRouteType = RouteType & {
   home?: boolean
+  hasChildren?: boolean
+  children?: RouteType[]
   permission: UserRole[]
 }

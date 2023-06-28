@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "16"
+    "node": "18"
   },
   "scripts": {
     "dev": "next dev",
@@ -46,6 +46,7 @@
     "react-error-boundary": "^3.1.4",
     "react-hot-toast": "^2.4.0",
     "react-multi-select-component": "^4.3.4",
+    "sass": "^1.63.4",
     "tailwindcss": "^3.3.2",
     "tw-elements": "^1.0.0-beta2",
     "typescript": "4.9.4",
@@ -69,6 +70,7 @@
     "lint-prepush": "^2.2.1",
     "lint-staged": "^13.1.0",
     "postcss": "^8.4.20",
+    "postcss-nesting": "^11.3.0",
     "prettier": "^2.8.1"
   },
   "packageManager": "yarn@3.6.0"
