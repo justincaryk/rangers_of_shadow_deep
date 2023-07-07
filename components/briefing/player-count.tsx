@@ -3,7 +3,7 @@
 import classnames from 'classnames'
 import { useAtom } from 'jotai'
 import { useMemo } from 'react'
-import { PLAYER_COUNT } from '../types'
+import { PLAYER_KEYS } from '../types'
 import { objectKeys } from '../utils'
 
 import { usePlayerCount, useSetPlayerCount } from './atoms'
@@ -14,16 +14,16 @@ export default function PlayerCount() {
 
   const playerOptions = useMemo(() => {
     let counter = 0
-    return objectKeys(PLAYER_COUNT).map(x => {
+    return objectKeys(PLAYER_KEYS).map(x => {
       counter++
       return {
-        text: PLAYER_COUNT[x],
-        value: counter,
+        text: counter,
+        value: PLAYER_KEYS[x],
       }
     })
   }, [])
 
-  const handlePlayerCountSelect = (players: number) => {
+  const handlePlayerCountSelect = (players: PLAYER_KEYS) => {
     console.log('x: ', players)
     setPlayerCount(players)
   }
@@ -46,10 +46,10 @@ export default function PlayerCount() {
             <span
               className={classnames({
                 'hover:font-bold hover:cursor-pointer hover:text-cyan-700 hover:text-7xl': true,
-                'font-bold cursor-pointer text-cyan-500 text-7xl': playerCount === opt.value,
+                'font-bold cursor-pointer text-cyan-500 text-7xl': playerCount === opt.text,
               })}
             >
-              {opt.value}
+              {opt.text}
             </span>
           </div>
         ))}

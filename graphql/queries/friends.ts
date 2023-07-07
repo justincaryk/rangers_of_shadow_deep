@@ -9,6 +9,10 @@ export default gql`
         progressionPoints
         mercenaryId
         nodeId
+        mercenaryByMercenaryId {
+          name
+          cost
+        }
       }
     }
   }

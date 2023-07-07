@@ -10,7 +10,7 @@ export default function Briefing() {
 
   return (
     <div className='space-y-6 w-full'>
-      <MinorHeader content='companion' />
+      {/* <MinorHeader content='companion' /> */}
       {/* select a ranger from cards */}
       {/* show expanded on load & collapse on select confirm*/}
 

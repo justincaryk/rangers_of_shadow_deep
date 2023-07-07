@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import { useAtom } from 'jotai'
 import { useRangerApi } from '../ranger/ranger-api'
 import { useDeployedRanger, useSetDeployedRanger } from './atoms'
+import { listItemActiveStyles, listItemBaseStyles, listItemDormantStyles } from './styles'
 
 export default function RangerSelect() {
   const [ deployedRangerId ] = useAtom(useDeployedRanger)
@@ -18,36 +19,20 @@ export default function RangerSelect() {
         'overflow-x-auto grow': true,
       })}
     >
-      <div className='text-white font-semibold overflow-y-auto space-y-2 mb-10'>
+      <div className='overflow-y-auto space-y-2 mb-10'>
         {data?.allCharacters?.nodes.map(ranger => (
-          <div key={ranger.id}>
-            <div>
+          <div key={ranger.id} onClick={() => setDeployedRangerId(ranger.id)}>
+            <div
+              className={classnames({
+                [listItemBaseStyles]: true,
+                [listItemDormantStyles]: ranger.id !== deployedRangerId,
+                [listItemActiveStyles]: ranger.id === deployedRangerId,
+              })}
+            >
               {ranger.name} ({ranger.level})
             </div>
           </div>
         ))}
-        {data?.allCharacters?.nodes.map(ranger => (
-          <div key={ranger.id}>
-            <div>
-              {ranger.name} ({ranger.level})
-            </div>
-          </div>
-        ))}
-        {data?.allCharacters?.nodes.map(ranger => (
-          <div key={ranger.id}>
-            <div>
-              {ranger.name} ({ranger.level})
-            </div>
-          </div>
-        ))}
-        {data?.allCharacters?.nodes.map(ranger => (
-          <div key={ranger.id}>
-            <div>
-              {ranger.name} ({ranger.level})
-            </div>
-          </div>
-        ))}
-        
       </div>
     </div>
   )

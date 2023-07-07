@@ -1,8 +1,9 @@
 'use client'
 
 import { Mercenary } from './companions/types'
+import { BASE_RECRUITMENT_POINTS } from './rules/creation-rules'
 import { Skill } from './skills/types'
-import { PLAYER_COUNT } from './types'
+import { PLAYER_KEYS } from './types'
 
 export const NAV_TEXT_STYLE =
   'text-dirty-orange font-roboto uppercase hover:text-hover-white hover:no-underline cursor-pointer outline-none'
@@ -11,18 +12,18 @@ export function objectKeys<Obj extends object>(obj: Obj): (keyof Obj)[] {
   return Object.keys(obj) as (keyof Obj)[]
 }
 
-export function getAdjustedRecruitmentPoints(players: PLAYER_COUNT, brp: number) {
+// TODO: figure out if this still works
+export function getAdjustedRecruitmentPoints(players: PLAYER_KEYS, additionalRp: number = 0) {
+  const brp = BASE_RECRUITMENT_POINTS
   const adjustments = {
-    [PLAYER_COUNT.ONE]: (brp: number) => brp,
-    [PLAYER_COUNT.TWO]: (brp: number) => brp * 0.5 - 10,
-    [PLAYER_COUNT.THREE]: (brp: number) => brp * 0.3,
-    [PLAYER_COUNT.FOUR]: (brp: number) => brp * 0.1,
+    [PLAYER_KEYS.ONE]: () => brp,
+    [PLAYER_KEYS.TWO]: () => brp * 0.5 - 10,
+    [PLAYER_KEYS.THREE]: () => brp * 0.3,
+    [PLAYER_KEYS.FOUR]: () => brp * 0.1,
   }
 
-  return adjustments[players]?.(brp)
+  return adjustments[players]?.()
 }
-
-export function getMaxNumberOfCompanions(players: number) {}
 
 export const parseJwt = (token: string) => {
   var base64Url = token.split('.')[1]

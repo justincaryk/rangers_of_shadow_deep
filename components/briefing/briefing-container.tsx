@@ -4,6 +4,7 @@ import { useState } from 'react'
 import classnames from 'classnames'
 import PlayerCount from './player-count'
 import RangerSelect from './ranger-select'
+import FriendSelect from './friend-select'
 
 const baseCarouselItemOuterStyle =
   'cursor-pointer duration-700 ease-in-out flex-grow m-2 min-h-14 min-w-14 pane relative rounded-2xl transition-all'
@@ -29,6 +30,7 @@ const carouselItems = [
     id: 'companions',
     subtext: '. recruit your friends',
     bg: 'bg-green-3',
+    Component: FriendSelect,
   },
   {
     id: 'equipment',
