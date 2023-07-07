@@ -1,5 +1,3 @@
-import { Character } from '../graphql/generated/graphql'
-
 export enum MEMBER_TYPE_ENUM {
   FRIEND = 'friend',
   RANGER = 'ranger',

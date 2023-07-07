@@ -22,6 +22,12 @@ export const PRIVATE_ROUTES: PrivateRouteType[] = [
     permission: [ UserRole.Minion, UserRole.Wizard ],
   },
   {
+    link: PRIVATE_ROUTE_URLS.DEBRIEF,
+    text: 'Mission Debriefing',
+    hasNav: true,
+    permission: [ UserRole.Minion, UserRole.Wizard ],
+  },
+  {
     link: PRIVATE_ROUTE_URLS.BRIEFING,
     text: 'Mission Briefing',
     hasNav: true,
@@ -57,6 +63,11 @@ export const PRIVATE_ROUTES: PrivateRouteType[] = [
       {
         link: PRIVATE_ROUTE_URLS.PROGRESSION,
         text: 'Progression',
+        hasNav: true,
+      },
+      {
+        link: PRIVATE_ROUTE_URLS.MAGIC_ITEMS,
+        text: 'Magic Items',
         hasNav: true,
       },
     ],
@@ -102,12 +113,7 @@ export default function PrivateNavigation() {
               <span className='sr-only'>Rangers of Shadow Deep Companion App</span>
               {PRIVATE_ROUTES.filter(x => x.home && x.link).map(x => (
                 <Link href={x.link!} key={x.text}>
-                  <Image
-                    width={200}
-                    height={100}
-                    src='/images/logo-lg.png'
-                    alt=''
-                  />
+                  <Image width={200} height={100} src='/images/logo-lg.png' alt='' />
                 </Link>
               ))}
             </div>

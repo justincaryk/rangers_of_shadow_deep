@@ -7,7 +7,7 @@ module.exports = {
     './graphql/**/*.{js,ts,jsx,tsx}',
     './node_modules/tw-elements/dist/js/**/*.js',
   ],
-  plugins: [ require('tw-elements/dist/plugin'), require('tailwindcss/nesting') ],
+  plugins: [ require('tailwindcss/nesting'), require('tw-elements/dist/plugin') ],
   theme: {
     fontFamily: {
       glue: 'GlueRave',

@@ -22,7 +22,9 @@ export const PRIVATE_ROUTE_URLS = {
   INJURIES: '/game-rules/injuries',
   PROGRESSION: '/game-rules/progression',
   ADMIN: '/admin',
-  BRIEFING: '/briefing'
+  BRIEFING: '/briefing',
+  MAGIC_ITEMS: '/magic-items',
+  DEBRIEF: 'debriefing',
 }
 
 export type PublicPathname = (typeof PUBLIC_ROUTE_URLS)[keyof typeof PUBLIC_ROUTE_URLS]

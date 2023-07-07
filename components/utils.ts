@@ -14,7 +14,7 @@ export function objectKeys<Obj extends object>(obj: Obj): (keyof Obj)[] {
 
 // TODO: figure out if this still works
 export function getAdjustedRecruitmentPoints(players: PLAYER_KEYS, additionalRp: number = 0) {
-  const brp = BASE_RECRUITMENT_POINTS
+  const brp = BASE_RECRUITMENT_POINTS + additionalRp
   const adjustments = {
     [PLAYER_KEYS.ONE]: () => brp,
     [PLAYER_KEYS.TWO]: () => brp * 0.5 - 10,
